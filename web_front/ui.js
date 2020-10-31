@@ -21,6 +21,7 @@ var testdrum = new Vue({
     }
 });
 
+// コントローラ
 var controller = new Vue({
     el: "#controller",
     data:{
@@ -34,6 +35,9 @@ var controller = new Vue({
     },
     methods:{
         play: function(event){
+            if(this.isPlaying){
+                return;
+            }
             console.log("play");
             this.isPlaying = true;
             // ミリ秒単位で時刻を取得
@@ -48,7 +52,10 @@ var controller = new Vue({
                 ctrl.animateFrame = requestAnimationFrame(loop);
             }());
         },
-        stop: function(event){ 
+        stop: function(event){
+            if(!this.isPlaying){
+                return;
+            }
             console.log("stop");
             cancelAnimationFrame(this.animateFrame);
             this.isPlaying = false;
