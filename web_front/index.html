@@ -25,9 +25,10 @@
 
 <!-- コントローラ -->
 <div id="controller">
-    <img src="img/play.png" height="50px" width="50px" @click="play">
+    <img src="img/play.png" height="50px" width="50px" @click="play" v-if="!isPlaying">
+    <img src="img/pause.png" height="50px" width="50px" @click="pause" v-if="isPlaying">
     <img src="img/stop.png" height="50px" width="50px" @click="stop">
-    {{ diffTime }}
+    {{ nowPosition }}
 </div>
 
 </body>
