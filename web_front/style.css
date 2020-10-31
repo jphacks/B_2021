@@ -1,4 +1,9 @@
 #controller{
     background-color: #808080;
-    height: 90px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#controller{
+    text-align: center;
 }

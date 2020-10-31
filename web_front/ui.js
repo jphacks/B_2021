@@ -74,7 +74,9 @@ var controller = new Vue({
 
         // シークバー
         total_length: 10000,   // 全体の長さ(ms)
-        seekX: 0                // シークバーの位置
+        seekX: 0,                // シークバーの位置
+        seekbarWidth: 900,
+        seeking: false
     },
     methods:{
         play: function(event){
@@ -82,7 +84,6 @@ var controller = new Vue({
             this.isPlaying = true;
             // ミリ秒単位で時刻を取得
             this.startTime = Math.floor(performance.now());
-            console.log(this.startTime);
             // ループ処理
             // スコープが変わるのでthisを保持しておく
             ctrl = this;
@@ -95,7 +96,7 @@ var controller = new Vue({
                     ctrl.stop()
                     return
                 }
-                ctrl.seekX = ctrl.nowPosition/ctrl.total_length * 800;
+                ctrl.seekX = String(ctrl.nowPosition/ctrl.total_length*100) + "%";
 
                 ctrl.animateFrame = requestAnimationFrame(loop);
             }());
@@ -116,6 +117,22 @@ var controller = new Vue({
             cancelAnimationFrame(this.animateFrame);
             this.isPlaying = false;
             this.pausePosition = this.nowPosition;
+        },
+        seek: function(event){
+            if(!this.seeking){return;}
+            this.nowPosition = Math.floor(event.offsetX / this.seekbarWidth * this.total_length);
+            this.pausePosition = this.nowPosition;
+            this.startTime = Math.floor(performance.now());
+            this.seekX = String(this.nowPosition/this.total_length*100) + "%";
+        },
+
+        mousedown: function(event){
+            this.pause();
+            this.seeking = true;
+            this.seek(event);
+        },
+        mouseup: function(event){
+            this.seeking = false;
         }
     }
 });
