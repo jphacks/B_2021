@@ -72,7 +72,7 @@ var controller = new Vue({
         isPlaying: false,
 
         // シークバー
-        total_length: 60000/config.bpm*4*testdrum.n_bars,   // 全体の長さ(ms)
+        total_length: 60000/manager.bpm*4*testdrum.n_bars,   // 全体の長さ(ms)
         seekX: 0,                // シークバーの位置
         seekbarWidth: 900,
         seeking: false
