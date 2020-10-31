@@ -9,16 +9,17 @@ var hello = new Vue({
 
 // クリックするとドラム音が鳴るボタンテスト
 // 位置座標取得もつけた
-let screenx = "";
-let screeny = "";
 var testdrum = new Vue({
     el: "#wrapper",
     data: {
         screenx:"x座標",
         screeny:"y座標"
     },
-    methods: {
-        test: function(event){
+    template:`<div><svg viewbox="0 0 300 300" width="300" height="300" style="background-color: #aaaaaa;" @mousemove="mouse">
+                <rect x="30" y="30" width="30" height="30" fill="#e0e010" @click="test" id="yellowbox"></rect>
+                </svg><div>{{screenx+","+screeny}}</div></div>`,
+    methods:{
+            test: function(event){
             var drum1 = new Audio("./audio/drum1.wav");
             drum1.currentTime = 0;
             drum1.play();
@@ -28,6 +29,7 @@ var testdrum = new Vue({
             this.screeny = event.clientY;
             document.getElementById("yellowbox").setAttribute("x",this.screenx-15)
             document.getElementById("yellowbox").setAttribute("y",this.screeny-15)
+            
 
         }
     }
@@ -77,4 +79,3 @@ var controller = new Vue({
         }
     }
 });
-
