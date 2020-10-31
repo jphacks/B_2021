@@ -32,7 +32,12 @@
     <img src="img/play.png" height="50px" width="50px" @click="play" v-if="!isPlaying">
     <img src="img/pause.png" height="50px" width="50px" @click="pause" v-if="isPlaying">
     <img src="img/stop.png" height="50px" width="50px" @click="stop">
-    {{ nowPosition }}
+    {{ nowPosition }} /  {{ total_length }}
+    <br>
+    <!-- シークバー -->
+    <svg viewbox="0 0 800 30" width="800" height="30" style="background-color: #ffffff;">
+      <rect :x="seekX" y="0" width="20" height="30" fill="#ff0000" ></rect>
+    </svg>
 </div>
 
 </body>
