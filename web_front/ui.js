@@ -70,7 +70,11 @@ var controller = new Vue({
         nowPosition: 0,
         pausePosition: 0,
 
-        isPlaying: false
+        isPlaying: false,
+
+        // シークバー
+        total_length: 10000,   // 全体の長さ(ms)
+        seekX: 0                // シークバーの位置
     },
     methods:{
         play: function(event){
@@ -87,6 +91,11 @@ var controller = new Vue({
                 ctrl.diffTime = ctrl.nowTime - ctrl.startTime;
 
                 ctrl.nowPosition = ctrl.pausePosition + ctrl.diffTime;
+                if(ctrl.nowPosition >= ctrl.total_length){
+                    ctrl.stop()
+                    return
+                }
+                ctrl.seekX = ctrl.nowPosition/ctrl.total_length * 800;
 
                 ctrl.animateFrame = requestAnimationFrame(loop);
             }());
@@ -100,6 +109,7 @@ var controller = new Vue({
             this.diffTime = 0;
             this.nowPosition = 0;
             this.pausePosition = 0;
+            this.seekX = 0;
         },
         pause: function(event){
             console.log("pause");
