@@ -24,10 +24,10 @@ var testdrum = new Vue({
             drum1.play();
         },
         mouse:function(event){
-            console.log("HELLO");
             this.screenx = event.clientX;
             this.screeny = event.clientY;
-            console.log(event.clientX,event.clientY);
+            document.getElementById("yellowbox").setAttribute("x",this.screenx-15)
+            document.getElementById("yellowbox").setAttribute("y",this.screeny-15)
         }
     }
 });
