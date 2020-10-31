@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>no title</title>
   <script src="./vue.js"></script>
+  <script src="./config.js" defer></script>
   <script src="./ui.js" defer></script>
   <script src="./notes.js" defer></script>
 </head>
@@ -13,8 +14,14 @@
 <!-- 本体 -->
 
 <div id="wrapper">
-  <svg viewbox="0 0 1500 320" width="1500" height="320" style="background-color: #aaaaaa;" @mousemove="mouse" @mousedown="mouse_down" @mouseup="mouse_up" @click="test">
-    <rect v-for="note in notes" :x="note.start_time" :y="note.pitch" :width="note.nagasa" :height="40" fill="#e0e010"></rect>
+  <svg :viewbox="'0 0 1500 ' + note_height*7" :width="n_bars*note_width*4" :height="note_height*8" style="background-color: #aaaaaa;" @mousemove="mouse" @mousedown="mouse_down" @mouseup="mouse_up" @click="test">
+    <!-- ノーツを描画 -->
+    <rect v-for="note in notes" :x="note.start_time" :y="note.pitch" :width="note.nagasa" :height="note_height" fill="#e0e010"></rect>
+    
+    <!-- 横の線 -->
+    <line v-for="n in 7" stroke="#000000" x1="0"  stroke-width="1" :x2="n_bars*note_width*4" :y1="n*note_height" :y2="n*note_height"></line>
+    <!-- 縦の線 -->
+    <line v-for="n in n_bars" stroke="#000000" :x1="(n-1)*note_width*4" :x2="(n-1)*note_width*4" y1="0" :y2="note_height*8"></line> 
   </svg>
   {{screenx+","+screeny}}
 </div>
