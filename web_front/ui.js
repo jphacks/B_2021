@@ -10,6 +10,10 @@ var hello = new Vue({
 var testdrum = new Vue({
     el: "#wrapper",
     data: {
+        note_height: 30,
+        note_width: 100,
+        n_bars: 8,  // 小節数(横幅は小節数*4拍)
+
         screenx:"x座標",
         screeny:"y座標",
         click_x:0,
@@ -27,14 +31,14 @@ var testdrum = new Vue({
         mouse:function(event){
             this.screenx = event.clientX;
             this.screeny = event.clientY;
-            document.getElementById("yellowbox").setAttribute("x",this.screenx-15)
-            document.getElementById("yellowbox").setAttribute("y",this.screeny-15)
+            //document.getElementById("yellowbox").setAttribute("x",this.screenx-15)
+            //document.getElementById("yellowbox").setAttribute("y",this.screeny-15)
 
         },
         mouse_down:function(event){
             this.click_x = event.offsetX;
             this.click_y = event.offsetY;
-            this.notes.push(new Note(parseInt(this.click_y/40)*40,parseInt(this.click_x/100)*100,100,document.getElementById("table_id").value,document.getElementById("who_make").value))
+            this.notes.push(new Note(parseInt(this.click_y/this.note_height)*this.note_height,parseInt(this.click_x/this.note_width)*this.note_width,this.note_width,document.getElementById("table_id").value,document.getElementById("who_make").value))
 
         },
         mouse_up:function(event){
@@ -68,7 +72,7 @@ var controller = new Vue({
         isPlaying: false,
 
         // シークバー
-        total_length: 10000,   // 全体の長さ(ms)
+        total_length: 60000/config.bpm*4*testdrum.n_bars,   // 全体の長さ(ms)
         seekX: 0,                // シークバーの位置
         seekbarWidth: 900,
         seeking: false
