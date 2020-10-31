@@ -1,12 +1,10 @@
 console.log("Hello, World!");
-
 var hello = new Vue({
     el: "#test",
     data:{
         message: "Hello, World!"
     }
 });
-
 // クリックするとドラム音が鳴るボタンテスト
 // 位置座標取得もつけた
 var testdrum = new Vue({
@@ -14,16 +12,15 @@ var testdrum = new Vue({
     data: {
         screenx:"x座標",
         screeny:"y座標",
-        chohokei:[],
         click_x:0,
         click_y:0,
         clickup_x:0,
-        clickup_y:0
-
+        clickup_y:0,
+        notes:[]
     },
-    template:`<div><svg viewbox="0 0 300 300" width="300" height="300" style="background-color: #aaaaaa;" @mousemove="mouse" @mousedown="mouse_down" @mouseup="mouse_up">
+    template:`<div><svg viewbox="0 0 1500 320" width="1500" height="320" style="background-color: #aaaaaa;" @mousemove="mouse" @mousedown="mouse_down" @mouseup="mouse_up">
                 <rect x="30" y="30" width="30" height="30" fill="#e0e010" @click="test" id="yellowbox"></rect>
-                <rect v-for="zahyou in chohokei" :x="zahyou.x" :y="zahyou.y" :width="zahyou.width" :height="zahyou.height" fill="#e0e010"></rect>
+                <rect v-for="note in notes" :x="note.start_time" :y="note.pitch" :width="note.nagasa" :height="40" fill="#e0e010"></rect>
                 </svg><div>{{screenx+","+screeny}}</div></div>`,
     methods:{
         test: function(event){
@@ -39,18 +36,20 @@ var testdrum = new Vue({
 
         },
         mouse_down:function(event){
-            this.click_x = event.clientX;
-            this.click_y = event.clientY;
+            this.click_x = event.offsetX;
+            this.click_y = event.offsetY;
+            this.notes.push(new Note(parseInt(this.click_y/40)*40,parseInt(this.click_x/100)*100,100,document.getElementById("table_id").value,document.getElementById("who_make").value))
+
         },
         mouse_up:function(event){
             this.clickup_x=event.clientX;
             this.clickup_y=event.clientY;
-            dict = {}
-            dict["x"] = Math.min(this.click_x, this.clickup_x);
-            dict["y"] = Math.min(this.click_y, this.clickup_y);
-            dict["width"] = Math.abs(this.click_x - this.clickup_x);
-            dict["height"] = Math.abs(this.click_y - this.clickup_y);
-            this.chohokei.push(dict);
+            // dict = {}
+            // dict["x"] = Math.min(this.click_x, this.clickup_x);
+            // dict["y"] = Math.min(this.click_y, this.clickup_y);
+            // dict["width"] = Math.abs(this.click_x - this.clickup_x);
+            // dict["height"] = Math.abs(this.click_y - this.clickup_y);
+            // this.chohokei.push(dict);
 
         }
     }
