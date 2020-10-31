@@ -13,6 +13,10 @@
 <!-- 本体 -->
 
 <div id="wrapper">
+  <svg viewbox="0 0 1500 320" width="1500" height="320" style="background-color: #aaaaaa;" @mousemove="mouse" @mousedown="mouse_down" @mouseup="mouse_up" @click="test">
+    <rect v-for="note in notes" :x="note.start_time" :y="note.pitch" :width="note.nagasa" :height="40" fill="#e0e010"></rect>
+  </svg>
+  {{screenx+","+screeny}}
 </div>
 
 <div id="test">
