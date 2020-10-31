@@ -36,6 +36,7 @@ var testdrum = new Vue({
             this.screeny = event.clientY;
             document.getElementById("yellowbox").setAttribute("x",this.screenx-15)
             document.getElementById("yellowbox").setAttribute("y",this.screeny-15)
+
         },
         mouse_down:function(event){
             this.click_x = event.clientX;
@@ -50,6 +51,7 @@ var testdrum = new Vue({
             dict["width"] = Math.abs(this.click_x - this.clickup_x);
             dict["height"] = Math.abs(this.click_y - this.clickup_y);
             this.chohokei.push(dict);
+
         }
     }
 });
@@ -60,17 +62,18 @@ var controller = new Vue({
     data:{
         // requestAnimationFrame(cb)の返り値(requestID)が入る
         animateFrame: 0,
-
+        // 時間管理
         startTime: 0,
         nowTime: 0,
         diffTime: 0,
+        // 再生位置
+        nowPosition: 0,
+        pausePosition: 0,
+
         isPlaying: false
     },
     methods:{
         play: function(event){
-            if(this.isPlaying){
-                return;
-            }
             console.log("play");
             this.isPlaying = true;
             // ミリ秒単位で時刻を取得
@@ -82,19 +85,27 @@ var controller = new Vue({
             (function loop(){
                 ctrl.nowTime = Math.floor(performance.now());
                 ctrl.diffTime = ctrl.nowTime - ctrl.startTime;
+
+                ctrl.nowPosition = ctrl.pausePosition + ctrl.diffTime;
+
                 ctrl.animateFrame = requestAnimationFrame(loop);
             }());
         },
         stop: function(event){
-            if(!this.isPlaying){
-                return;
-            }
             console.log("stop");
             cancelAnimationFrame(this.animateFrame);
             this.isPlaying = false;
             this.startTime = 0;
             this.nowTime = 0;
             this.diffTime = 0;
+            this.nowPosition = 0;
+            this.pausePosition = 0;
+        },
+        pause: function(event){
+            console.log("pause");
+            cancelAnimationFrame(this.animateFrame);
+            this.isPlaying = false;
+            this.pausePosition = this.nowPosition;
         }
     }
 });
