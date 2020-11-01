@@ -117,7 +117,6 @@ var controller = new Vue({
         nowTime: 0,
         diffTime: 0,
         // 再生位置
-        nowPosition: 0,
         pausePosition: 0,
 
         isPlaying: false,
@@ -144,10 +143,12 @@ var controller = new Vue({
                 position = ctrl.pausePosition + ctrl.diffTime;
                 ctrl.$store.commit("setPosition",position);
 
-                if(ctrl.nowPosition >= ctrl.total_length){
+                if(store.state.position >= ctrl.total_length){
                     ctrl.stop()
                     return
                 }
+
+
                 ctrl.animateFrame = requestAnimationFrame(loop);
             }());
         },
@@ -165,13 +166,13 @@ var controller = new Vue({
             console.log("pause");
             cancelAnimationFrame(this.animateFrame);
             this.isPlaying = false;
-            this.pausePosition = this.nowPosition;
+            this.pausePosition = store.state.position;
         },
         seek: function(event){
             if(!this.seeking){return;}
             position = Math.floor(event.offsetX / this.seekbarWidth * this.total_length);
             this.$store.commit("setPosition",position);
-            this.pausePosition = this.nowPosition;
+            this.pausePosition = store.state.position;
             this.startTime = Math.floor(performance.now());
         },
 
