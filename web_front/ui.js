@@ -40,6 +40,7 @@ var testdrum = new Vue({
             note_height: 30,
             note_width: 100,
             n_bars: 8,  // 小節数(横幅は小節数*4拍)
+            playing_position: 0,
 
 
             screenx:"x座標",
