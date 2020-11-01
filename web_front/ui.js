@@ -54,7 +54,19 @@ var testdrum = new Vue({
         },
 
         note_click: function(event){
-            console.log(event);
+            let click_note_pitch = parseInt(event.offsetY/this.note_height) * this.note_height;
+            let click_note_start_time = parseInt(event.offsetX/this.note_width) * this.note_width;
+            //クリックしたノーツの検索
+            let index = -1;
+            for(let i = 0; i < this.notes.length; i++){
+                if(this.notes[i].pitch == click_note_pitch && this.notes[i].start_time == click_note_start_time){
+                    index = i;
+                    break;
+                }
+            }
+            //ノーツの削除
+            this.notes.splice(index, 1);
+
         }
     }
 });
