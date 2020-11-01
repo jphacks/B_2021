@@ -6,10 +6,27 @@ window.AudioContext = window.AudioContext || window.webkitAudioContext;
 const ctx = new AudioContext();
 
 // オシレーターやってみる
-function play_sinwave(){
-    console.log("sinewave");
+const name2freq = {
+    "C3": 130.813,
+    "D3": 146.832,
+    "E3": 164.814,
+    "F3": 174.614,
+    "G3": 195.998,
+    "A3": 220,
+    "B3": 246.942,
+    "C4": 261.626
+}
+
+function play_tone(name){
     var oscillator = ctx.createOscillator();
     oscillator.connect(ctx.destination);
+
+    oscillator.type = "sawtooth";
+    oscillator.frequency.value = name2freq[name];
+
+    var soundLength = 0.3;
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + soundLength);
 }
 
 
