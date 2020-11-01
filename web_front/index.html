@@ -8,7 +8,6 @@
   <script src="./vue.js"></script>
   <script src="./vuex.js"></script>
   <script src="./audio.js"></script>
-  <script src="./manager.js" defer></script>
   <script src="./ui.js" defer></script>
   <script src="./notes.js" defer></script>
 </head>
@@ -16,7 +15,7 @@
 <!-- 本体 -->
 
 <div id="wrapper" style="overflow:hidden; width:1200px;">
-  <svg :viewbox="'100 0 1500 ' + note_height*7" :width="n_bars*note_width*4" :height="note_height*8"  @mousemove="mouse"
+  <svg :viewbox="'0 0 1500 ' + note_height*lanes.length" :width="$store.state.n_bars*note_width*4" :height="note_height*lanes.length"  @mousemove="mouse"
   :style=" 'background-color: #aaaaaa; margin-left: ' +  (- playing_position+100) +'px;'">
     <!-- 背景 -->
     <rect x="0" y="0" width="100%" height="100%" fill="#ff0000" style="fill-opacity:10%" @mousedown="mouse_down" @mouseup="mouse_up" @click="test"></rect>
@@ -25,12 +24,13 @@
     <rect v-for="note in $store.state.notes" :x="note['note'].start_time" :y="note['note'].pitch" :width="note['note'].nagasa" :height="note_height" fill="#e0e010" @click="note_click"></rect>
     
     <!-- 横の線 -->
-    <line v-for="n in 7" stroke="#000000" x1="0"  stroke-width="1" :x2="n_bars*note_width*4" :y1="n*note_height" :y2="n*note_height"></line>
+    <line v-for="n in lanes.length" stroke="#000000" x1="0"  stroke-width="1" :x2="$store.state.n_bars*note_width*4" :y1="n*note_height" :y2="n*note_height"></line>
     <!-- 縦の線 -->
-    <line v-for="n in n_bars" stroke="#000000" :x1="(n-1)*note_width*4" :x2="(n-1)*note_width*4" y1="0" :y2="note_height*8"></line> 
+    <line v-for="n in $store.state.n_bars" stroke="#000000" :x1="(n-1)*note_width*4" :x2="(n-1)*note_width*4" y1="0" :y2="note_height*lanes.length"></line> 
     <!-- 再生位置の線 -->
-    <line stroke="#ff0000" :x1="playing_position" :x2="playing_position" y1="0" :y2="note_height*8"></line> 
+    <line stroke="#ff0000" :x1="playing_position" :x2="playing_position" y1="0" :y2="note_height*lanes.length"></line> 
   </svg>
+  <br>
   {{screenx+","+screeny}}
 </div>
 
