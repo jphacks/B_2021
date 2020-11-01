@@ -24,9 +24,7 @@ var testdrum = new Vue({
     },
     methods:{
         test: function(event){
-            var drum1 = new Audio("./audio/drum1.wav");
-            drum1.currentTime = 0;
-            drum1.play();
+
         },
         mouse:function(event){
             this.screenx = event.clientX;
@@ -36,10 +34,13 @@ var testdrum = new Vue({
 
         },
         mouse_down:function(event){
+            var drum1 = new Audio("./audio/drum1.wav");
+            drum1.currentTime = 0;
+            drum1.play();
+
             this.click_x = event.offsetX;
             this.click_y = event.offsetY;
             this.notes.push(new Note(parseInt(this.click_y/this.note_height)*this.note_height,parseInt(this.click_x/this.note_width)*this.note_width,this.note_width,document.getElementById("table_id").value,document.getElementById("who_make").value))
-
         },
         mouse_up:function(event){
             this.clickup_x=event.clientX;
@@ -50,7 +51,10 @@ var testdrum = new Vue({
             // dict["width"] = Math.abs(this.click_x - this.clickup_x);
             // dict["height"] = Math.abs(this.click_y - this.clickup_y);
             // this.chohokei.push(dict);
+        },
 
+        note_click: function(event){
+            console.log(event);
         }
     }
 });
