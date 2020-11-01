@@ -40,7 +40,7 @@ var testdrum = new Vue({
             //drum1.currentTime = 0;
             //drum1.play();
 
-            playdrum(); // audio.js
+            play_sinwave(); // audio.js
             
             this.click_x = event.offsetX;
             this.click_y = event.offsetY;
