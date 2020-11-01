@@ -6,7 +6,7 @@ window.AudioContext = window.AudioContext || window.webkitAudioContext;
 const ctx = new AudioContext();
 
 // オシレーターやってみる
-const name2freq = {
+const pitchname2freq = {
     "C3": 130.813,
     "D3": 146.832,
     "E3": 164.814,
@@ -17,12 +17,12 @@ const name2freq = {
     "C4": 261.626
 }
 
-function play_tone(name){
+function play_tone(pitchname){
     var oscillator = ctx.createOscillator();
     oscillator.connect(ctx.destination);
 
     oscillator.type = "sawtooth";
-    oscillator.frequency.value = name2freq[name];
+    oscillator.frequency.value = pitchname2freq[pitchname];
 
     var soundLength = 0.3;
     oscillator.start();

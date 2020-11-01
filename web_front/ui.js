@@ -50,6 +50,7 @@ var testdrum = new Vue({
             clickup_x:0,
             clickup_y:0,
 
+            lanes : ["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
         }
 
     },
@@ -69,9 +70,8 @@ var testdrum = new Vue({
             this.click_x = event.offsetX;
             this.click_y = event.offsetY;
 
-            var tonenum = 7-parseInt(this.click_y/this.note_height);
-            const num2name = ["C3", "D3", "E3", "F3", "G3", "A3", "B3", "C4"];
-            play_tone(num2name[tonenum]); // audio.js
+            var tonenum = parseInt(this.click_y/this.note_height);
+            play_tone(this.lanes[tonenum]); // audio.js
             
             let note = new Note(parseInt(this.click_y/this.note_height)*this.note_height,parseInt(this.click_x/this.note_width)*this.note_width,this.note_width,document.getElementById("table_id").value,document.getElementById("who_make").value);
             //this.notes.push(new Note(parseInt(this.click_y/this.note_height)*this.note_height,parseInt(this.click_x/this.note_width)*this.note_width,this.note_width,document.getElementById("table_id").value,document.getElementById("who_make").value))
