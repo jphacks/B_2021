@@ -8,7 +8,10 @@ var hello = new Vue({
 //状態管理
 const store = new Vuex.Store({
     state: {
-        notes:[]
+        notes:[],
+        position: 0,    // 再生位置
+        bpm: 120,   // bpm
+        n_bars: 8   // 小節数
     },
     
     mutations: {
@@ -25,8 +28,13 @@ const store = new Vuex.Store({
             }
             //ノーツの削除
             state.notes.splice(index, 1);
+        },
 
-
+        // 再生位置をセット
+        setPosition(state, position){
+            state.position = position;
+            testdrum.playing_position = state.position/controller.total_length*testdrum.note_width*state.n_bars*4;
+            controller.seekX = String(state.position/controller.total_length*100) + "%";
         }
     }
 })
@@ -39,10 +47,7 @@ var testdrum = new Vue({
         return{
             note_height: 30,
             note_width: 100,
-            n_bars: 8,  // 小節数(横幅は小節数*4拍)
             playing_position: 0,
-
-
             screenx:"x座標",
             screeny:"y座標",
             click_x:0,
@@ -102,6 +107,7 @@ var testdrum = new Vue({
 
 // コントローラ
 var controller = new Vue({
+    store: store,
     el: "#controller",
     data:{
         // requestAnimationFrame(cb)の返り値(requestID)が入る
@@ -117,7 +123,7 @@ var controller = new Vue({
         isPlaying: false,
 
         // シークバー
-        total_length: 60000/manager.bpm*4*testdrum.n_bars,   // 全体の長さ(ms)
+        total_length: 60000/store.state.bpm*4*store.state.n_bars,   // 全体の長さ(ms)
         seekX: 0,                // シークバーの位置
         seekbarWidth: 900,
         seeking: false
@@ -136,7 +142,8 @@ var controller = new Vue({
                 ctrl.diffTime = ctrl.nowTime - ctrl.startTime;
 
                 position = ctrl.pausePosition + ctrl.diffTime;
-                ctrl.setNowPosition(position);
+                ctrl.$store.commit("setPosition",position);
+
                 if(ctrl.nowPosition >= ctrl.total_length){
                     ctrl.stop()
                     return
@@ -152,7 +159,7 @@ var controller = new Vue({
             this.nowTime = 0;
             this.diffTime = 0;
             this.pausePosition = 0;
-            this.setNowPosition(0);
+            this.$store.commit("setPosition",0);
         },
         pause: function(event){
             console.log("pause");
@@ -163,7 +170,7 @@ var controller = new Vue({
         seek: function(event){
             if(!this.seeking){return;}
             position = Math.floor(event.offsetX / this.seekbarWidth * this.total_length);
-            this.setNowPosition(position);
+            this.$store.commit("setPosition",position);
             this.pausePosition = this.nowPosition;
             this.startTime = Math.floor(performance.now());
         },
@@ -177,10 +184,6 @@ var controller = new Vue({
             this.seeking = false;
         },
 
-        setNowPosition: function(position){
-            this.nowPosition = position;
-            testdrum.playing_position = this.nowPosition/this.total_length*testdrum.note_width*testdrum.n_bars*4;
-            this.seekX = String(this.nowPosition/this.total_length*100) + "%";
-        }
+
     }
 });
