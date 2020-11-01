@@ -5,25 +5,55 @@ var hello = new Vue({
         message: "Hello, World!"
     }
 });
+//状態管理
+const store = new Vuex.Store({
+    state: {
+        notes:[]
+    },
+    
+    mutations: {
+        note_add(state, note) {
+            state.notes.push(note);
+        },
+        delete_note(state, param){
+            let index = -1;
+            for(let i = 0; i < state.notes.length; i++){
+                if((state.notes[i]['note'].pitch == param["click_note_pitch"]) && (state.notes[i]['note'].start_time == param["click_note_start_time"])){
+                    index = i;
+                    break;
+                }
+            }
+            //ノーツの削除
+            state.notes.splice(index, 1);
+
+
+        }
+    }
+})
 // クリックするとドラム音が鳴るボタンテスト
 // 位置座標取得もつけた
 var testdrum = new Vue({
+    store: store,
     el: "#wrapper",
-    data: {
-        note_height: 30,
-        note_width: 100,
-        n_bars: 8,  // 小節数(横幅は小節数*4拍)
+    data() {
+        return{
+            note_height: 30,
+            note_width: 100,
+            n_bars: 8,  // 小節数(横幅は小節数*4拍)
+            playing_position: 0,
 
-        playing_position: 0,
 
-        screenx:"x座標",
-        screeny:"y座標",
-        click_x:0,
-        click_y:0,
-        clickup_x:0,
-        clickup_y:0,
-        notes:[]
+            screenx:"x座標",
+            screeny:"y座標",
+            click_x:0,
+            click_y:0,
+            clickup_x:0,
+            clickup_y:0,
+
+        }
+
     },
+    
     methods:{
         test: function(event){
 
@@ -44,7 +74,10 @@ var testdrum = new Vue({
             
             this.click_x = event.offsetX;
             this.click_y = event.offsetY;
-            this.notes.push(new Note(parseInt(this.click_y/this.note_height)*this.note_height,parseInt(this.click_x/this.note_width)*this.note_width,this.note_width,document.getElementById("table_id").value,document.getElementById("who_make").value))
+            let note = new Note(parseInt(this.click_y/this.note_height)*this.note_height,parseInt(this.click_x/this.note_width)*this.note_width,this.note_width,document.getElementById("table_id").value,document.getElementById("who_make").value);
+            //this.notes.push(new Note(parseInt(this.click_y/this.note_height)*this.note_height,parseInt(this.click_x/this.note_width)*this.note_width,this.note_width,document.getElementById("table_id").value,document.getElementById("who_make").value))
+            this.$store.commit('note_add',{note:note});
+            
         },
         mouse_up:function(event){
             this.clickup_x=event.clientX;
@@ -61,15 +94,8 @@ var testdrum = new Vue({
             let click_note_pitch = parseInt(event.offsetY/this.note_height) * this.note_height;
             let click_note_start_time = parseInt(event.offsetX/this.note_width) * this.note_width;
             //クリックしたノーツの検索
-            let index = -1;
-            for(let i = 0; i < this.notes.length; i++){
-                if(this.notes[i].pitch == click_note_pitch && this.notes[i].start_time == click_note_start_time){
-                    index = i;
-                    break;
-                }
-            }
-            //ノーツの削除
-            this.notes.splice(index, 1);
+            this.$store.commit('delete_note',{click_note_pitch:click_note_pitch,click_note_start_time:click_note_start_time});
+            
 
         }
     }
