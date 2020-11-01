@@ -49,7 +49,6 @@ var testdrum = new Vue({
             click_y:0,
             clickup_x:0,
             clickup_y:0,
-            notes:this.$store.state.notes,
 
         }
 
