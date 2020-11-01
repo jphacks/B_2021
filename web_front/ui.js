@@ -41,6 +41,7 @@ var testdrum = new Vue({
             note_width: 100,
             n_bars: 8,  // 小節数(横幅は小節数*4拍)
 
+
             screenx:"x座標",
             screeny:"y座標",
             click_x:0,
@@ -50,6 +51,7 @@ var testdrum = new Vue({
             notes:this.$store.state.notes,
 
         }
+
     },
     
     methods:{
@@ -132,13 +134,12 @@ var controller = new Vue({
                 ctrl.nowTime = Math.floor(performance.now());
                 ctrl.diffTime = ctrl.nowTime - ctrl.startTime;
 
-                ctrl.nowPosition = ctrl.pausePosition + ctrl.diffTime;
+                position = ctrl.pausePosition + ctrl.diffTime;
+                ctrl.setNowPosition(position);
                 if(ctrl.nowPosition >= ctrl.total_length){
                     ctrl.stop()
                     return
                 }
-                ctrl.seekX = String(ctrl.nowPosition/ctrl.total_length*100) + "%";
-
                 ctrl.animateFrame = requestAnimationFrame(loop);
             }());
         },
@@ -149,9 +150,8 @@ var controller = new Vue({
             this.startTime = 0;
             this.nowTime = 0;
             this.diffTime = 0;
-            this.nowPosition = 0;
             this.pausePosition = 0;
-            this.seekX = 0;
+            this.setNowPosition(0);
         },
         pause: function(event){
             console.log("pause");
@@ -161,10 +161,10 @@ var controller = new Vue({
         },
         seek: function(event){
             if(!this.seeking){return;}
-            this.nowPosition = Math.floor(event.offsetX / this.seekbarWidth * this.total_length);
+            position = Math.floor(event.offsetX / this.seekbarWidth * this.total_length);
+            this.setNowPosition(position);
             this.pausePosition = this.nowPosition;
             this.startTime = Math.floor(performance.now());
-            this.seekX = String(this.nowPosition/this.total_length*100) + "%";
         },
 
         mousedown: function(event){
@@ -174,6 +174,12 @@ var controller = new Vue({
         },
         mouseup: function(event){
             this.seeking = false;
+        },
+
+        setNowPosition: function(position){
+            this.nowPosition = position;
+            testdrum.playing_position = this.nowPosition/this.total_length*testdrum.note_width*testdrum.n_bars*4;
+            this.seekX = String(this.nowPosition/this.total_length*100) + "%";
         }
     }
 });

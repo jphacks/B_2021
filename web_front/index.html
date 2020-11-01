@@ -26,6 +26,8 @@
     <line v-for="n in 7" stroke="#000000" x1="0"  stroke-width="1" :x2="n_bars*note_width*4" :y1="n*note_height" :y2="n*note_height"></line>
     <!-- 縦の線 -->
     <line v-for="n in n_bars" stroke="#000000" :x1="(n-1)*note_width*4" :x2="(n-1)*note_width*4" y1="0" :y2="note_height*8"></line> 
+    <!-- 再生位置の線 -->
+    <line stroke="#ff0000" :x1="playing_position" :x2="playing_position" y1="0" :y2="note_height*8"></line> 
   </svg>
   {{screenx+","+screeny}}
 </div>
