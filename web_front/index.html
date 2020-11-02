@@ -16,21 +16,24 @@
 <!-- 本体 -->
 
 <div id="editor">
-  <svg :viewbox="'0 0 1500 ' + note_height*lanes['sawtooth'].length" :width="$store.state.n_bars*note_width*4" :height="note_height*lanes['sawtooth'].length"  @mousemove="mouse"
+  <svg :viewbox="'0 0 1500 ' + note_height*lanes[$store.state.nowplaying].length" :width="$store.state.n_bars*note_width*4" :height="note_height*lanes[$store.state.nowplaying].length"  @mousemove="mouse"
   :style=" 'background-color: #aaaaaa; margin-left: ' +  (- margin_position+100) +'px;'">
     
   <!-- 背景 -->
     <rect x="0" y="0" width="100%" height="100%" fill="#708090" style="fill-opacity:100%" @mousedown="mouse_down" @mouseup="mouse_up" @click="test"></rect>
 
     <!-- ノーツを描画 -->
-    <rect v-for="note in $store.state.notes" :x="note['note'].start_time / 480 * note_width +3" :y="lanes['sawtooth'].indexOf(note['note'].pitch)*note_height +3" :width="note['note'].nagasa/480 * note_width -6" :height="note_height -6" fill="#7fffd4" stroke-width="3" stroke="#ffffff" @click="note_click"></rect>
+    <rect v-for="note in $store.state.notes[$store.state.nowplaying]" :x="note['note'].start_time / 480 * note_width +3" :y="lanes[$store.state.nowplaying].indexOf(note['note'].pitch)*note_height +3" :width="note['note'].nagasa/480 * note_width -6" :height="note_height -6" fill="#7fffd4" stroke-width="3" stroke="#ffffff" @click="note_click"></rect>
     
     <!-- 横の線 -->
-    <line v-for="n in lanes['sawtooth'].length" stroke="#000000" x1="0"  stroke-width="1" :x2="$store.state.n_bars*note_width*4" :y1="n*note_height" :y2="n*note_height" style="stroke-opacity: 50%;"></line>
+    <line v-for="n in lanes[$store.state.nowplaying].length" stroke="#000000" x1="0"  stroke-width="1" :x2="$store.state.n_bars*note_width*4" :y1="n*note_height" :y2="n*note_height" style="stroke-opacity: 50%;"></line>
     <!-- 縦の線 -->
-    <line v-for="n in $store.state.n_bars" stroke-width="2" stroke="#000000" :x1="(n-1)*note_width*4" :x2="(n-1)*note_width*4" y1="0" :y2="note_height*lanes['sawtooth'].length" style="stroke-opacity:40%"></line> 
+
+
+    <line v-for="n in $store.state.n_bars" stroke-width="2" stroke="#000000" :x1="(n-1)*note_width*4" :x2="(n-1)*note_width*4" y1="0" :y2="note_height*lanes[$store.state.nowplaying].length" style="stroke-opacity:40%"></line> 
+
     <!-- 再生位置の線 -->
-    <line stroke-width="2" stroke="#ff0000" :x1="margin_position" :x2="margin_position" y1="0" :y2="note_height*lanes['sawtooth'].length" style="stroke-opacity: 40%;"></line> 
+    <line stroke-width="2" stroke="#ff0000" :x1="margin_position" :x2="margin_position" y1="0" :y2="note_height*lanes[$store.state.nowplaying].length" style="stroke-opacity: 40%;"></line> 
   </svg>
   <br>
   {{screenx+","+screeny}}
@@ -44,6 +47,8 @@
     </select>
 
   <button id="start" @click="$store.commit('all_delete')">all delete</button>
+  <label><input type="radio" v-model="$store.state.nowplaying" value="sawtooth">sawtooth</label>
+  <label><input type="radio" v-model="$store.state.nowplaying" value="sine">sine</label>
 </div>
 
 <div id="test">
