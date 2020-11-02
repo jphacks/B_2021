@@ -148,6 +148,7 @@ var editor = new Vue({
 
         },
         mouse_down:function(event){
+            // クリックでノーツを追加
             this.click_x = event.offsetX;
             this.click_y = event.offsetY;
 
@@ -155,7 +156,7 @@ var editor = new Vue({
             play_tone(this.$store.state.nowplaying, this.lanes[this.$store.state.nowplaying][tonenum], 0.3); // audio.js
             
             // 時間は4分音符を480として規格化
-            var start_time = parseInt(this.click_x/this.note_width)*480;
+            var start_time = parseInt((this.click_x/this.note_width)*480 /store.state.quantize)*store.state.quantize;
             var pitch_name = this.lanes["sawtooth"][parseInt(this.click_y/this.note_height)];
             var nagasa = store.state.edit_note_length;
             let note = new Note(pitch_name,start_time,nagasa,document.getElementById("table_id").value,document.getElementById("who_make").value);
@@ -178,7 +179,8 @@ var editor = new Vue({
             let click_x = parseInt(event.target.getAttribute("x"))
             let click_y = parseInt(event.target.getAttribute("y"))            
             let click_note_pitch = this.lanes["sawtooth"][parseInt(click_y/this.note_height)];
-            let click_note_start_time = parseInt(click_x/this.note_width)*480;
+            let click_note_start_time = parseInt(480*(click_x-3)/this.note_width);  // rectのstrokeの幅のせいで -3 している　どうにかならないか？
+            console.log(click_note_start_time);
             //クリックしたノーツの検索
             this.$store.commit('delete_note',{click_note_pitch:click_note_pitch,click_note_start_time:click_note_start_time});
             
