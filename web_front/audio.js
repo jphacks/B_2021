@@ -18,8 +18,16 @@ const pitchname2freq = {
 }
 
 function play_tone(pitchname, soundLength){
+    // ゲイン
+    var gainNode = ctx.createGain();
+    gainNode.gain.value = 0.3;
+    // オシレーター
     var oscillator = ctx.createOscillator();
-    oscillator.connect(ctx.destination);
+    // オシレーター→ゲイン→出力
+    oscillator.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+
 
     oscillator.type = "sawtooth";
     oscillator.frequency.value = pitchname2freq[pitchname];

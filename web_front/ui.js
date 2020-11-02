@@ -22,15 +22,18 @@ const store = new Vuex.Store({
             state.notes.push(note);
         },
         delete_note(state, param){
-            let index = -1;
-            for(let i = 0; i < state.notes.length; i++){
-                if((state.notes[i]['note'].pitch == param["click_note_pitch"]) && (state.notes[i]['note'].start_time == param["click_note_start_time"])){
-                    index = i;
+            for(let i in state.notes){
+                let note = state.notes[i]['note'];
+                if((note.pitch == param["click_note_pitch"]) && (note.start_time == param["click_note_start_time"])){
+                    console.log(i);
+                    console.log(note.pitch);
+                    console.log(param["click_note_pitch"]);
+                    //ノーツの削除
+                    state.notes.splice(i, 1);
                     break;
                 }
             }
-            //ノーツの削除
-            state.notes.splice(index, 1);
+
         },
 
         // 再生位置をセット
@@ -45,7 +48,6 @@ const store = new Vuex.Store({
                     var start_time = state.notes[i]["note"]["start_time"];
                     var pitch_name = state.notes[i]["note"]["pitch"];
                     if(prev_position<=start_time && start_time<=new_position){
-                        console.log("a");
                         play_tone(pitch_name,0.3);
                     }
                 }
@@ -153,8 +155,9 @@ var testdrum = new Vue({
         },
 
         note_click: function(event){
-            let click_note_pitch = parseInt(event.offsetY/this.note_height) * this.note_height;
-            let click_note_start_time = parseInt(event.offsetX/this.note_width) * this.note_width;
+            console.log(this.click_y);
+            let click_note_pitch = this.lanes[parseInt(event.offsetY/this.note_height)];;
+            let click_note_start_time = parseInt(event.offsetX/this.note_width)*480;
             //クリックしたノーツの検索
             this.$store.commit('delete_note',{click_note_pitch:click_note_pitch,click_note_start_time:click_note_start_time});
             
@@ -174,7 +177,6 @@ var controller = new Vue({
         startTime: 0,
         nowTime: 0,
         diffTime: 0,
-        // 再生位置
         pausePosition: 0,
 
         // シークバー
