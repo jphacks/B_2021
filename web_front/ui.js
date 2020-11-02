@@ -8,7 +8,8 @@ var hello = new Vue({
 //状態管理
 const store = new Vuex.Store({
     state: {
-        notes:[],
+        notes:{"sawtooth":[],"sine":[]},
+        nowplaying:"sine",
 
         bpm: 120,   // bpm
         n_bars: 8,   // 小節数
@@ -21,20 +22,22 @@ const store = new Vuex.Store({
     
     mutations: {
         note_add(state, note) {
-            state.notes.push(note);
+            state.notes[state.nowplaying].push(note);
         },
         all_delete(state){
-            state.notes = [];
+            for(let key in state.notes){
+                state.notes[key] = [];
+            }
         },
         delete_note(state, param){
-            for(let i in state.notes){
-                let note = state.notes[i]['note'];
+            for(let i in state.notes[state.nowplaying]){
+                let note = state.notes[state.nowplaying][i]['note'];
                 if((note.pitch == param["click_note_pitch"]) && (note.start_time == param["click_note_start_time"])){
                     console.log(i);
                     console.log(note.pitch);
                     console.log(param["click_note_pitch"]);
                     //ノーツの削除
-                    state.notes.splice(i, 1);
+                    state.notes[state.nowplaying].splice(i, 1);
                     break;
                 }
             }
@@ -48,13 +51,15 @@ const store = new Vuex.Store({
             // 再生中なら音を鳴らす
             // とりあえずnotes[]全探索で実装しました
             if(state.isPlaying){
-                for(var i in state.notes){
-                    var note = state.notes[i]["note"];
-                    var start_time = note["start_time"];
-                    var pitch_name = note["pitch"];
-                    var note_length_sec = 60/state.bpm * note["nagasa"]/480;
-                    if(prev_position<=start_time && start_time<=new_position){
-                        play_tone("sawtooth",pitch_name,note_length_sec);
+                for(let key in state.notes){
+                    for(var i in state.notes[key]){
+                        var note = state.notes[key][i]["note"];
+                        var start_time = note["start_time"];
+                        var pitch_name = note["pitch"];
+                        var note_length_sec = 60/state.bpm * note["nagasa"]/480;
+                        if(prev_position<=start_time && start_time<=new_position){
+                            play_tone(key,pitch_name,note_length_sec);
+                        }
                     }
                 }
             }
@@ -94,7 +99,7 @@ var editor = new Vue({
             clickup_y:0,
             intervalId:null,
 
-            lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"]},
+            lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"]},
     },
     mounted(){
     //     this.intervalId = setInterval(await postRequest, 1000);
@@ -146,7 +151,7 @@ var editor = new Vue({
             this.click_y = event.offsetY;
 
             var tonenum = parseInt(this.click_y/this.note_height);
-            play_tone("sawtooth", this.lanes["sawtooth"][tonenum], 0.3); // audio.js
+            play_tone(this.$store.state.nowplaying, this.lanes[this.$store.state.nowplaying][tonenum], 0.3); // audio.js
             
             // 時間は4分音符を480として規格化
             var start_time = parseInt(this.click_x/this.note_width)*480;
