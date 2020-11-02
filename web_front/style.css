@@ -1,3 +1,13 @@
+body{
+    width:100%;
+    margin-left:0;
+    margin-top:0;
+}
+#wrapper{
+    background-color: #000000;
+    width: 100%;
+}
+
 #controller{
     background-color: #808080;
     padding-top: 10px;
@@ -7,5 +17,24 @@
 
 #editor{
     overflow:hidden;
-    width:1600px;
+    width:100%;
+    background-color: #8090a0;
+}
+
+
+#input_options{
+    background-color: #a0a0d0;
+    width: 100% -20px;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#input_id{
+    width: 100% -20px;
+    background-color:#a0a0ff;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+
 }

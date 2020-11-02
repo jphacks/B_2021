@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <link rel="stylesheet" href="./style.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>no title</title>
+  <title>Joint Sound</title>
   <script src="./vue.js"></script>
   <script src="./vuex.js"></script>
   <scriot src="./axios.js"></scriot>
@@ -12,9 +12,49 @@
   <script src="./ui.js" defer></script>
   <script src="./notes.js" defer></script>
 </head>
-<body>
-<!-- 本体 -->
+<body><div id="wrapper">
 
+<!-- コントローラ -->
+<div id="controller">
+  <img src="img/play.png" height="50px" width="50px" @click="play" v-if="!$store.state.isPlaying">
+  <img src="img/pause.png" height="50px" width="50px" @click="pause" v-if="$store.state.isPlaying">
+  <img src="img/stop.png" height="50px" width="50px" @click="stop">
+  <br>
+  <!-- シークバー -->
+  <svg viewbox="0 0 900 20" :width="seekbarWidth" height="20" style="background-color: #ffffff;" @mousedown="mousedown" @mouseup="mouseup" @mousemove="seek" id="seekbar">
+    <rect :x="seekX" y="0" width="10" height="20" fill="#ff0000"></rect>
+  </svg>
+  <br>
+  {{ parseInt($store.state.position) }} /  {{ $store.state.total_length }}
+</div>
+
+<div id="input_options">
+  小節数:<input id="shosetu" type="number" :value="$store.state.n_bars" @input="shosetu_henshu">
+  BPM:<input id="bpm" type="number" :value="$store.state.bpm" @input="bpm_henshu">
+  <br>
+  音符の長さ:<select id="edit_note_length" type="number" v-model.number="$store.state.edit_note_length">
+      <option value="1920">全音符</option>
+      <option value="960">2分音符</option>
+      <option value="480">4分音符</option>
+      <option value="240">8分音符</option>
+    </select>
+
+  <label><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" value="sawtooth">sawtooth</label>
+  <label><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" value="sine">sine</label>
+
+  <br>
+  <button id="start" @click="$store.commit('all_delete')">all delete</button>
+</div>
+
+
+<div id="input_id">
+  tableID:<input id="table_id" type="text" >
+  name:<input id="who_make" type="text">
+</div>
+
+
+
+<!-- エディタ -->
 <div id="editor">
   <svg :viewbox="'0 0 1500 ' + note_height*lanes[$store.state.nowplaying].length" :width="$store.state.n_bars*note_width*4" :height="note_height*lanes[$store.state.nowplaying].length"  @mousemove="mouse"
   :style=" 'background-color: #aaaaaa; margin-left: ' +  (- margin_position+100) +'px;'">
@@ -33,48 +73,9 @@
     <!-- 再生位置の線 -->
     <line stroke-width="2" stroke="#ff0000" :x1="margin_position" :x2="margin_position" y1="0" :y2="note_height*lanes[$store.state.nowplaying].length" style="stroke-opacity: 40%;"></line> 
   </svg>
-  <br>
-  {{screenx+","+screeny}}
-  小節数:<input id="shosetu" type="number" :value="$store.state.n_bars" @input="shosetu_henshu">
-  BPM:<input id="bpm" type="number" :value="$store.state.bpm" @input="bpm_henshu">
-  <br>
-  長さ:<select id="edit_note_length" type="number" v-model.number="$store.state.edit_note_length">
-      <option value="1920">全音符</option>
-      <option value="960">2分音符</option>
-      <option value="480">4分音符</option>
-      <option value="240">8分音符</option>
-    </select>
-
-  <button id="start" @click="$store.commit('all_delete')">all delete</button>
-  <label><input type="radio" v-model="$store.state.nowplaying" value="sawtooth">sawtooth</label>
-  <label><input type="radio" v-model="$store.state.nowplaying" value="sine">sine</label>
-</div>
-
-<div id="test">
-  {{ message }}
-</div>
-<div id="input_id">
-  tableID:<input id="table_id" type="text" >
-  name:<input id="who_make" type="text">
-</div>
-<div id="kenban">
-
 </div>
 
 
-<!-- コントローラ -->
-<div id="controller">
-    <img src="img/play.png" height="50px" width="50px" @click="play" v-if="!$store.state.isPlaying">
-    <img src="img/pause.png" height="50px" width="50px" @click="pause" v-if="$store.state.isPlaying">
-    <img src="img/stop.png" height="50px" width="50px" @click="stop">
-    <br>
-    <!-- シークバー -->
-    <svg viewbox="0 0 900 20" :width="seekbarWidth" height="20" style="background-color: #ffffff;" @mousedown="mousedown" @mouseup="mouseup" @mousemove="seek" id="seekbar">
-      <rect :x="seekX" y="0" width="10" height="20" fill="#ff0000"></rect>
-    </svg>
-    <br>
-    {{ $store.state.position }} /  {{ $store.state.total_length }}
-</div>
 
-</body>
+</div></body>
 </html>
