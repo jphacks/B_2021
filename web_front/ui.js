@@ -44,11 +44,13 @@ const store = new Vuex.Store({
             // とりあえずnotes[]全探索で実装しました
             if(state.isPlaying){
                 for(var i in state.notes){
+                    var note = state.notes[i]["note"];
                     // bpmに対応させて時間をミリ秒単位に変換
-                    var start_time_ms = 60000/state.bpm * state.notes[i]["note"]["start_time"] /480;
-                    var pitch_name = state.notes[i]["note"]["pitch"];
+                    var start_time_ms = 60000/state.bpm * note["start_time"] /480;
+                    var pitch_name = note["pitch"];
+                    var note_length_sec = 60/state.bpm * note["nagasa"]/480;
                     if(prev_position<=start_time_ms && start_time_ms<=new_position){
-                        play_tone(pitch_name,0.3);
+                        play_tone(pitch_name,note_length_sec);
                     }
                 }
             }
@@ -138,7 +140,8 @@ var testdrum = new Vue({
             // 時間は4分音符を480として規格化
             var start_time = parseInt(this.click_x/this.note_width)*480;
             var pitch_name = this.lanes[parseInt(this.click_y/this.note_height)];
-            let note = new Note(pitch_name,start_time,this.note_width,document.getElementById("table_id").value,document.getElementById("who_make").value);
+            var nagasa = 480;
+            let note = new Note(pitch_name,start_time,nagasa,document.getElementById("table_id").value,document.getElementById("who_make").value);
             //this.notes.push(new Note(parseInt(this.click_y/this.note_height)*this.note_height,parseInt(this.click_x/this.note_width)*this.note_width,this.note_width,document.getElementById("table_id").value,document.getElementById("who_make").value))
             this.$store.commit('note_add',{note:note});
             
