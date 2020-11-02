@@ -12,6 +12,7 @@ const store = new Vuex.Store({
 
         bpm: 120,   // bpm
         n_bars: 8,   // 小節数
+        edit_unit: 480, // 編集単位 初期設定は４分音符(480)
 
         position: 0,    // 再生位置
         isPlaying: false,
@@ -53,14 +54,14 @@ const store = new Vuex.Store({
                     var pitch_name = note["pitch"];
                     var note_length_sec = 60/state.bpm * note["nagasa"]/480;
                     if(prev_position<=start_time && start_time<=new_position){
-                        play_tone(pitch_name,note_length_sec);
+                        play_tone("sawtooth",pitch_name,note_length_sec);
                     }
                 }
             }
 
             // 状態の更新
             state.position = new_position;
-            testdrum.margin_position = state.position/state.total_length*testdrum.note_width*state.n_bars*4;
+            editor.margin_position = state.position/state.total_length*editor.note_width*state.n_bars*4;
             controller.seekX = String(state.position/state.total_length*100) + "%";
         },
 
@@ -78,9 +79,9 @@ const store = new Vuex.Store({
 })
 // クリックするとドラム音が鳴るボタンテスト
 // 位置座標取得もつけた
-var testdrum = new Vue({
+var editor = new Vue({
     store: store,
-    el: "#sawtooth",
+    el: "#editor",
     data :{
             note_height: 30,
             note_width: 100,
@@ -93,7 +94,7 @@ var testdrum = new Vue({
             clickup_y:0,
             intervalId:null,
 
-            lanes : ["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
+            lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"]},
     },
     mounted(){
     //     this.intervalId = setInterval(await postRequest, 1000);
@@ -145,11 +146,11 @@ var testdrum = new Vue({
             this.click_y = event.offsetY;
 
             var tonenum = parseInt(this.click_y/this.note_height);
-            play_tone(this.lanes[tonenum], 0.3); // audio.js
+            play_tone("sawtooth", this.lanes["sawtooth"][tonenum], 0.3); // audio.js
             
             // 時間は4分音符を480として規格化
             var start_time = parseInt(this.click_x/this.note_width)*480;
-            var pitch_name = this.lanes[parseInt(this.click_y/this.note_height)];
+            var pitch_name = this.lanes["sawtooth"][parseInt(this.click_y/this.note_height)];
             var nagasa = 480;
             let note = new Note(pitch_name,start_time,nagasa,document.getElementById("table_id").value,document.getElementById("who_make").value);
             //this.notes.push(new Note(parseInt(this.click_y/this.note_height)*this.note_height,parseInt(this.click_x/this.note_width)*this.note_width,this.note_width,document.getElementById("table_id").value,document.getElementById("who_make").value))
@@ -169,7 +170,7 @@ var testdrum = new Vue({
 
         note_click: function(event){
             console.log(this.click_y);
-            let click_note_pitch = this.lanes[parseInt(event.offsetY/this.note_height)];;
+            let click_note_pitch = this.lanes["sawtooth"][parseInt(event.offsetY/this.note_height)];;
             let click_note_start_time = parseInt(event.offsetX/this.note_width)*480;
             //クリックしたノーツの検索
             this.$store.commit('delete_note',{click_note_pitch:click_note_pitch,click_note_start_time:click_note_start_time});

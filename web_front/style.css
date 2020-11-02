@@ -5,7 +5,7 @@
     text-align: center;
 }
 
-.editor{
+#editor{
     overflow:hidden;
     width:1600px;
 }

@@ -17,7 +17,7 @@ const pitchname2freq = {
     "C4": 261.626
 }
 
-function play_tone(pitchname, soundLength){
+function play_tone(sound_type, pitchname, soundLength){
     // ゲイン
     var gainNode = ctx.createGain();
     gainNode.gain.value = 0.3;
@@ -27,9 +27,7 @@ function play_tone(pitchname, soundLength){
     oscillator.connect(gainNode);
     gainNode.connect(ctx.destination);
 
-
-
-    oscillator.type = "sawtooth";
+    oscillator.type = sound_type;
     oscillator.frequency.value = pitchname2freq[pitchname];
 
     oscillator.start(ctx.currentTime);
