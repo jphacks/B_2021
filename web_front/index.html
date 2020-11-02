@@ -15,7 +15,7 @@
 <body>
 <!-- 本体 -->
 
-<div id="wrapper" style="overflow:hidden; width:1200px;">
+<div id="wrapper" style="overflow:hidden; width:1600px;">
   <svg :viewbox="'0 0 1500 ' + note_height*lanes.length" :width="$store.state.n_bars*note_width*4" :height="note_height*lanes.length"  @mousemove="mouse"
   :style=" 'background-color: #aaaaaa; margin-left: ' +  (- playing_position+100) +'px;'">
     <!-- 背景 -->
@@ -27,12 +27,14 @@
     <!-- 横の線 -->
     <line v-for="n in lanes.length" stroke="#000000" x1="0"  stroke-width="1" :x2="$store.state.n_bars*note_width*4" :y1="n*note_height" :y2="n*note_height"></line>
     <!-- 縦の線 -->
-    <line v-for="n in $store.state.n_bars" stroke="#000000" :x1="(n-1)*note_width*4" :x2="(n-1)*note_width*4" y1="0" :y2="note_height*lanes.length"></line> 
+    <line v-for="n in parseInt($store.state.n_bars)" stroke="#000000" :x1="(n-1)*note_width*4" :x2="(n-1)*note_width*4" y1="0" :y2="note_height*lanes.length"></line> 
     <!-- 再生位置の線 -->
     <line stroke="#ff0000" :x1="playing_position" :x2="playing_position" y1="0" :y2="note_height*lanes.length"></line> 
   </svg>
   <br>
   {{screenx+","+screeny}}
+  小節数:<input id="shosetu" type="number" :value="$store.state.n_bars" @input="shosetu_henshu">
+  BPM:<input id="bpm" type="number" :value="$store.state.bpm" @input="bpm_henshu">
 </div>
 
 <div id="test">
@@ -59,7 +61,7 @@
       <rect :x="seekX" y="0" width="10" height="20" fill="#ff0000"></rect>
     </svg>
     <br>
-    {{ $store.state.position }} /  {{ total_length }}
+    {{ $store.state.position }} /  {{ $store.state.total_length }}
 </div>
 
 </body>
