@@ -69,7 +69,7 @@ const store = new Vuex.Store({
         },
         set_bpm(state, value){
             state.bpm = value;
-            state.tocal_length = 60000/state.bpm*4*state.n_bars;
+            state.total_length = 60000/state.bpm*4*state.n_bars;
         },
     }
 })
