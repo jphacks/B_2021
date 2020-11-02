@@ -17,15 +17,14 @@ const pitchname2freq = {
     "C4": 261.626
 }
 
-function play_tone(pitchname){
+function play_tone(pitchname, soundLength){
     var oscillator = ctx.createOscillator();
     oscillator.connect(ctx.destination);
 
     oscillator.type = "sawtooth";
     oscillator.frequency.value = pitchname2freq[pitchname];
 
-    var soundLength = 0.3;
-    oscillator.start();
+    oscillator.start(ctx.currentTime);
     oscillator.stop(ctx.currentTime + soundLength);
 }
 
