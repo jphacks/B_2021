@@ -2,9 +2,10 @@
     background-color: #808080;
     padding-top: 10px;
     padding-bottom: 10px;
-}
-
-#controller{
     text-align: center;
 }
 
+.editor{
+    overflow:hidden;
+    width:1600px;
+}
