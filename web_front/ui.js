@@ -9,9 +9,12 @@ var hello = new Vue({
 const store = new Vuex.Store({
     state: {
         notes:[],
-        position: 0,    // 再生位置
+
         bpm: 120,   // bpm
-        n_bars: 8   // 小節数
+        n_bars: 8,   // 小節数
+
+        position: 0,    // 再生位置
+        isPlaying: false
     },
     
     mutations: {
@@ -31,10 +34,31 @@ const store = new Vuex.Store({
         },
 
         // 再生位置をセット
-        setPosition(state, position){
-            state.position = position;
+        setPosition(state, new_position){
+            var prev_position = state.position;
+            var new_position = new_position;
+
+            // 再生中なら音を鳴らす
+            // とりあえずnotes[]全探索で実装しました
+            if(state.isPlaying){
+                for(var i in state.notes){
+                    var start_time = state.notes[i]["note"]["start_time"];
+                    var pitch_name = state.notes[i]["note"]["pitch"];
+                    if(prev_position<=start_time && start_time<=new_position){
+                        console.log("a");
+                        play_tone(pitch_name,0.3);
+                    }
+                }
+            }
+
+            // 状態の更新
+            state.position = new_position;
             testdrum.playing_position = state.position/controller.total_length*testdrum.note_width*state.n_bars*4;
             controller.seekX = String(state.position/controller.total_length*100) + "%";
+        },
+
+        setPlaying(state, isPlaying){
+            state.isPlaying = isPlaying;
         }
     }
 })
@@ -76,9 +100,12 @@ var testdrum = new Vue({
             this.click_y = event.offsetY;
 
             var tonenum = parseInt(this.click_y/this.note_height);
-            play_tone(this.lanes[tonenum]); // audio.js
+            play_tone(this.lanes[tonenum], 0.3); // audio.js
             
-            let note = new Note(parseInt(this.click_y/this.note_height)*this.note_height,parseInt(this.click_x/this.note_width)*this.note_width,this.note_width,document.getElementById("table_id").value,document.getElementById("who_make").value);
+            // 時間は4分音符を480として規格化
+            var start_time = parseInt(this.click_x/this.note_width)*480;
+            var pitch_name = this.lanes[parseInt(this.click_y/this.note_height)];
+            let note = new Note(pitch_name,start_time,this.note_width,document.getElementById("table_id").value,document.getElementById("who_make").value);
             //this.notes.push(new Note(parseInt(this.click_y/this.note_height)*this.note_height,parseInt(this.click_x/this.note_width)*this.note_width,this.note_width,document.getElementById("table_id").value,document.getElementById("who_make").value))
             this.$store.commit('note_add',{note:note});
             
@@ -119,8 +146,6 @@ var controller = new Vue({
         // 再生位置
         pausePosition: 0,
 
-        isPlaying: false,
-
         // シークバー
         total_length: 60000/store.state.bpm*4*store.state.n_bars,   // 全体の長さ(ms)
         seekX: 0,                // シークバーの位置
@@ -130,7 +155,7 @@ var controller = new Vue({
     methods:{
         play: function(event){
             console.log("play");
-            this.isPlaying = true;
+            this.$store.commit("setPlaying" , true);
             // ミリ秒単位で時刻を取得
             this.startTime = Math.floor(performance.now());
             // ループ処理
@@ -148,14 +173,13 @@ var controller = new Vue({
                     return
                 }
 
-
                 ctrl.animateFrame = requestAnimationFrame(loop);
             }());
         },
         stop: function(event){
             console.log("stop");
             cancelAnimationFrame(this.animateFrame);
-            this.isPlaying = false;
+            this.$store.commit("setPlaying" , false);
             this.startTime = 0;
             this.nowTime = 0;
             this.diffTime = 0;
@@ -165,7 +189,7 @@ var controller = new Vue({
         pause: function(event){
             console.log("pause");
             cancelAnimationFrame(this.animateFrame);
-            this.isPlaying = false;
+            this.$store.commit("setPlaying" , false);
             this.pausePosition = store.state.position;
         },
         seek: function(event){
