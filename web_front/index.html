@@ -26,6 +26,8 @@
   </svg>
   <br>
   {{ parseInt($store.state.position) }} /  {{ $store.state.total_length }}
+  <br>
+  {{ (parseInt(60000/$store.state.bpm * $store.state.position/480) /1000).toFixed(3) }} / {{ (parseInt(60000/$store.state.bpm * $store.state.n_bars * 4)  /1000).toFixed(3)}}
 </div>
 
 <div id="input_options">

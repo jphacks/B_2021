@@ -9,7 +9,7 @@ body{
 }
 
 #controller{
-    background-color: #808080;
+    background: linear-gradient(90deg, #606060 0%, #808080 10%, #808080 90%, #606060 100%);
     padding-top: 10px;
     padding-bottom: 10px;
     text-align: center;
