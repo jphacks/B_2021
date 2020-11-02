@@ -34,7 +34,6 @@ const store = new Vuex.Store({
                     break;
                 }
             }
-
         },
 
         // 再生位置をセット
@@ -46,9 +45,10 @@ const store = new Vuex.Store({
             // とりあえずnotes[]全探索で実装しました
             if(state.isPlaying){
                 for(var i in state.notes){
-                    var start_time = state.notes[i]["note"]["start_time"];
+                    // bpmに対応させて時間をミリ秒単位に変換
+                    var start_time_ms = 60000/state.bpm * state.notes[i]["note"]["start_time"] /480;
                     var pitch_name = state.notes[i]["note"]["pitch"];
-                    if(prev_position<=start_time && start_time<=new_position){
+                    if(prev_position<=start_time_ms && start_time_ms<=new_position){
                         play_tone(pitch_name,0.3);
                     }
                 }
