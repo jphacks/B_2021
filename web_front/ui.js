@@ -121,8 +121,8 @@ var testdrum = new Vue({
         },
 
         note_click: function(event){
-            let click_note_pitch = parseInt(event.offsetY/this.note_height) * this.note_height;
-            let click_note_start_time = parseInt(event.offsetX/this.note_width) * this.note_width;
+            let click_note_pitch = this.lanes[parseInt(this.click_y/this.note_height)];;
+            let click_note_start_time = parseInt(this.click_x/this.note_width)*480;
             //クリックしたノーツの検索
             this.$store.commit('delete_note',{click_note_pitch:click_note_pitch,click_note_start_time:click_note_start_time});
             
@@ -142,7 +142,6 @@ var controller = new Vue({
         startTime: 0,
         nowTime: 0,
         diffTime: 0,
-        // 再生位置
         pausePosition: 0,
 
         // シークバー
