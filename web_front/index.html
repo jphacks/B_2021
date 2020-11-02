@@ -38,6 +38,7 @@
   {{screenx+","+screeny}}
   小節数:<input id="shosetu" type="number" :value="$store.state.n_bars" @input="shosetu_henshu">
   BPM:<input id="bpm" type="number" :value="$store.state.bpm" @input="bpm_henshu">
+  <button id="start" @click="$store.commit('all_delete')">all delete</button>
 </div>
 
 <div id="test">
@@ -46,7 +47,6 @@
 <div id="input_id">
   tableID:<input id="table_id" type="text" >
   name:<input id="who_make" type="text">
-  <input id="start" type="button" value="start!">
 </div>
 <div id="kenban">
 

@@ -22,6 +22,9 @@ const store = new Vuex.Store({
         note_add(state, note) {
             state.notes.push(note);
         },
+        all_delete(state){
+            state.notes = [];
+        },
         delete_note(state, param){
             for(let i in state.notes){
                 let note = state.notes[i]['note'];
