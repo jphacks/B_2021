@@ -67,8 +67,7 @@ const store = new Vuex.Store({
 var testdrum = new Vue({
     store: store,
     el: "#wrapper",
-    data() {
-        return{
+    data :{
             note_height: 30,
             note_width: 100,
             playing_position: 0,
@@ -78,11 +77,43 @@ var testdrum = new Vue({
             click_y:0,
             clickup_x:0,
             clickup_y:0,
+            intervalId:null,
 
             lanes : ["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
-        }
-
     },
+    // mounted(){
+    //     this.intervalId = setInterval(await postRequest, 1000);
+    //     async function postRequest(){
+    //         let params = new FormData()
+    //         params.append('value', this.$store.state.notes)
+    //         const response = await axios.post("url",params).then(res=>{
+    //             //仮の処理
+    //             let return_notes = res.value;
+    //             let add_index_list = [];
+    //             for(let i = 0;i < return_notes.size; i++){
+    //                 for(let j = 0; j < this.$store.state.notes.size; j++){
+    //                     if((return_notes[i]['note']['start_time']==this.$store.state.notes[j]['note']['start_time'])&&(return_notes[i]['note']['pitch']==this.$store.state.notes[j]['note']['pitch'])){
+    //                         break;
+    //                     }
+                        
+    //                 }
+    //                 this.$store.commit('note_add',return_notes[i]['note']);
+    //             }
+    //             for(let i = 0;i < this.$store.state.notes.size; i++){
+    //                 for(let j = 0; j < return_notes.size; j++){
+    //                     if((return_notes[j]['note']['start_time']==this.$store.state.notes[i]['note']['start_time'])&&(return_notes[j]['note']['pitch']==this.$store.state.notes[i]['note']['pitch'])){
+    //                         break;
+    //                     }
+                        
+    //                 }
+    //                 this.$store.commit('delete_note',{click_note_pitch:this.$store.state.notes[i]['note']['pitch'],click_note_start_time:this.$store.state.notes[i]['note']['start_time']});
+    //             }
+
+
+    //         })
+    //     }
+        
+    // },
     
     methods:{
         test: function(event){
