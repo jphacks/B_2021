@@ -173,10 +173,10 @@ var testdrum = new Vue({
 
         },
         shosetu_henshu: function(event){
-            this.$store.commit('set_n_bars',document.getElementById("shosetu").value);
+            this.$store.commit('set_n_bars',parseInt(document.getElementById("shosetu").value));
         },
         bpm_henshu : function(event){
-            this.$store.commit('set_bpm',document.getElementById('bpm').value)
+            this.$store.commit('set_bpm',parseInt(document.getElementById('bpm').value));
         }
     }
 });
