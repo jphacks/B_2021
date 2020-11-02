@@ -15,7 +15,7 @@ const store = new Vuex.Store({
 
         position: 0,    // 再生位置
         isPlaying: false,
-        total_length: 60000/120*4*8,   // 全体の長さ(ms)
+        total_length: 480*4*8,   // 全体の長さ(ms)
     },
     
     mutations: {
@@ -49,11 +49,10 @@ const store = new Vuex.Store({
             if(state.isPlaying){
                 for(var i in state.notes){
                     var note = state.notes[i]["note"];
-                    // bpmに対応させて時間をミリ秒単位に変換
-                    var start_time_ms = 60000/state.bpm * note["start_time"] /480;
+                    var start_time = note["start_time"];
                     var pitch_name = note["pitch"];
                     var note_length_sec = 60/state.bpm * note["nagasa"]/480;
-                    if(prev_position<=start_time_ms && start_time_ms<=new_position){
+                    if(prev_position<=start_time && start_time<=new_position){
                         play_tone(pitch_name,note_length_sec);
                     }
                 }
@@ -61,7 +60,7 @@ const store = new Vuex.Store({
 
             // 状態の更新
             state.position = new_position;
-            testdrum.playing_position = state.position/state.total_length*testdrum.note_width*state.n_bars*4;
+            testdrum.margin_position = state.position/state.total_length*testdrum.note_width*state.n_bars*4;
             controller.seekX = String(state.position/state.total_length*100) + "%";
         },
 
@@ -70,11 +69,10 @@ const store = new Vuex.Store({
         },
         set_n_bars(state, value){
             state.n_bars = value;
-            state.total_length = 60000/state.bpm*4*state.n_bars;
+            state.total_length = 480*4*state.n_bars;
         },
         set_bpm(state, value){
             state.bpm = value;
-            state.total_length = 60000/state.bpm*4*state.n_bars;
         },
     }
 })
@@ -82,11 +80,11 @@ const store = new Vuex.Store({
 // 位置座標取得もつけた
 var testdrum = new Vue({
     store: store,
-    el: "#wrapper",
+    el: "#sawtooth",
     data :{
             note_height: 30,
             note_width: 100,
-            playing_position: 0,
+            margin_position: 0,
             screenx:"x座標",
             screeny:"y座標",
             click_x:0,
@@ -218,7 +216,7 @@ var controller = new Vue({
                 ctrl.nowTime = Math.floor(performance.now());
                 ctrl.diffTime = ctrl.nowTime - ctrl.startTime;
 
-                position = ctrl.pausePosition + ctrl.diffTime;
+                position = ctrl.pausePosition + (ctrl.diffTime * ctrl.$store.state.bpm / 60000 * 480);
                 ctrl.$store.commit("setPosition",position);
 
                 if(store.state.position >= ctrl.$store.state.total_length){

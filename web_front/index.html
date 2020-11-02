@@ -15,9 +15,9 @@
 <body>
 <!-- 本体 -->
 
-<div id="wrapper" style="overflow:hidden; width:1600px;">
+<div id="sawtooth" class="editor">
   <svg :viewbox="'0 0 1500 ' + note_height*lanes.length" :width="$store.state.n_bars*note_width*4" :height="note_height*lanes.length"  @mousemove="mouse"
-  :style=" 'background-color: #aaaaaa; margin-left: ' +  (- playing_position+100) +'px;'">
+  :style=" 'background-color: #aaaaaa; margin-left: ' +  (- margin_position+100) +'px;'">
     
   <!-- 背景 -->
     <rect x="0" y="0" width="100%" height="100%" fill="#708090" style="fill-opacity:100%" @mousedown="mouse_down" @mouseup="mouse_up" @click="test"></rect>
@@ -32,7 +32,7 @@
     <line v-for="n in $store.state.n_bars" stroke-width="2" stroke="#000000" :x1="(n-1)*note_width*4" :x2="(n-1)*note_width*4" y1="0" :y2="note_height*lanes.length" style="stroke-opacity:40%"></line> 
 
     <!-- 再生位置の線 -->
-    <line stroke-width="2" stroke="#ff0000" :x1="playing_position" :x2="playing_position" y1="0" :y2="note_height*lanes.length" style="stroke-opacity: 40%;"></line> 
+    <line stroke-width="2" stroke="#ff0000" :x1="margin_position" :x2="margin_position" y1="0" :y2="note_height*lanes.length" style="stroke-opacity: 40%;"></line> 
   </svg>
   <br>
   {{screenx+","+screeny}}
