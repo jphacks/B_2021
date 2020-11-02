@@ -1,10 +1,3 @@
-console.log("Hello, World!");
-var hello = new Vue({
-    el: "#test",
-    data:{
-        message: "Hello, World!"
-    }
-});
 //状態管理
 const store = new Vuex.Store({
     state: {
@@ -185,12 +178,6 @@ var editor = new Vue({
             this.$store.commit('delete_note',{click_note_pitch:click_note_pitch,click_note_start_time:click_note_start_time});
             
 
-        },
-        shosetu_henshu: function(event){
-            this.$store.commit('set_n_bars',parseInt(document.getElementById("shosetu").value));
-        },
-        bpm_henshu : function(event){
-            this.$store.commit('set_bpm',parseInt(document.getElementById('bpm').value));
         }
     }
 });
@@ -271,5 +258,20 @@ var controller = new Vue({
         },
 
 
+    }
+});
+
+var input_options = new Vue({
+    store: store,
+    el: "#input_options",
+    data:{
+    },
+    methods:{
+        shosetu_henshu: function(event){
+            this.$store.commit('set_n_bars',parseInt(document.getElementById("shosetu").value));
+        },
+        bpm_henshu : function(event){
+            this.$store.commit('set_bpm',parseInt(document.getElementById('bpm').value));
+        }
     }
 });
