@@ -45,7 +45,6 @@ const store = new Vuex.Store({
                     var start_time = state.notes[i]["note"]["start_time"];
                     var pitch_name = state.notes[i]["note"]["pitch"];
                     if(prev_position<=start_time && start_time<=new_position){
-                        console.log("a");
                         play_tone(pitch_name,0.3);
                     }
                 }
