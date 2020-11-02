@@ -33,7 +33,6 @@ const store = new Vuex.Store({
                     break;
                 }
             }
-
         },
 
         // 再生位置をセット
