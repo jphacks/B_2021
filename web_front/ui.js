@@ -14,12 +14,16 @@ const store = new Vuex.Store({
         n_bars: 8,   // 小節数
 
         position: 0,    // 再生位置
-        isPlaying: false
+        isPlaying: false,
+        total_length: 60000/120*4*8,   // 全体の長さ(ms)
     },
     
     mutations: {
         note_add(state, note) {
             state.notes.push(note);
+        },
+        all_delete(state){
+            state.notes = [];
         },
         delete_note(state, param){
             for(let i in state.notes){
@@ -57,13 +61,21 @@ const store = new Vuex.Store({
 
             // 状態の更新
             state.position = new_position;
-            testdrum.playing_position = state.position/controller.total_length*testdrum.note_width*state.n_bars*4;
-            controller.seekX = String(state.position/controller.total_length*100) + "%";
+            testdrum.playing_position = state.position/state.total_length*testdrum.note_width*state.n_bars*4;
+            controller.seekX = String(state.position/state.total_length*100) + "%";
         },
 
         setPlaying(state, isPlaying){
             state.isPlaying = isPlaying;
-        }
+        },
+        set_n_bars(state, value){
+            state.n_bars = value;
+            state.total_length = 60000/state.bpm*4*state.n_bars;
+        },
+        set_bpm(state, value){
+            state.bpm = value;
+            state.total_length = 60000/state.bpm*4*state.n_bars;
+        },
     }
 })
 // クリックするとドラム音が鳴るボタンテスト
@@ -85,7 +97,7 @@ var testdrum = new Vue({
 
             lanes : ["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
     },
-    // mounted(){
+    mounted(){
     //     this.intervalId = setInterval(await postRequest, 1000);
     //     async function postRequest(){
     //         let params = new FormData()
@@ -117,7 +129,7 @@ var testdrum = new Vue({
     //         })
     //     }
         
-    // },
+    },
     
     methods:{
         test: function(event){
@@ -165,6 +177,12 @@ var testdrum = new Vue({
             this.$store.commit('delete_note',{click_note_pitch:click_note_pitch,click_note_start_time:click_note_start_time});
             
 
+        },
+        shosetu_henshu: function(event){
+            this.$store.commit('set_n_bars',parseInt(document.getElementById("shosetu").value));
+        },
+        bpm_henshu : function(event){
+            this.$store.commit('set_bpm',parseInt(document.getElementById('bpm').value));
         }
     }
 });
@@ -183,7 +201,6 @@ var controller = new Vue({
         pausePosition: 0,
 
         // シークバー
-        total_length: 60000/store.state.bpm*4*store.state.n_bars,   // 全体の長さ(ms)
         seekX: 0,                // シークバーの位置
         seekbarWidth: 900,
         seeking: false
@@ -204,7 +221,7 @@ var controller = new Vue({
                 position = ctrl.pausePosition + ctrl.diffTime;
                 ctrl.$store.commit("setPosition",position);
 
-                if(store.state.position >= ctrl.total_length){
+                if(store.state.position >= ctrl.$store.state.total_length){
                     ctrl.stop()
                     return
                 }
@@ -230,7 +247,7 @@ var controller = new Vue({
         },
         seek: function(event){
             if(!this.seeking){return;}
-            position = Math.floor(event.offsetX / this.seekbarWidth * this.total_length);
+            position = Math.floor(event.offsetX / this.seekbarWidth * this.$store.state.total_length);
             this.$store.commit("setPosition",position);
             this.pausePosition = store.state.position;
             this.startTime = Math.floor(performance.now());
