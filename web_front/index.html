@@ -28,9 +28,7 @@
     <!-- 横の線 -->
     <line v-for="n in lanes['sawtooth'].length" stroke="#000000" x1="0"  stroke-width="1" :x2="$store.state.n_bars*note_width*4" :y1="n*note_height" :y2="n*note_height" style="stroke-opacity: 50%;"></line>
     <!-- 縦の線 -->
-
     <line v-for="n in $store.state.n_bars" stroke-width="2" stroke="#000000" :x1="(n-1)*note_width*4" :x2="(n-1)*note_width*4" y1="0" :y2="note_height*lanes['sawtooth'].length" style="stroke-opacity:40%"></line> 
-
     <!-- 再生位置の線 -->
     <line stroke-width="2" stroke="#ff0000" :x1="margin_position" :x2="margin_position" y1="0" :y2="note_height*lanes['sawtooth'].length" style="stroke-opacity: 40%;"></line> 
   </svg>
@@ -38,6 +36,13 @@
   {{screenx+","+screeny}}
   小節数:<input id="shosetu" type="number" :value="$store.state.n_bars" @input="shosetu_henshu">
   BPM:<input id="bpm" type="number" :value="$store.state.bpm" @input="bpm_henshu">
+  <br>
+  長さ:<select id="edit_note_length" type="number" v-model.number="$store.state.edit_note_length">
+      <option value="960">2分音符</option>
+      <option value="480">4分音符</option>
+      <option value="240">8分音符</option>
+    </select>
+
   <button id="start" @click="$store.commit('all_delete')">all delete</button>
 </div>
 

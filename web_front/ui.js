@@ -12,7 +12,8 @@ const store = new Vuex.Store({
 
         bpm: 120,   // bpm
         n_bars: 8,   // 小節数
-        edit_unit: 480, // 編集単位 初期設定は４分音符(480)
+        edit_note_length: 480, // 編集する音符の長さ単位 初期設定は４分音符(480)
+        quantize: 240,
 
         position: 0,    // 再生位置
         isPlaying: false,
@@ -74,7 +75,7 @@ const store = new Vuex.Store({
         },
         set_bpm(state, value){
             state.bpm = value;
-        },
+        }
     }
 })
 // クリックするとドラム音が鳴るボタンテスト
@@ -151,7 +152,7 @@ var editor = new Vue({
             // 時間は4分音符を480として規格化
             var start_time = parseInt(this.click_x/this.note_width)*480;
             var pitch_name = this.lanes["sawtooth"][parseInt(this.click_y/this.note_height)];
-            var nagasa = 480;
+            var nagasa = store.state.edit_note_length;
             let note = new Note(pitch_name,start_time,nagasa,document.getElementById("table_id").value,document.getElementById("who_make").value);
             //this.notes.push(new Note(parseInt(this.click_y/this.note_height)*this.note_height,parseInt(this.click_x/this.note_width)*this.note_width,this.note_width,document.getElementById("table_id").value,document.getElementById("who_make").value))
             this.$store.commit('note_add',{note:note});
@@ -169,9 +170,10 @@ var editor = new Vue({
         },
 
         note_click: function(event){
-            console.log(this.click_y);
-            let click_note_pitch = this.lanes["sawtooth"][parseInt(event.offsetY/this.note_height)];;
-            let click_note_start_time = parseInt(event.offsetX/this.note_width)*480;
+            let click_x = parseInt(event.target.getAttribute("x"))
+            let click_y = parseInt(event.target.getAttribute("y"))            
+            let click_note_pitch = this.lanes["sawtooth"][parseInt(click_y/this.note_height)];
+            let click_note_start_time = parseInt(click_x/this.note_width)*480;
             //クリックしたノーツの検索
             this.$store.commit('delete_note',{click_note_pitch:click_note_pitch,click_note_start_time:click_note_start_time});
             
