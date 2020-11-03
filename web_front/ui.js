@@ -152,8 +152,18 @@ var editor = new Vue({
             var start_time = parseInt((this.click_x/this.note_width)*480 /store.state.quantize)*store.state.quantize;
             var pitch_name = this.lanes["sawtooth"][parseInt(this.click_y/this.note_height)];
             var nagasa = store.state.edit_note_length;
+
+            // ノーツが重なってはよくないからチェック
+            for(let key in store.state.notes){
+                for(let i in store.state.notes[key]){
+                    let note = store.state.notes[key][i]["note"];
+                    if(note["pitch"]==pitch_name && start_time<note["start_time"] && note["start_time"]<start_time+nagasa){
+                        nagasa = note["start_time"]-start_time;
+                    }
+                }
+            }
+            // 配列に追加
             let note = new Note(pitch_name,start_time,nagasa,document.getElementById("table_id").value,document.getElementById("who_make").value);
-            //this.notes.push(new Note(parseInt(this.click_y/this.note_height)*this.note_height,parseInt(this.click_x/this.note_width)*this.note_width,this.note_width,document.getElementById("table_id").value,document.getElementById("who_make").value))
             this.$store.commit('note_add',{note:note});
             
         },
