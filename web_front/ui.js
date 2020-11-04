@@ -99,7 +99,7 @@ var editor = new Vue({
         let postRequest = function(){
             let params = new FormData();
             params.append("room", document.getElementById("table_id").value);
-            url = "・http://kou.hongo.wide.ad.jp:3341/show_room";
+            url = "http://kou.hongo.wide.ad.jp:3341/show_room";
             const headers = {
                 'Content-Type': 'application/json'
             };
