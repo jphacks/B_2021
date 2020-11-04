@@ -12,6 +12,10 @@ const store = new Vuex.Store({
         position: 0,    // 再生位置
         isPlaying: false,
         total_length: 480*4*8,   // 全体の長さ(ms)
+
+        isInRoom: false,
+        playerName: "",
+        roomID: "",
     },
     
     mutations: {
@@ -163,7 +167,7 @@ var editor = new Vue({
                 }
             }
             // 配列に追加
-            let note = new Note(pitch_name,start_time,nagasa,document.getElementById("table_id").value,document.getElementById("who_make").value);
+            let note = new Note(pitch_name,start_time,nagasa,document.getElementById("roomID").value,document.getElementById("playerName").value);
             this.$store.commit('note_add',{note:note});
             
         },
@@ -282,6 +286,39 @@ var input_options = new Vue({
         },
         bpm_henshu : function(event){
             this.$store.commit('set_bpm',parseInt(document.getElementById('bpm').value));
+        }
+    }
+});
+
+var input_id = new Vue({
+    store: store,
+    el: "#input_id",
+    data:{
+    },
+    methods:{
+        enter(state, value){
+            let playerName = document.getElementById("playerName").value;
+            let roomID = document.getElementById("roomID").value;
+
+            if(playerName=="" || roomID==""){
+                console.log("error: empty entry is not allowed");
+                return;
+            }
+            store.state.playerName = playerName;
+            store.state.roomID = roomID;
+            store.state.isInRoom = true;
+            console.log("入室",store.state.playerName,store.state.roomID);
+            document.getElementById("playerName").setAttribute("disabled","disabled");
+            document.getElementById("roomID").setAttribute("disabled","disabled");
+
+        },
+        quit(state, value){
+            store.state.playerName = "";
+            store.state.roomID = "";
+            store.state.isInRoom = false;
+            console.log("退室");
+            document.getElementById("playerName").removeAttribute("disabled","disabled");
+            document.getElementById("roomID").removeAttribute("disabled","disabled");
         }
     }
 });

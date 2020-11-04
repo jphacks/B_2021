@@ -14,8 +14,16 @@
 </head>
 <body><div id="wrapper">
 
+<div id="input_id">
+  Name: <input id="playerName" type="text" value="名無し"><br>
+  RoomID: <input id="roomID" type="text" >
+  <button id="enter_room" @click="enter" v-if="!$store.state.isInRoom">入室</button>
+  <button id="quit_room" @click="quit" v-if="$store.state.isInRoom">退室</button>
+</div>
+
+
 <!-- コントローラ -->
-<div id="controller">
+<div id="controller" v-if="$store.state.isInRoom">
   <img src="img/play.png" height="50px" width="50px" @click="play" v-if="!$store.state.isPlaying">
   <img src="img/pause.png" height="50px" width="50px" @click="pause" v-if="$store.state.isPlaying">
   <img src="img/stop.png" height="50px" width="50px" @click="stop">
@@ -30,7 +38,7 @@
   {{ (parseInt(60000/$store.state.bpm * $store.state.position/480) /1000).toFixed(3) }} / {{ (parseInt(60000/$store.state.bpm * $store.state.n_bars * 4)  /1000).toFixed(3)}}
 </div>
 
-<div id="input_options">
+<div id="input_options" v-if="$store.state.isInRoom">
   小節数:<input id="shosetu" type="number" :value="$store.state.n_bars" @input="shosetu_henshu">
   BPM:<input id="bpm" type="number" :value="$store.state.bpm" @input="bpm_henshu">
   <br>
@@ -45,19 +53,11 @@
   <label><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" value="sine">sine</label>
 
   <br>
-  <button id="start" @click="$store.commit('all_delete')">all delete</button>
+  <button id="all_delete" @click="$store.commit('all_delete')">all delete</button>
 </div>
-
-
-<div id="input_id">
-  tableID:<input id="table_id" type="text" >
-  name:<input id="who_make" type="text">
-</div>
-
-
 
 <!-- エディタ -->
-<div id="editor">
+<div id="editor" v-if="$store.state.isInRoom">
   <svg :viewbox="'0 0 1500 ' + note_height*lanes[$store.state.nowplaying].length" :width="$store.state.n_bars*note_width*4" :height="note_height*lanes[$store.state.nowplaying].length"  @mousemove="mouse"
   :style=" 'background-color: #aaaaaa; margin-left: ' +  (- margin_position+100) +'px;'">
     
