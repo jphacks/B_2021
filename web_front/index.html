@@ -49,8 +49,8 @@
       <option value="240">8分音符</option>
     </select>
 
-  <label><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" value="sawtooth">sawtooth</label>
-  <label><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" value="sine">sine</label>
+  <label><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" value="sine"><img src="img/sine.png" width="15" height="15"> sine</label>
+  <label><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" value="sawtooth"><img src="img/sawtooth.png" width="15" height="15">sawtooth</label>
 
   <br>
   <button id="all_delete" @click="$store.commit('all_delete')">all delete</button>
@@ -75,6 +75,9 @@
     <!-- 再生位置の線 -->
     <line stroke-width="2" stroke="#ff0000" :x1="margin_position" :x2="margin_position" y1="0" :y2="note_height*lanes[$store.state.nowplaying].length" style="stroke-opacity: 40%;"></line> 
   </svg>
+
+  <!-- アイコン -->
+  <img :src="'img/' + $store.state.nowplaying + '.png'" id="edit_icon">
 </div>
 
 
