@@ -19,8 +19,8 @@ const store = new Vuex.Store({
     },
     
     mutations: {
-        note_add(state, note) {
-            state.notes[state.nowplaying].push(note);
+        note_add(state, param) {
+            state.notes[param["sound_type"]].push(param["note"]);
         },
         all_delete(state){
             for(let key in state.notes){
@@ -100,36 +100,66 @@ var editor = new Vue({
             lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"]},
     },
     mounted(){
-    //     this.intervalId = setInterval(await postRequest, 1000);
-    //     async function postRequest(){
-    //         let params = new FormData()
-    //         params.append('value', this.$store.state.notes)
-    //         const response = await axios.post("url",params).then(res=>{
-    //             //仮の処理
-    //             let return_notes = res.value;
-    //             let add_index_list = [];
-    //             for(let i = 0;i < return_notes.size; i++){
-    //                 for(let j = 0; j < this.$store.state.notes.size; j++){
-    //                     if((return_notes[i]['note']['start_time']==this.$store.state.notes[j]['note']['start_time'])&&(return_notes[i]['note']['pitch']==this.$store.state.notes[j]['note']['pitch'])){
-    //                         break;
-    //                     }
-                        
-    //                 }
-    //                 this.$store.commit('note_add',return_notes[i]['note']);
-    //             }
-    //             for(let i = 0;i < this.$store.state.notes.size; i++){
-    //                 for(let j = 0; j < return_notes.size; j++){
-    //                     if((return_notes[j]['note']['start_time']==this.$store.state.notes[i]['note']['start_time'])&&(return_notes[j]['note']['pitch']==this.$store.state.notes[i]['note']['pitch'])){
-    //                         break;
-    //                     }
-                        
-    //                 }
-    //                 this.$store.commit('delete_note',{click_note_pitch:this.$store.state.notes[i]['note']['pitch'],click_note_start_time:this.$store.state.notes[i]['note']['start_time']});
-    //             }
+        let postRequest = function(){
+            let params = new FormData();
+            params.append("room", document.getElementById("table_id").value);
+            url = "http://kou.hongo.wide.ad.jp:3341/show_room";
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            const response = axios.post(url,params,{ headers: headers }).then(res=>{
+                //ノーツの差分見て追加する処理
+                let return_notes = res.sounds;
+                let add_index_list = [];
+                for(let i = 0;i < return_notes.size; i++){
+                    let continue_flag = -1;
+                    for(let key in this.$state.store.notes){
+                        if(return_notes[i]['sound_type']!=key){
+                            break
+                        }
+                        for(let j = 0; j < this.$store.state.notes.size; j++){
+                            if((return_notes[i]['start']==this.$store.state.notes[key][j]['note']['start_time'])&&
+                            (return_notes[i]['pitch_name']==this.$store.state.notes[key][j]['note']['pitch'])&&
+                            (return_notes[i]['sound_type']==this.$store.state.notes[key][j]['note']['sound_type'])
+                            ){
+                                continue_flag = 1;
+                                break;
+                            }
+                            
+                        }
+                        if(continue_flag == 1){
+                            break;
+                        }
+                        let new_note = new Note(return_notes[i]['frequency'], return_notes[i]['start'], return_notes[i]['nagasa'], return_notes[i]['room'], return_notes[i]['who_make'], return_notes[i]['sound_type'])
+                        new_note.object_id = return_notes[i]['id'];
+                        this.$store.commit('note_add',{"sound_type":return_notes[i]['music_type'], "note":new_note});
+                    }
+                }
+                //ノーツの差分見て削除する処理
+                for(key in this.$store.state.notes){
+                    for(let i = 0;i < this.$store.state.notes[key].size; i++){
+                        let break_flag = -1;
+                        for(let j = 0; j < return_notes.size; j++){
+                            if((return_notes[j]['start']==this.$store.state.notes[key][i]['note']['start_time'])&&
+                            (return_notes[j]['pitch_name']==this.$store.state.notes[key][i]['note']['pitch'])&&
+                            (return_notes[j]['sound_type']==this.$store.state.notes[key][i]['note']['sound_type'])
+                            ){
+                                break_flag = 1;
+                                break;
+                            }
+                            
+                        }
+                        if(break_flag == 1){
+                            break;
+                        }
+                        this.$store.commit('delete_note',{click_note_pitch:this.$store.state.notes[key][i]['note']['pitch'],click_note_start_time:this.$store.state.notes[key][i]['note']['start_time']});
+                    }
+                }
 
 
-    //         })
-    //     }
+            })
+        }
+        this.intervalId = setInterval(postRequest, 1000);
         
     },
     
@@ -167,8 +197,34 @@ var editor = new Vue({
                 }
             }
             // 配列に追加
-            let note = new Note(pitch_name,start_time,nagasa,document.getElementById("roomID").value,document.getElementById("playerName").value);
-            this.$store.commit('note_add',{note:note});
+            let note = new Note(pitch_name,start_time,nagasa,document.getElementById("table_id").value,document.getElementById("who_make").value);
+
+            //サーバーに情報送り付ける
+            const params = new FormData();
+            let url = "http://kou.hongo.wide.ad.jp:3341/regist";
+            params.append("frequency",pitch_name)
+            params.append("start",start_time);
+            params.append("nagasa",nagasa)
+            params.append("room",document.getElementById("table_id").value)
+            params.append("made_by",document.getElementById("who_make").value);
+            params.append("sound_type",this.$store.state.nowplaying);
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+
+            axios.post(url, params, { headers: headers }).then(res=>{
+                note.id = res.data.id;
+                this.$store.commit('note_add',{"note":note,"sound_type":this.$state.store.nowplaying});
+
+            });
+              
+
+        
+
+            
+
+
+
             
         },
         mouse_up:function(event){
@@ -188,8 +244,23 @@ var editor = new Vue({
             let click_note_pitch = this.lanes["sawtooth"][parseInt(click_y/this.note_height)];
             let click_note_start_time = parseInt(480*(click_x-3)/this.note_width);  // rectのstrokeの幅のせいで -3 している　どうにかならないか？
             console.log(click_note_start_time);
-            //クリックしたノーツの検索
+            //クリックしたノーツの削除
             this.$store.commit('delete_note',{click_note_pitch:click_note_pitch,click_note_start_time:click_note_start_time});
+            //サーバーから情報消す
+            const params = new FormData();
+            let url = "http://kou.hongo.wide.ad.jp:3341/remove";
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            params.append("id",event.target.getAttribute("id").slice(4));
+            
+
+            axios.post(url, params, { headers: headers }).then(res=>{
+                console.log(res.data);
+                
+
+            });
+
             
 
         }
