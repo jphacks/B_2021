@@ -243,14 +243,11 @@ var editor = new Vue({
                             console.log(return_notes[i])
                             break;
                         }
-                        console.log(return_notes[i]);
                         let new_note = new Note(return_notes[i]['pitch_name'], return_notes[i]['start'], return_notes[i]['length'], return_notes[i]['room'], return_notes[i]['made_by'], return_notes[i]['sound_type'])
                         new_note.object_id = return_notes[i]['id'];
-                        console.log(new_note);
                         ctrl.$store.commit('note_add',{"sound_type":new_note['sound_type'], "note":new_note});
                     }
                 }
-                console.log(ctrl.$store.state.notes);
                 //ノーツの差分見て削除する処理
                 for(let index = 0;index<Object.keys(ctrl.$store.state.notes).length;index++){
                     let key = index;
@@ -268,12 +265,11 @@ var editor = new Vue({
                             
                         }
                         if(break_flag == 1){
-                            break;
+                            continue;
                         }
                         ctrl.$store.commit('delete_note',{click_note_pitch:ctrl.$store.state.notes[key][i]['pitch'],click_note_start_time:ctrl.$store.state.notes[key][i]['start_time']});
                     }
                 }
-                console.log(ctrl.$store.state.notes);
 
 
 
@@ -282,7 +278,7 @@ var editor = new Vue({
         },
         button_click:function(){
             console.log("clickl")
-            this.intervalId = setInterval(this.postRequest, 10000);
+            this.intervalId = setInterval(this.postRequest, 1000);
         }
     }
 });
