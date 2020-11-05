@@ -243,9 +243,11 @@ var editor = new Vue({
                             console.log(return_notes[i])
                             break;
                         }
-                        let new_note = new Note(return_notes[i]['frequency'], return_notes[i]['start'], return_notes[i]['nagasa'], return_notes[i]['room'], return_notes[i]['who_make'], return_notes[i]['sound_type'])
+                        console.log(return_notes[i]);
+                        let new_note = new Note(return_notes[i]['pitch_name'], return_notes[i]['start'], return_notes[i]['length'], return_notes[i]['room'], return_notes[i]['made_by'], return_notes[i]['sound_type'])
                         new_note.object_id = return_notes[i]['id'];
-                        ctrl.$store.commit('note_add',{"sound_type":return_notes[i]['music_type'], "note":new_note});
+                        console.log(new_note);
+                        ctrl.$store.commit('note_add',{"sound_type":new_note['sound_type'], "note":new_note});
                     }
                 }
                 console.log(ctrl.$store.state.notes);
