@@ -23,6 +23,23 @@ const store = new Vuex.Store({
             state.notes[param["sound_type"]].push(param["note"]);
         },
         all_delete(state){
+            //サーバーから情報消す
+            const params = {}
+            let url = "http://kou.hongo.wide.ad.jp:3341/remove";
+            
+            params["id"] = event.target.getAttribute("id").slice(4);
+            
+            for(let index = 0;index<Object.keys(state.notes).length;index++){
+                let key = index;
+                key = Object.keys(state.notes)[key];
+                for(let i = 0;i < state.notes[key].length; i++){
+                    params["id"] = state.notes[key][i]['object_id'];
+                    axios.post(url, params).then(res=>{
+                        console.log(res.data); 
+                    });
+
+                }
+            }
             
             for(let key in state.notes){
                 state.notes[key] = [];
@@ -199,7 +216,6 @@ var editor = new Vue({
             axios.post(url, params).then(res=>{
                 console.log(res.data);
                 
-
             });
 
             
