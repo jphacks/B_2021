@@ -81,11 +81,11 @@ const store = new Vuex.Store({
             state.isPlaying = isPlaying;
         },
         set_n_bars(state, value){
-            state.n_bars = value;
+            state.n_bars = parseInt(value);
             state.total_length = 480*4*state.n_bars;
         },
         set_bpm(state, value){
-            state.bpm = value;
+            state.bpm = parseInt(value);
         }
     }
 })
@@ -300,9 +300,25 @@ var input_options = new Vue({
     },
     methods:{
         shosetu_henshu: function(event){
+            let url_for_updateroom;
+            let params = {};
+            param['room'] = this.$store.state.roomID;
+            param['bpm'] = parseInt(document.getElementById("bpm").value);
+            param['n_bars'] = parseInt(document.getElementById("shosetu").value);
+            axios.post(url_for_updateroom,params).then(res=>{
+                console.log(res);
+            })
             this.$store.commit('set_n_bars',parseInt(document.getElementById("shosetu").value));
         },
         bpm_henshu : function(event){
+            let url_for_updateroom;
+            let params = {};
+            param['room'] = this.$store.state.roomID;
+            param['bpm'] = parseInt(document.getElementById("bpm").value);
+            param['n_bars'] = parseInt(document.getElementById("shosetu").value);
+            axios.post(url_for_updateroom,params).then(res=>{
+                console.log(res);
+            })
             this.$store.commit('set_bpm',parseInt(document.getElementById('bpm').value));
         }
     }
@@ -323,6 +339,16 @@ var input_id = new Vue({
                 console.log("error: empty entry is not allowed");
                 return;
             }
+            // room作成処理
+            let create_room_url = "http://kou.hongo.wide.ad.jp:3341/create_room"
+            let params_for_create_room = {};
+            params_for_create_room['name'] = roomID;
+            params_for_create_room['bpm'] = this.$store.state.bpm;
+            params_for_create_room['num_of_bar'] = this.$store.state.n_bars;
+            axios.post(url,params_for_create_room).then(res=>{
+                console.log(res);
+            })
+
             store.state.who_make = who_make;
             store.state.roomID = roomID;
             store.state.isInRoom = true;
@@ -408,6 +434,21 @@ var input_id = new Vue({
                 }
 
 
+
+            })
+            let url_for_bpm_n_bars = "http://kou.hongo.wide.ad.jp:3341/status_room";
+            let params = {};
+            params["room"] = this.$store.roomID;
+            let ctrl = this;
+            const response = axios.post(url_for_bpm_n_bars,params,{ headers: headers }).then(res=>{
+                let res_bpm = res.data.bpm;
+                let res_n_bars = res.data.n_bars;
+                if(res_n_bars!=ctrl.$store.state.bpm){
+                    ctrl.$store.commit('set_n_bars',res_n_bars);
+                }
+                if(res_bpm!=ctrl.$store.state.n_bars){
+                    ctrl.$store.commit('set_bpm',res_bpm);
+                }
 
             })
 
