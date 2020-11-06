@@ -17,8 +17,10 @@
 <div id="head_div">
   <img src="img/logo.png" id="logo">
   <div id="input_id">
-    Name: <input id="who_make" type="text" value="名無し"><br>
-    RoomID: <input id="roomID" type="text" >
+    <dl>
+      <dt>Name:</dt><dd><input id="who_make" type="text" value="名無し"></dd>
+      <dt>RoomID:</dt><dd><input id="roomID" type="text"></dd>
+    </dl>
     <button id="enter_room" @click="enter" v-if="!$store.state.isInRoom">入室</button>
     <button id="quit_room" @click="quit" v-if="$store.state.isInRoom">退室</button>
   </div>
@@ -43,10 +45,10 @@
 </div>
 
 <div id="input_options" v-if="$store.state.isInRoom">
-  小節数:<input id="shosetu" type="number" :value="$store.state.n_bars" @input="shosetu_henshu">
-  BPM:<input id="bpm" type="number" :value="$store.state.bpm" @input="bpm_henshu">
+  小節数: <input id="shosetu" type="number" :value="$store.state.n_bars" @input="shosetu_henshu">
+  BPM: <input id="bpm" type="number" :value="$store.state.bpm" @input="bpm_henshu">
   <br>
-  音符の長さ:<select id="edit_note_length" type="number" v-model.number="$store.state.edit_note_length">
+  音符の長さ: <select id="edit_note_length" type="number" v-model.number="$store.state.edit_note_length">
       <option value="1920">全音符</option>
       <option value="960">2分音符</option>
       <option value="480">4分音符</option>
