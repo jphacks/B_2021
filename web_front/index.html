@@ -14,12 +14,16 @@
 </head>
 <body><div id="wrapper">
 
-<div id="input_id">
-  Name: <input id="who_make" type="text" value="名無し"><br>
-  RoomID: <input id="roomID" type="text" >
-  <button id="enter_room" @click="enter" v-if="!$store.state.isInRoom">入室</button>
-  <button id="quit_room" @click="quit" v-if="$store.state.isInRoom">退室</button>
+<div id="head_div">
+  <img src="img/logo.png" id="logo">
+  <div id="input_id">
+    Name: <input id="who_make" type="text" value="名無し"><br>
+    RoomID: <input id="roomID" type="text" >
+    <button id="enter_room" @click="enter" v-if="!$store.state.isInRoom">入室</button>
+    <button id="quit_room" @click="quit" v-if="$store.state.isInRoom">退室</button>
+  </div>
 </div>
+
 
 
 <!-- コントローラ -->

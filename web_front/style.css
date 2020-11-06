@@ -8,6 +8,22 @@ body{
     width: 100%;
 }
 
+#head_div{
+    background: #a0a0ff;
+    width: 100%;
+    overflow: auto;
+}
+#logo{
+    background: #606db1;
+    margin-right: 40px;
+    float:left;
+    padding: 10px;
+}
+#input_id{
+    padding-left: 100px;
+}
+
+
 #controller{
     background: linear-gradient(90deg, #606060 0%, #808080 10%, #808080 90%, #606060 100%);
     padding-top: 10px;
@@ -33,14 +49,6 @@ body{
 #input_options{
     background-color: #a0a0d0;
     width: 100% -20px;
-    padding-left: 20px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
-#input_id{
-    width: 100% -20px;
-    background-color:#a0a0ff;
     padding-left: 20px;
     padding-top: 10px;
     padding-bottom: 10px;
