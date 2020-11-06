@@ -25,21 +25,12 @@ const store = new Vuex.Store({
         all_delete(state){
             //サーバーから情報消す
             const params = {}
-            let url = "http://kou.hongo.wide.ad.jp:3341/remove";
+            let url = "http://kou.hongo.wide.ad.jp:3341/room_sound_all_remove";
+            params['room'] = state.roomID;
+            axios.post(url, params).then(res=>{
+                console.log(res.data); 
+            });
             
-            params["id"] = event.target.getAttribute("id").slice(4);
-            
-            for(let index = 0;index<Object.keys(state.notes).length;index++){
-                let key = index;
-                key = Object.keys(state.notes)[key];
-                for(let i = 0;i < state.notes[key].length; i++){
-                    params["id"] = state.notes[key][i]['object_id'];
-                    axios.post(url, params).then(res=>{
-                        console.log(res.data); 
-                    });
-
-                }
-            }
             
             for(let key in state.notes){
                 state.notes[key] = [];
@@ -113,7 +104,6 @@ var editor = new Vue({
             click_y:0,
             clickup_x:0,
             clickup_y:0,
-            intervalId:null,
 
             lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"]},
     },
@@ -221,81 +211,6 @@ var editor = new Vue({
             
 
         },
-        postRequest : function(){
-            console.log("hello postrequest")
-            let params = {};
-            params["room"]=document.getElementById("roomID").value;
-            params = JSON.stringify(params);
-            url = "http://kou.hongo.wide.ad.jp:3341/show_room";
-            const headers = {
-                'Content-Type': 'application/json'
-            };
-            let ctrl = this;
-            const response = axios.post(url,params,{ headers: headers }).then(res=>{
-                //ノーツの差分見て追加する処理
-                let return_notes = res.data.sounds;
-                let add_index_list = [];
-                for(let i = 0;i < return_notes.length; i++){
-                    let continue_flag = -1;
-                    for(let index = 0;index<parseInt(Object.keys(ctrl.$store.state.notes).length);index++){
-                        let key = index;
-                        key = Object.keys(ctrl.$store.state.notes)[key];
-                        if(return_notes[i]['sound_type']!=key){
-                            continue
-                        }
-                        
-                        for(let j = 0; j < ctrl.$store.state.notes[key].length; j++){
-                            if((return_notes[i]['start']==ctrl.$store.state.notes[key][j]['start_time'])&&
-                            (return_notes[i]['pitch_name']==ctrl.$store.state.notes[key][j]['pitch'])&&
-                            (return_notes[i]['sound_type']==ctrl.$store.state.notes[key][j]['sound_type'])
-                            ){
-                                continue_flag = 1;
-                                break;
-                            }
-                            
-                        }
-                        if(continue_flag == 1){
-                            console.log("continue_flag")
-                            console.log(return_notes[i])
-                            break;
-                        }
-                        let new_note = new Note(return_notes[i]['pitch_name'], return_notes[i]['start'], return_notes[i]['length'], return_notes[i]['room'], return_notes[i]['made_by'], return_notes[i]['sound_type'])
-                        new_note.object_id = return_notes[i]['id'];
-                        ctrl.$store.commit('note_add',{"sound_type":new_note['sound_type'], "note":new_note});
-                    }
-                }
-                //ノーツの差分見て削除する処理
-                for(let index = 0;index<Object.keys(ctrl.$store.state.notes).length;index++){
-                    let key = index;
-                    key = Object.keys(ctrl.$store.state.notes)[key];
-                    for(let i = 0;i < ctrl.$store.state.notes[key].length; i++){
-                        let break_flag = -1;
-                        for(let j = 0; j < return_notes.length; j++){
-                            if((return_notes[j]['start']==ctrl.$store.state.notes[key][i]['start_time'])&&
-                            (return_notes[j]['pitch_name']==ctrl.$store.state.notes[key][i]['pitch'])&&
-                            (return_notes[j]['sound_type']==ctrl.$store.state.notes[key][i]['sound_type'])
-                            ){
-                                break_flag = 1;
-                                break;
-                            }
-                            
-                        }
-                        if(break_flag == 1){
-                            continue;
-                        }
-                        ctrl.$store.commit('delete_note',{click_note_pitch:ctrl.$store.state.notes[key][i]['pitch'],click_note_start_time:ctrl.$store.state.notes[key][i]['start_time']});
-                    }
-                }
-
-
-
-            })
-
-        },
-        button_click:function(){
-            console.log("clickl")
-            this.intervalId = setInterval(this.postRequest, 1000);
-        }
     }
 });
 
@@ -397,6 +312,7 @@ var input_id = new Vue({
     store: store,
     el: "#input_id",
     data:{
+        intervalId:null,
     },
     methods:{
         enter(state, value){
@@ -413,15 +329,88 @@ var input_id = new Vue({
             console.log("入室",store.state.who_make,store.state.roomID);
             document.getElementById("who_make").setAttribute("disabled","disabled");
             document.getElementById("roomID").setAttribute("disabled","disabled");
+            this.intervalId = setInterval(this.postRequest, 1000);
 
         },
         quit(state, value){
+            clearInterval(this.intervalId);
             store.state.who_make = "";
             store.state.roomID = "";
             store.state.isInRoom = false;
             console.log("退室");
             document.getElementById("who_make").removeAttribute("disabled","disabled");
             document.getElementById("roomID").removeAttribute("disabled","disabled");
-        }
+        },
+        postRequest : function(){
+            console.log("hello postrequest")
+            let params = {};
+            params["room"]=document.getElementById("roomID").value;
+            params = JSON.stringify(params);
+            url = "http://kou.hongo.wide.ad.jp:3341/show_room";
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            let ctrl = this;
+            const response = axios.post(url,params,{ headers: headers }).then(res=>{
+                //ノーツの差分見て追加する処理
+                let return_notes = res.data.sounds;
+                let add_index_list = [];
+                for(let i = 0;i < return_notes.length; i++){
+                    let continue_flag = -1;
+                    for(let index = 0;index<parseInt(Object.keys(ctrl.$store.state.notes).length);index++){
+                        let key = index;
+                        key = Object.keys(ctrl.$store.state.notes)[key];
+                        if(return_notes[i]['sound_type']!=key){
+                            continue
+                        }
+                        
+                        for(let j = 0; j < ctrl.$store.state.notes[key].length; j++){
+                            if((return_notes[i]['start']==ctrl.$store.state.notes[key][j]['start_time'])&&
+                            (return_notes[i]['pitch_name']==ctrl.$store.state.notes[key][j]['pitch'])&&
+                            (return_notes[i]['sound_type']==ctrl.$store.state.notes[key][j]['sound_type'])
+                            ){
+                                continue_flag = 1;
+                                break;
+                            }
+                            
+                        }
+                        if(continue_flag == 1){
+                            console.log("continue_flag")
+                            console.log(return_notes[i])
+                            break;
+                        }
+                        let new_note = new Note(return_notes[i]['pitch_name'], return_notes[i]['start'], return_notes[i]['length'], return_notes[i]['room'], return_notes[i]['made_by'], return_notes[i]['sound_type'])
+                        new_note.object_id = return_notes[i]['id'];
+                        ctrl.$store.commit('note_add',{"sound_type":new_note['sound_type'], "note":new_note});
+                    }
+                }
+                //ノーツの差分見て削除する処理
+                for(let index = 0;index<Object.keys(ctrl.$store.state.notes).length;index++){
+                    let key = index;
+                    key = Object.keys(ctrl.$store.state.notes)[key];
+                    for(let i = 0;i < ctrl.$store.state.notes[key].length; i++){
+                        let break_flag = -1;
+                        for(let j = 0; j < return_notes.length; j++){
+                            if((return_notes[j]['start']==ctrl.$store.state.notes[key][i]['start_time'])&&
+                            (return_notes[j]['pitch_name']==ctrl.$store.state.notes[key][i]['pitch'])&&
+                            (return_notes[j]['sound_type']==ctrl.$store.state.notes[key][i]['sound_type'])
+                            ){
+                                break_flag = 1;
+                                break;
+                            }
+                            
+                        }
+                        if(break_flag == 1){
+                            continue;
+                        }
+                        ctrl.$store.commit('delete_note',{click_note_pitch:ctrl.$store.state.notes[key][i]['pitch'],click_note_start_time:ctrl.$store.state.notes[key][i]['start_time']});
+                    }
+                }
+
+
+
+            })
+
+        },
     }
 });
