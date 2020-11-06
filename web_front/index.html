@@ -84,6 +84,8 @@
 
   <!-- アイコン -->
   <img :src="'img/' + $store.state.nowplaying + '.png'" id="edit_icon">
+  <!-- 人の名前 -->
+  <br>
   <span v-for="name,value in $store.state.who_make_num" :style="'background-color:'+$store.state.note_color[name]">{{value}}　</span>
 </div>
 
