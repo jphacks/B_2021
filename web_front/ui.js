@@ -308,23 +308,21 @@ var input_options = new Vue({
     },
     methods:{
         shosetu_henshu: function(event){
-            let url_for_updateroom;
-            let params = {};
-            param['room'] = this.$store.state.roomID;
-            param['bpm'] = parseInt(document.getElementById("bpm").value);
-            param['n_bars'] = parseInt(document.getElementById("shosetu").value);
-            axios.post(url_for_updateroom,params).then(res=>{
+            let url_for_updateroom = "http://kou.hongo.wide.ad.jp:3341/change_num_of_bar";
+            let params_n_bar = {};
+            params_n_bar['name'] = this.$store.state.roomID;
+            params_n_bar['num_of_bar'] = parseInt(document.getElementById("shosetu").value);
+            axios.post(url_for_updateroom,params_n_bar).then(res=>{
                 console.log(res);
             })
             this.$store.commit('set_n_bars',parseInt(document.getElementById("shosetu").value));
         },
         bpm_henshu : function(event){
-            let url_for_updateroom;
-            let params = {};
-            param['room'] = this.$store.state.roomID;
-            param['bpm'] = parseInt(document.getElementById("bpm").value);
-            param['n_bars'] = parseInt(document.getElementById("shosetu").value);
-            axios.post(url_for_updateroom,params).then(res=>{
+            let url_for_updateroom = "http://kou.hongo.wide.ad.jp:3341/change_bpm";
+            let params_bpm = {};
+            params_bpm['name'] = this.$store.state.roomID;
+            params_bpm['bpm'] = parseInt(document.getElementById("bpm").value);
+            axios.post(url_for_updateroom,params_bpm).then(res=>{
                 console.log(res);
             })
             this.$store.commit('set_bpm',parseInt(document.getElementById('bpm').value));
@@ -446,11 +444,12 @@ var input_id = new Vue({
             })
             let url_for_bpm_n_bars = "http://kou.hongo.wide.ad.jp:3341/status_room";
             let params_for_status_room = {};
-            params_for_status_room["room"] = this.$store.roomID;
+            params_for_status_room["name"] = this.$store.state.roomID;
             ctrl = this;
-            axios.post(url_for_bpm_n_bars,params_for_status_room,{ headers: headers }).then(res=>{
-                let res_bpm = res.data.bpm;
-                let res_n_bars = res.data.n_bars;
+            axios.post(url_for_bpm_n_bars,params_for_status_room).then(res=>{
+                console.log(res.data.rooms[0])
+                let res_bpm = res.data.rooms[0]['bpm'];
+                let res_n_bars = res.data.rooms[0]['num_of_bar'];
                 if(res_n_bars!=ctrl.$store.state.bpm){
                     ctrl.$store.commit('set_n_bars',res_n_bars);
                 }
