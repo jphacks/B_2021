@@ -68,7 +68,7 @@
   :style=" 'background-color: #aaaaaa; margin-left: ' +  (- margin_position+100) +'px;'">
     
   <!-- 背景 -->
-    <rect x="0" y="0" width="100%" height="100%" fill="#708090" style="fill-opacity:100%" @mousedown="mouse_down" @mouseup="mouse_up" @click="test"></rect>
+    <rect id="editor_bg" x="0" y="0" width="100%" height="100%" fill="#708090" style="fill-opacity:100%" @mousedown="mouse_down" @mouseup="mouse_up" @click="test"></rect>
 
     <!-- 縦の線（クオンタイズ，小節線） -->
     <line v-for="n in $store.state.n_bars *4*480/$store.state.quantize" stroke-width="1" stroke="#ffffff" :x1="n* note_width * $store.state.quantize / 480" :x2="n* note_width * $store.state.quantize / 480" y1="0" :y2="note_height*lanes[$store.state.nowplaying].length" style="stroke-opacity:20%"></line> 
