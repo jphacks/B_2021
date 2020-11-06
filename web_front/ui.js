@@ -22,6 +22,23 @@ const store = new Vuex.Store({
     },
     
     mutations: {
+        shokika(state){
+            state.notes = {"sawtooth":[],"sine":[]};
+            state.nowplaying = "sine";
+            state.bpm = 120;
+            state.n_bars = 8;
+            state.edit_note_length = 480;
+            state.quantize = 240;
+            state.position = 0;
+            state.isPlaying = false;
+            state.total_length = 480*4*8;
+            state.isInRoom = false;
+            state.who_make = "";
+            state.roomID = "";
+            state.who_make_set = new Set();
+            state.who_make_num = {};
+
+        },
         note_add(state, param) {
             let who = param["note"]["who_make"];
             if(state.who_make_set.has(who)==false){
@@ -369,6 +386,7 @@ var input_id = new Vue({
             store.state.who_make = "";
             store.state.roomID = "";
             store.state.isInRoom = false;
+            this.$store.commit('shokika');
             console.log("退室");
             document.getElementById("who_make").removeAttribute("disabled","disabled");
             document.getElementById("roomID").removeAttribute("disabled","disabled");
