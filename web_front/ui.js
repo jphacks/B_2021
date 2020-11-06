@@ -50,7 +50,7 @@ const store = new Vuex.Store({
         all_delete(state){
             //サーバーから情報消す
             const params = {}
-            let url = "http://kou.hongo.wide.ad.jp:3341/room_sound_all_remove";
+            let url = "https://kou.hongo.wide.ad.jp:3341/room_sound_all_remove";
             params['room'] = state.roomID;
             axios.post(url, params).then(res=>{
                 console.log(res.data); 
@@ -175,7 +175,7 @@ var editor = new Vue({
 
             //サーバーに情報送り付ける
             let params = {};
-            let url = "http://kou.hongo.wide.ad.jp:3341/regist";
+            let url = "https://kou.hongo.wide.ad.jp:3341/regist";
             params['pitch_name'] = pitch_name;
             params['start'] = start_time;
             params['length'] = nagasa;
@@ -216,7 +216,7 @@ var editor = new Vue({
             this.$store.commit('delete_note',{click_note_pitch:click_note_pitch,click_note_start_time:click_note_start_time});
             //サーバーから情報消す
             const params = {}
-            let url = "http://kou.hongo.wide.ad.jp:3341/remove";
+            let url = "https://kou.hongo.wide.ad.jp:3341/remove";
             params["id"] = event.target.getAttribute("id").slice(4);
             
 
@@ -317,7 +317,7 @@ var input_options = new Vue({
     },
     methods:{
         shosetu_henshu: function(event){
-            let url_for_updateroom = "http://kou.hongo.wide.ad.jp:3341/change_num_of_bar";
+            let url_for_updateroom = "https://kou.hongo.wide.ad.jp:3341/change_num_of_bar";
             let params_n_bar = {};
             params_n_bar['name'] = this.$store.state.roomID;
             params_n_bar['num_of_bar'] = parseInt(document.getElementById("shosetu").value);
@@ -327,7 +327,7 @@ var input_options = new Vue({
             this.$store.commit('set_n_bars',parseInt(document.getElementById("shosetu").value));
         },
         bpm_henshu : function(event){
-            let url_for_updateroom = "http://kou.hongo.wide.ad.jp:3341/change_bpm";
+            let url_for_updateroom = "https://kou.hongo.wide.ad.jp:3341/change_bpm";
             let params_bpm = {};
             params_bpm['name'] = this.$store.state.roomID;
             params_bpm['bpm'] = parseInt(document.getElementById("bpm").value);
@@ -355,7 +355,7 @@ var input_id = new Vue({
                 return;
             }
             // room作成処理
-            let create_room_url = "http://kou.hongo.wide.ad.jp:3341/create_room"
+            let create_room_url = "https://kou.hongo.wide.ad.jp:3341/create_room"
             let params_for_create_room = {};
             params_for_create_room['name'] = roomID;
             params_for_create_room['bpm'] = this.$store.state.bpm;
@@ -388,7 +388,7 @@ var input_id = new Vue({
             let params = {};
             params["room"]=document.getElementById("roomID").value;
             params = JSON.stringify(params);
-            url = "http://kou.hongo.wide.ad.jp:3341/show_room";
+            url = "https://kou.hongo.wide.ad.jp:3341/show_room";
             const headers = {
                 'Content-Type': 'application/json'
             };
@@ -452,7 +452,7 @@ var input_id = new Vue({
 
 
             })
-            let url_for_bpm_n_bars = "http://kou.hongo.wide.ad.jp:3341/status_room";
+            let url_for_bpm_n_bars = "https://kou.hongo.wide.ad.jp:3341/status_room";
             let params_for_status_room = {};
             params_for_status_room["name"] = this.$store.state.roomID;
             ctrl = this;
