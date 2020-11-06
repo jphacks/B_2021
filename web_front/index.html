@@ -68,7 +68,7 @@
     <line v-for="n in $store.state.n_bars *4*480/$store.state.quantize" stroke-width="1" stroke="#ffffff" :x1="n* note_width * $store.state.quantize / 480" :x2="n* note_width * $store.state.quantize / 480" y1="0" :y2="note_height*lanes[$store.state.nowplaying].length" style="stroke-opacity:20%"></line> 
     <line v-for="n in $store.state.n_bars+1" stroke-width="2" stroke="#000000" :x1="(n-1)*note_width*4" :x2="(n-1)*note_width*4" y1="0" :y2="note_height*lanes[$store.state.nowplaying].length" style="stroke-opacity:40%"></line> 
     <!-- ノーツを描画 -->
-    <rect v-for="note in $store.state.notes[$store.state.nowplaying]" :id="'note'+note.object_id" :x="note.start_time / 480 * note_width +3" :y="lanes[$store.state.nowplaying].indexOf(note.pitch)*note_height +3" :width="note.nagasa/480 * note_width -6" :height="note_height -6" fill="#7fffd4" stroke-width="3" stroke="#ffffff" @click="note_click"></rect>
+    <rect v-for="note in $store.state.notes[$store.state.nowplaying]" :id="'note'+note.object_id" :x="note.start_time / 480 * note_width +3" :y="lanes[$store.state.nowplaying].indexOf(note.pitch)*note_height +3" :width="note.nagasa/480 * note_width -6" :height="note_height -6" :fill="$store.state.note_color[$store.state.who_make_num[note.who_make]]" stroke-width="3" stroke="#ffffff" @click="note_click"></rect>
     <!-- 横の線 -->
     <line v-for="n in lanes[$store.state.nowplaying].length" stroke="#000000" x1="0"  stroke-width="1" :x2="$store.state.n_bars*note_width*4" :y1="n*note_height" :y2="n*note_height" style="stroke-opacity: 50%;"></line>
     

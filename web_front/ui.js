@@ -16,10 +16,18 @@ const store = new Vuex.Store({
         isInRoom: false,
         who_make: "",
         roomID: "",
+        who_make_set:new Set(),
+        who_make_num:{},
+        note_color:["#00ff7f","#00ffff","#ffa500","#8a2be2","#ff00ff"]
     },
     
     mutations: {
         note_add(state, param) {
+            let who = param["note"]["who_make"];
+            if(state.who_make_set.has(who)==false){
+                state.who_make_set.add(who);
+                state.who_make_num[who] = state.who_make_set.size -1;
+            }
             state.notes[param["sound_type"]].push(param["note"]);
         },
         all_delete(state){
@@ -345,7 +353,7 @@ var input_id = new Vue({
             params_for_create_room['name'] = roomID;
             params_for_create_room['bpm'] = this.$store.state.bpm;
             params_for_create_room['num_of_bar'] = this.$store.state.n_bars;
-            axios.post(url,params_for_create_room).then(res=>{
+            axios.post(create_room_url,params_for_create_room).then(res=>{
                 console.log(res);
             })
 
@@ -437,10 +445,10 @@ var input_id = new Vue({
 
             })
             let url_for_bpm_n_bars = "http://kou.hongo.wide.ad.jp:3341/status_room";
-            let params = {};
-            params["room"] = this.$store.roomID;
-            let ctrl = this;
-            const response = axios.post(url_for_bpm_n_bars,params,{ headers: headers }).then(res=>{
+            let params_for_status_room = {};
+            params_for_status_room["room"] = this.$store.roomID;
+            ctrl = this;
+            axios.post(url_for_bpm_n_bars,params_for_status_room,{ headers: headers }).then(res=>{
                 let res_bpm = res.data.bpm;
                 let res_n_bars = res.data.n_bars;
                 if(res_n_bars!=ctrl.$store.state.bpm){
