@@ -1,6 +1,7 @@
 # Joint Sound
 
-[![](https://i.imgur.com/SXlKdBI.jpg)](https://jointsound.herokuapp.com)
+
+[![](./for_readme.png)](https://jointsound.herokuapp.com)
 
 [![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2020/09/JPHACKS2020_ogp.jpg)](https://www.youtube.com/watch?v=G5rULR53uMk)
 
@@ -9,7 +10,7 @@
 * 2020年、人と話す機会が激減、**さびしい**
 * オンライン飲み会が企画された時期もあったが、共通の話題がないためか、消滅  
 * 頻繁に通話する人は、同じ作業や同じゲームをしている
-* **一緒に物を作る**ことは楽しい！今回は音楽に着目した。
+* **一緒に物を作る**ことは楽しい！今回は音楽に着目した
 * 手軽にメロディを共有する手段が欲しい(作曲用途)
 
 ### 製品説明（具体的な製品の説明）
