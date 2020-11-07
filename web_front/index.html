@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="./style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Joint Sound</title>
+  <script src="./axios.js"></script>
+  <script src="./vue.js"></script>
+  <script src="./vuex.js"></script>
+  <script src="./audio.js"></script>
+  <script src="./ui.js" defer></script>
+  <script src="./notes.js" defer></script>
+</head>
+<body><div id="wrapper">
+
+<div id="head_div">
+  <img src="img/logo.png" id="logo">
+  <div id="input_id">
+    <dl>
+      <dt>Name:</dt><dd><input id="who_make" type="text" value="名無し"></dd>
+      <dt>RoomID:</dt><dd><input id="roomID" type="text"></dd>
+    </dl>
+    <button id="enter_room" @click="enter" v-if="!$store.state.isInRoom">入室</button>
+    <button id="quit_room" @click="quit" v-if="$store.state.isInRoom">退室</button>
+  </div>
+</div>
+
+
+
+<!-- コントローラ -->
+<div id="controller" v-if="$store.state.isInRoom">
+  <img src="img/jump_left.png" height="50px" width="50px" @click="jump_left">
+  <img src="img/play.png" height="70px" width="70px" @click="play" v-if="!$store.state.isPlaying">
+  <img src="img/pause.png" height="70px" width="70px" @click="pause" v-if="$store.state.isPlaying">
+  <img src="img/stop.png" height="70px" width="70px" @click="stop">
+  <img src="img/jump_right.png" height="50px" width="50px" @click="jump_right">
+  <br>
+  <!-- シークバー -->
+  <svg viewbox="0 0 900 20" :width="seekbarWidth" height="20" style="background-color: #ffffff;" @mousedown="mousedown" @mouseup="mouseup" @mousemove="seek" id="seekbar">
+    <rect :x="seekX" y="0" width="10" height="20" fill="#ff0000"></rect>
+  </svg>
+  <br>
+  {{ parseInt($store.state.position) }} /  {{ $store.state.total_length }}
+  <br>
+  {{ (parseInt(60000/$store.state.bpm * $store.state.position/480) /1000).toFixed(3) }} / {{ (parseInt(60000/$store.state.bpm * $store.state.n_bars * 4)  /1000).toFixed(3)}}
+</div>
+
+<div id="input_options" v-if="$store.state.isInRoom">
+  小節数: <input id="shosetu" type="number" :value="$store.state.n_bars" @input="shosetu_henshu">
+  BPM: <input id="bpm" type="number" :value="$store.state.bpm" @input="bpm_henshu">
+  <br>
+  音符の長さ: <select id="edit_note_length" type="number" v-model.number="$store.state.edit_note_length">
+      <option value="1920">全音符</option>
+      <option value="960">2分音符</option>
+      <option value="480">4分音符</option>
+      <option value="240">8分音符</option>
+    </select>
+
+  <label><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" value="sine"><img src="img/sine.png" width="15" height="15"> sine</label>
+  <label><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" value="sawtooth"><img src="img/sawtooth.png" width="15" height="15">sawtooth</label>
+
+  <br>
+  <button id="all_delete" @click="$store.commit('all_delete')">all delete</button>
+</div>
+
+<!-- エディタ -->
+<div id="editor" v-if="$store.state.isInRoom">
+  <svg :viewbox="'0 0 1500 ' + note_height*lanes[$store.state.nowplaying].length" :width="$store.state.n_bars*note_width*4" :height="note_height*lanes[$store.state.nowplaying].length"  @mousemove="mouse"
+  :style=" 'background-color: #aaaaaa; margin-left: ' +  (- margin_position+100) +'px;'">
+    
+  <!-- 背景 -->
+    <rect id="editor_bg" x="0" y="0" width="100%" height="100%" fill="#708090" style="fill-opacity:100%" @mousedown="mouse_down" @mouseup="mouse_up" @click="test"></rect>
+
+    <!-- 縦の線（クオンタイズ，小節線） -->
+    <line v-for="n in $store.state.n_bars *4*480/$store.state.quantize" stroke-width="1" stroke="#ffffff" :x1="n* note_width * $store.state.quantize / 480" :x2="n* note_width * $store.state.quantize / 480" y1="0" :y2="note_height*lanes[$store.state.nowplaying].length" style="stroke-opacity:20%"></line> 
+    <line v-for="n in $store.state.n_bars+1" stroke-width="2" stroke="#000000" :x1="(n-1)*note_width*4" :x2="(n-1)*note_width*4" y1="0" :y2="note_height*lanes[$store.state.nowplaying].length" style="stroke-opacity:40%"></line> 
+    <!-- ノーツを描画 -->
+    <rect v-for="note in $store.state.notes[$store.state.nowplaying]" :id="'note'+note.object_id" :x="note.start_time / 480 * note_width +3" :y="lanes[$store.state.nowplaying].indexOf(note.pitch)*note_height +3" :width="note.nagasa/480 * note_width -6" :height="note_height -6" :fill="$store.state.note_color[$store.state.who_make_num[note.who_make]%$store.state.note_color.length]" stroke-width="3" stroke="#ffffff" @click="note_click"></rect>
+    <!-- 横の線 -->
+    <line v-for="n in lanes[$store.state.nowplaying].length" stroke="#000000" x1="0"  stroke-width="1" :x2="$store.state.n_bars*note_width*4" :y1="n*note_height" :y2="n*note_height" style="stroke-opacity: 50%;"></line>
+    
+    <!-- 再生位置の線 -->
+    <line stroke-width="2" stroke="#ff0000" :x1="margin_position" :x2="margin_position" y1="0" :y2="note_height*lanes[$store.state.nowplaying].length" style="stroke-opacity: 40%;"></line> 
+  </svg>
+
+  <!-- アイコン -->
+  <img :src="'img/' + $store.state.nowplaying + '.png'" id="edit_icon">
+  <!-- 人の名前 -->
+  <br>
+  <span v-for="value, name in $store.state.who_make_num" :style="'background-color:'+($store.state.note_color[value%$store.state.note_color.length])">{{name}}　</span>
+</div>
+
+
+
+</div></body>
+</html>

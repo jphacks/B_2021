@@ -1,0 +1,79 @@
+body{
+    width:100%;
+    height: 100%;
+    margin-left:0;
+    margin-top:0;
+    background-color: #6060a0;
+    background-image: linear-gradient(rgba(91, 111, 224, 0.95), rgba(91, 111, 224, 0.95)),url('img/logo.png');
+}
+#wrapper{
+    width: 100%;
+}
+
+#head_div{
+    background: rgba(12, 17, 48, 0.4);
+    width: 100%;
+    overflow: auto;
+    border-bottom: 1px solid #9697b8;
+}
+#logo{
+    float:left;
+    background: linear-gradient(180deg, #2d24a0 0%, #7a817a 80%, #faf6d2 100%);
+    margin-right: 40px;
+    padding: 10px;
+}
+#input_id{
+    padding-left: 30px;
+    overflow: hidden;
+    width: 300px;
+    padding-left: 20px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    text-align: center;
+    background-color: rgba(0,0,0,0.2);
+    color: #ffffff;
+}
+#input_id dt{
+    float: left;
+    width: 70px;
+}
+#input_id dd{
+    margin-left: 70px;
+}
+input[type="text"][disabled]{
+    background: #b1b1b1;
+}
+
+#controller{
+    background: linear-gradient(90deg, #606060 0%, #808080 10%, #808080 90%, #606060 100%);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: center;
+}
+
+#editor{
+    position: relative;
+    overflow:hidden;
+    width:100%;
+    background-color: #8090a0;
+}
+
+
+#editor #edit_icon{
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    width: 50px;
+    height: 50px;
+}
+
+#input_options{
+    background-color: rgba(100,100,200, 0.8);
+    width: 100% -20px;
+    padding-left: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+input[type="number"]{
+    width: 50px;
+}

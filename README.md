@@ -1,4 +1,4 @@
-# サンプル（プロダクト名）
+# Joint Sound
 
 [![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2020/09/JPHACKS2020_ogp.jpg)](https://www.youtube.com/watch?v=G5rULR53uMk)
 
@@ -19,16 +19,14 @@
 ## 開発技術
 ### 活用した技術
 #### API・データ
-* 
-* 
+* Web Audio API
 
 #### フレームワーク・ライブラリ・モジュール
-* 
-* 
+* Vue.js
+* axios
 
 #### デバイス
-* 
-* 
+* Web Audio API 対応ブラウザ
 
 ### 独自技術
 #### ハッカソンで開発した独自機能・技術
