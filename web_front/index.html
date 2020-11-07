@@ -30,9 +30,11 @@
 
 <!-- コントローラ -->
 <div id="controller" v-if="$store.state.isInRoom">
-  <img src="img/play.png" height="50px" width="50px" @click="play" v-if="!$store.state.isPlaying">
-  <img src="img/pause.png" height="50px" width="50px" @click="pause" v-if="$store.state.isPlaying">
-  <img src="img/stop.png" height="50px" width="50px" @click="stop">
+  <img src="img/jump_left.png" height="50px" width="50px" @click="jump_left">
+  <img src="img/play.png" height="70px" width="70px" @click="play" v-if="!$store.state.isPlaying">
+  <img src="img/pause.png" height="70px" width="70px" @click="pause" v-if="$store.state.isPlaying">
+  <img src="img/stop.png" height="70px" width="70px" @click="stop">
+  <img src="img/jump_right.png" height="50px" width="50px" @click="jump_right">
   <br>
   <!-- シークバー -->
   <svg viewbox="0 0 900 20" :width="seekbarWidth" height="20" style="background-color: #ffffff;" @mousedown="mousedown" @mouseup="mouseup" @mousemove="seek" id="seekbar">
@@ -74,7 +76,7 @@
     <line v-for="n in $store.state.n_bars *4*480/$store.state.quantize" stroke-width="1" stroke="#ffffff" :x1="n* note_width * $store.state.quantize / 480" :x2="n* note_width * $store.state.quantize / 480" y1="0" :y2="note_height*lanes[$store.state.nowplaying].length" style="stroke-opacity:20%"></line> 
     <line v-for="n in $store.state.n_bars+1" stroke-width="2" stroke="#000000" :x1="(n-1)*note_width*4" :x2="(n-1)*note_width*4" y1="0" :y2="note_height*lanes[$store.state.nowplaying].length" style="stroke-opacity:40%"></line> 
     <!-- ノーツを描画 -->
-    <rect v-for="note in $store.state.notes[$store.state.nowplaying]" :id="'note'+note.object_id" :x="note.start_time / 480 * note_width +3" :y="lanes[$store.state.nowplaying].indexOf(note.pitch)*note_height +3" :width="note.nagasa/480 * note_width -6" :height="note_height -6" :fill="$store.state.note_color[$store.state.who_make_num[note.who_make]]" stroke-width="3" stroke="#ffffff" @click="note_click"></rect>
+    <rect v-for="note in $store.state.notes[$store.state.nowplaying]" :id="'note'+note.object_id" :x="note.start_time / 480 * note_width +3" :y="lanes[$store.state.nowplaying].indexOf(note.pitch)*note_height +3" :width="note.nagasa/480 * note_width -6" :height="note_height -6" :fill="$store.state.note_color[$store.state.who_make_num[note.who_make]%$store.state.note_color.length]" stroke-width="3" stroke="#ffffff" @click="note_click"></rect>
     <!-- 横の線 -->
     <line v-for="n in lanes[$store.state.nowplaying].length" stroke="#000000" x1="0"  stroke-width="1" :x2="$store.state.n_bars*note_width*4" :y1="n*note_height" :y2="n*note_height" style="stroke-opacity: 50%;"></line>
     
@@ -86,7 +88,7 @@
   <img :src="'img/' + $store.state.nowplaying + '.png'" id="edit_icon">
   <!-- 人の名前 -->
   <br>
-  <span v-for="name,value in $store.state.who_make_num" :style="'background-color:'+$store.state.note_color[name]">{{value}}　</span>
+  <span v-for="value, name in $store.state.who_make_num" :style="'background-color:'+($store.state.note_color[value%$store.state.note_color.length])">{{name}}　</span>
 </div>
 
 

@@ -289,6 +289,30 @@ var controller = new Vue({
             this.$store.commit("setPlaying" , false);
             this.pausePosition = store.state.position;
         },
+        jump_left: function(event){
+            let playing = this.$store.state.isPlaying;
+            if(playing){
+                this.pause();
+            }
+            let position = Math.max(this.$store.state.position - 480*4, 0);
+            this.$store.commit("setPosition",position);
+            this.pausePosition = position;
+            if(playing){
+                this.play();
+            }
+        },
+        jump_right: function(event){
+            let playing = this.$store.state.isPlaying;
+            if(playing){
+                this.pause();
+            }
+            let position = Math.min(this.$store.state.position + 480*4, this.$store.state.total_length);
+            this.$store.commit("setPosition",position);
+            this.pausePosition = position;
+            if(playing){
+                this.play();
+            }
+        },
         seek: function(event){
             if(!this.seeking){return;}
             position = Math.floor(event.offsetX / this.seekbarWidth * this.$store.state.total_length);
