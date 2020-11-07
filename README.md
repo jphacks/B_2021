@@ -1,5 +1,6 @@
 # Joint Sound
 
+
 [![](./for_readme.png)](https://jointsound.herokuapp.com)
 
 [![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2020/09/JPHACKS2020_ogp.jpg)](https://www.youtube.com/watch?v=G5rULR53uMk)
@@ -70,4 +71,5 @@
 #### ハッカソンで開発した独自機能・技術
 * 譜面がフレーム内で流れるようにした
 * ノーツを置いた人ごとに色分け表示
+
 
