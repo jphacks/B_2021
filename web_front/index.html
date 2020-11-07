@@ -30,9 +30,11 @@
 
 <!-- コントローラ -->
 <div id="controller" v-if="$store.state.isInRoom">
-  <img src="img/play.png" height="50px" width="50px" @click="play" v-if="!$store.state.isPlaying">
-  <img src="img/pause.png" height="50px" width="50px" @click="pause" v-if="$store.state.isPlaying">
-  <img src="img/stop.png" height="50px" width="50px" @click="stop">
+  <img src="img/jump_left.png" height="50px" width="50px" @click="jump_left">
+  <img src="img/play.png" height="70px" width="70px" @click="play" v-if="!$store.state.isPlaying">
+  <img src="img/pause.png" height="70px" width="70px" @click="pause" v-if="$store.state.isPlaying">
+  <img src="img/stop.png" height="70px" width="70px" @click="stop">
+  <img src="img/jump_right.png" height="50px" width="50px" @click="jump_right">
   <br>
   <!-- シークバー -->
   <svg viewbox="0 0 900 20" :width="seekbarWidth" height="20" style="background-color: #ffffff;" @mousedown="mousedown" @mouseup="mouseup" @mousemove="seek" id="seekbar">
