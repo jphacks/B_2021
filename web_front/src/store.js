@@ -1,8 +1,9 @@
 //状態管理
 const store = new Vuex.Store({
     state: {
-        notes:{"sawtooth":[],"sine":[]},
+        notes:{"sawtooth":[],"sine":[], "drum":[]},
         nowplaying:"sine",
+        isNeiro:true,
 
         bpm: 120,   // bpm
         n_bars: 8,   // 小節数

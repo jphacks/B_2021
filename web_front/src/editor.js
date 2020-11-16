@@ -78,6 +78,9 @@ var editor = new Vue({
             });
             
         },
+        mouse_down_for_file:function(event){
+            
+        },
         mouse_up:function(event){
             this.clickup_x=event.clientX;
             this.clickup_y=event.clientY;
