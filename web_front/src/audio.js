@@ -33,24 +33,56 @@ function play_tone(sound_type, pitchname, soundLength){
     oscillator.start(ctx.currentTime);
     oscillator.stop(ctx.currentTime + soundLength);
 }
+//var music_request, music_source;
+
+// window.onload = function () {
+//     music_request = new XMLHttpRequest();
+//     music_request.open("GET", "./audio/megaton.m4a", true);
+//     music_request.responseType = "arraybuffer";
+//     music_request.onload = completeOnLoad;
+//     music_request.send();
+// };
+
+// function completeOnLoad() {
+//   //window.AudioContext = window.AudioContext || window.webkitAudioContext;
+//   // オーディオをデコード
+//   console.log("------response_data---------")
+//   console.log(JSON.parse(JSON.stringify(music_request.response)));
+//   ctx.decodeAudioData(music_request.response, function (buf) {
+//     music_source = buf;
+
+//   });
 
 
-var drumElement = new Audio("./audio/drum1.wav");
-var drum = ctx.createMediaElementSource(drumElement);
+// }
 
-// wavファイルの読み込み
-function playdrum(){
-    if(ctx.state === "suspended"){
-        ctx.resume();
-    }
 
-    drumElement.currentTime = 11000;
-    // 出力につなげる
-    drum.connect(ctx.destination);
-    drumElement.play();
 
-    drumElement = new Audio("./audio/drum1.wav");
-    drum = ctx.createMediaElementSource(drumElement);
+// // wavファイルの読み込み
+// function playdrum(){
+//   // var drumElement = new Audio();
+//   // drumElement.src="./audio/drum1.wav"
+//   //   if(ctx.state === "suspended"){
+//   //       ctx.resume();
+//   //   }
+    
+//   //   let drum = ctx.createMediaElementSource(drumElement);
 
-    return 0;
-};
+//   //   //drumElement.currentTime = 11000;
+//   //   // 出力につなげる
+//   //   drum.connect(ctx.destination);
+//   //   drumElement.play();
+//   console.log("sourceの秒数")
+//   console.log(source.length/source.sampleRate)
+//   let buf = ctx.createBufferSource();
+//   buf.buffer = music_source;
+//   buf.connect(ctx.destination);
+//   console.log(buf)
+//   console.log(typeof(buf))
+//   //3~6秒を再生するよん
+//   buf.start(0,30,40);
+//   // buf.stop(ctx.currentTime+3)
+//   console.log("--------------------playnow-----------------------")
+
+//     return 0;
+// };

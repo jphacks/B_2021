@@ -35,6 +35,21 @@ var input_id = new Vue({
     },
     methods:{
         enter(state, value){
+            //---音声読み込み用処理---
+            let music_request = new XMLHttpRequest();
+            music_request.open("GET", "./audio/loop1.wav", true);
+            music_request.responseType = "arraybuffer";
+            music_request.onload = ()=>{
+                ctx.decodeAudioData(music_request.response, function (buf) {
+                    let music_source = buf;
+                    let file_param = {};
+                    file_param['name'] = 'tmp';
+                    file_param['file'] = music_source;
+                    this.$store.commit('set_filemusic', file_param);
+                  });
+            }
+            music_request.send();
+            //---音声読み込み用処理---
             let who_make = document.getElementById("who_make").value;
             let roomID = document.getElementById("roomID").value;
 

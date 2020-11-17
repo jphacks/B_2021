@@ -12,8 +12,7 @@ var editor = new Vue({
             click_y:0,
             clickup_x:0,
             clickup_y:0,
-
-            lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"]},
+            lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"drum":["dummy"]},
     },
     mounted(){
         
@@ -37,8 +36,8 @@ var editor = new Vue({
             this.click_y = event.offsetY;
 
             var tonenum = parseInt(this.click_y/this.note_height);
-            play_tone(this.$store.state.nowplaying, this.lanes[this.$store.state.nowplaying][tonenum], 0.3); // audio.js
-            
+            //play_tone(this.$store.state.nowplaying, this.lanes[this.$store.state.nowplaying][tonenum], 0.3); // audio.js
+            playdrum();
             // 時間は4分音符を480として規格化
             var start_time = parseInt((this.click_x/this.note_width)*480 /store.state.quantize)*store.state.quantize;
             var pitch_name = this.lanes[this.$store.state.nowplaying][parseInt(this.click_y/this.note_height)];
@@ -79,7 +78,7 @@ var editor = new Vue({
             
         },
         mouse_down_for_file:function(event){
-            
+
         },
         mouse_up:function(event){
             this.clickup_x=event.clientX;

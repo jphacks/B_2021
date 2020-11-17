@@ -19,12 +19,15 @@ const store = new Vuex.Store({
         roomID: "",
         who_make_set:new Set(),
         who_make_num:{},
-        note_color:["#00ff7f","#00ffff","#ffa500","#8a2be2","#ff00ff"]
+        note_color:["#00ff7f","#00ffff","#ffa500","#8a2be2","#ff00ff"],
+
+        file_info:{},
+        file_data:{},
     },
     
     mutations: {
         shokika(state){
-            state.notes = {"sawtooth":[],"sine":[]};
+            state.notes = {"sawtooth":[],"sine":[], "drum":[]};
             state.nowplaying = "sine";
             state.bpm = 120;
             state.n_bars = 8;
@@ -38,6 +41,8 @@ const store = new Vuex.Store({
             state.roomID = "";
             state.who_make_set = new Set();
             state.who_make_num = {};
+            state.file_length = {};
+            state.file_data = {};
 
         },
         note_add(state, param) {
@@ -112,6 +117,11 @@ const store = new Vuex.Store({
         },
         set_bpm(state, value){
             state.bpm = parseInt(value);
+        },
+        set_filemusic(state, param){
+            state.file_length[param['name']] = param['file'].length / param['file'].sampleRate;
+            state.file_data[param['name']] = param['file'];
+
         }
     }
 })
