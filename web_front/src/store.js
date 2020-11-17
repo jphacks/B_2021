@@ -20,8 +20,9 @@ const store = new Vuex.Store({
         who_make_set:new Set(),
         who_make_num:{},
         note_color:["#00ff7f","#00ffff","#ffa500","#8a2be2","#ff00ff"],
+        not_file:["sawtooth","sine"],
 
-        file_info:{},
+        file_length:{},
         file_data:{},
     },
     
@@ -120,6 +121,8 @@ const store = new Vuex.Store({
         },
         set_filemusic(state, param){
             state.file_length[param['name']] = param['file'].length / param['file'].sampleRate;
+            console.log("----------store log-------")
+            console.log(state.file_length[param['name']])
             state.file_data[param['name']] = param['file'];
 
         }

@@ -39,13 +39,14 @@ var input_id = new Vue({
             let music_request = new XMLHttpRequest();
             music_request.open("GET", "./audio/loop1.wav", true);
             music_request.responseType = "arraybuffer";
+            let now = this;
             music_request.onload = ()=>{
                 ctx.decodeAudioData(music_request.response, function (buf) {
                     let music_source = buf;
                     let file_param = {};
                     file_param['name'] = 'tmp';
                     file_param['file'] = music_source;
-                    this.$store.commit('set_filemusic', file_param);
+                    now.$store.commit('set_filemusic', file_param);
                   });
             }
             music_request.send();
