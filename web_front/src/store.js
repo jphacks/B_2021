@@ -22,6 +22,7 @@ const store = new Vuex.Store({
         note_color:["#00ff7f","#00ffff","#ffa500","#8a2be2","#ff00ff"],
         not_file:["sawtooth","sine"],
 
+        lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"drum":["dummy"]},
         file_length:{},
         file_data:{},
     },
@@ -44,6 +45,7 @@ const store = new Vuex.Store({
             state.who_make_num = {};
             state.file_length = {};
             state.file_data = {};
+            state.lanes = {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"drum":["dummy"]};
 
         },
         note_add(state, param) {
@@ -100,7 +102,7 @@ const store = new Vuex.Store({
                             if(pitch_name!="dummy"){
                                 play_tone(key,pitch_name,note_length_sec);
                             }else{
-                                play_tone(key,pitch_name,note_length_sec, state.file_data['drum'])
+                                play_tone(key,pitch_name,note_length_sec, state.file_data[key])
                             }
                         }
                     }
@@ -129,6 +131,11 @@ const store = new Vuex.Store({
             console.log(state.file_length[param['name']])
             state.file_data[param['name']] = param['file'];
 
+        },
+        lane_add(state, param){
+            state.lanes[param['name']] = ["dummy"];
+            state.notes[param['name']] = [];
+            state.nowplaying = param["name"]
         }
     }
 })

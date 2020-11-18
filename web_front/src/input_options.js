@@ -23,6 +23,28 @@ var input_options = new Vue({
                 console.log(res);
             })
             this.$store.commit('set_bpm',parseInt(document.getElementById('bpm').value));
+        },
+        file_input:function(e){
+            console.log("--------fuke--------")
+            console.log(e.target);
+            let file_list = e.target.files;
+            for(let i=0;i<file_list.length;i++){
+                let reader = new FileReader();
+                reader.readAsArrayBuffer(file_list[i]);
+                let now = this;
+                reader.onload = function(){
+                    console.log("data入れる--------")
+                    console.log(reader.result)
+                    ctx.decodeAudioData(reader.result, function (buf) {
+                        let music_source = buf;
+                        let file_param = {};
+                        file_param['name'] = file_list[i].name;
+                        file_param['file'] = music_source;
+                        now.$store.commit('set_filemusic', file_param);
+                        now.$store.commit('lane_add',{'name':file_param['name']})
+                    });
+                }
+            }
         }
     }
 });
@@ -47,7 +69,7 @@ var input_id = new Vue({
                     file_param['name'] = 'drum';
                     file_param['file'] = music_source;
                     now.$store.commit('set_filemusic', file_param);
-                  });
+                });
             }
             music_request.send();
             //---音声読み込み用処理---
@@ -75,6 +97,8 @@ var input_id = new Vue({
             document.getElementById("who_make").setAttribute("disabled","disabled");
             document.getElementById("roomID").setAttribute("disabled","disabled");
             this.intervalId = setInterval(this.postRequest, 1000);
+
+            
 
         },
         quit(state, value){

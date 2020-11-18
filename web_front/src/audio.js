@@ -4,7 +4,6 @@
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 const ctx = new AudioContext();
-
 // オシレーターやってみる
 const pitchname2freq = {
     "C3": 130.813,
