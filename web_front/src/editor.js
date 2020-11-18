@@ -39,16 +39,10 @@ var editor = new Vue({
             //play_tone(this.$store.state.nowplaying, this.lanes[this.$store.state.nowplaying][tonenum], 0.3); // audio.js
             //playdrum();
             // 時間は4分音符を480として規格化
-            // 音源fileかそうでないかの判定
-            if(this.$store.state.not_file.includes(this.$store.state.nowplaying)){
-                var start_time = parseInt((this.click_x/this.note_width)*480 /store.state.quantize)*store.state.quantize;
-                var pitch_name = this.lanes[this.$store.state.nowplaying][parseInt(this.click_y/this.note_height)];
-                var nagasa = store.state.edit_note_length;
-            }else{
-                var start_time = parseInt((this.click_x/this.note_width)*480 /store.state.quantize)*store.state.quantize;
-                var pitch_name = "dummy";
-                var nagasa = this.$store.state.file_length[this.$store.state.nowplaying];
-            }
+            var start_time = parseInt((this.click_x/this.note_width)*480 /store.state.quantize)*store.state.quantize;
+            var pitch_name = this.lanes[this.$store.state.nowplaying][parseInt(this.click_y/this.note_height)];
+            var nagasa = store.state.edit_note_length;
+            
 
             // ノーツが重なってはよくないからチェック
             for(let i in store.state.notes[this.$store.state.nowplaying]){

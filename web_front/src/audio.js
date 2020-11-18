@@ -17,21 +17,28 @@ const pitchname2freq = {
     "C4": 261.626
 }
 
-function play_tone(sound_type, pitchname, soundLength){
-    // ゲイン
-    var gainNode = ctx.createGain();
-    gainNode.gain.value = 0.3;
-    // オシレーター
-    var oscillator = ctx.createOscillator();
-    // オシレーター→ゲイン→出力
-    oscillator.connect(gainNode);
-    gainNode.connect(ctx.destination);
+function play_tone(sound_type, pitchname, soundLength, source=null){
+    if(source==null){
+        // ゲイン
+        var gainNode = ctx.createGain();
+        gainNode.gain.value = 0.3;
+        // オシレーター
+        var oscillator = ctx.createOscillator();
+        // オシレーター→ゲイン→出力
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
 
-    oscillator.type = sound_type;
-    oscillator.frequency.value = pitchname2freq[pitchname];
+        oscillator.type = sound_type;
+        oscillator.frequency.value = pitchname2freq[pitchname];
 
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + soundLength);
+        oscillator.start(ctx.currentTime);
+        oscillator.stop(ctx.currentTime + soundLength);
+    }else{
+        let buf = ctx.createBufferSource();
+        buf.buffer = source;
+        buf.connect(ctx.destination);
+        buf.start(0,0,soundLength);
+    }
 }
 //var music_request, music_source;
 

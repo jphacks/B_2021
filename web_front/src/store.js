@@ -97,7 +97,11 @@ const store = new Vuex.Store({
                         var pitch_name = note["pitch"];
                         var note_length_sec = 60/state.bpm * note["nagasa"]/480;
                         if(prev_position<=start_time && start_time<=new_position){
-                            play_tone(key,pitch_name,note_length_sec);
+                            if(pitch_name!="dummy"){
+                                play_tone(key,pitch_name,note_length_sec);
+                            }else{
+                                play_tone(key,pitch_name,note_length_sec, state.file_data['drum'])
+                            }
                         }
                     }
                 }
