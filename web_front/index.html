@@ -29,7 +29,12 @@
   </div>
 </div>
 
-
+<div>
+  録音テスト
+  <button onclick="record_start()">録音開始</button>
+  <button onclick="record_stop()">録音停止</button>
+  <button onclick="record_play()">再生</button>
+</div>
 
 <!-- コントローラ -->
 <div id="controller" v-if="$store.state.isInRoom">
