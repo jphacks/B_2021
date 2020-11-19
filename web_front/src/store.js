@@ -3,7 +3,6 @@ const store = new Vuex.Store({
     state: {
         notes:{"sawtooth":[],"sine":[], "drum":[]},
         nowplaying:"sine",
-        isNeiro:true,
 
         bpm: 120,   // bpm
         n_bars: 8,   // 小節数
@@ -55,6 +54,7 @@ const store = new Vuex.Store({
                 state.who_make_num[who] = state.who_make_set.size -1;
             }
             state.notes[param["sound_type"]].push(param["note"]);
+            //console.log(state.notes);
         },
         all_delete(state){
             //サーバーから情報消す
@@ -126,15 +126,19 @@ const store = new Vuex.Store({
             state.bpm = parseInt(value);
         },
         set_filemusic(state, param){
-            state.file_length[param['name']] = param['file'].length / param['file'].sampleRate;
+            //state.file_length[param['name']] = param['file'].length / param['file'].sampleRate;
+            Vue.set(state.file_length, param['name'], param['file'].length / param['file'].sampleRate);
             console.log("----------store log-------")
             console.log(state.file_length[param['name']])
-            state.file_data[param['name']] = param['file'];
+            // state.file_data[param['name']] = param['file'];
+            Vue.set(state.file_data,param['name'],param['file']);
 
         },
         lane_add(state, param){
-            state.lanes[param['name']] = ["dummy"];
-            state.notes[param['name']] = [];
+            // state.lanes[param['name']] = ["dummy"];
+            Vue.set(state.lanes, param['name'],["dummy"]);
+            // state.notes[param['name']] = [];
+            Vue.set(state.notes, param['name'], []);
             state.nowplaying = param["name"]
         }
     }

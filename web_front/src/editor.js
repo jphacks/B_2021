@@ -76,8 +76,8 @@ var editor = new Vue({
 
             // });
             console.log("----note------")
-            console.log(note);
             ctrl.$store.commit('note_add',{"note":note,"sound_type":ctrl.$store.state.nowplaying});
+            console.log(ctrl.$store.state.notes)
 
             
         },
