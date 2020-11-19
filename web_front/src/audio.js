@@ -91,8 +91,8 @@ function play_tone(sound_type, pitchname, soundLength, source=null){
 //   console.log("--------------------playnow-----------------------")
 
 
-    return 0;
-};
+//    return 0;
+//};
 
 // 録音
 // 参考 https://python5.com/q/yivdsdor
