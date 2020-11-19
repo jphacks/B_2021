@@ -90,5 +90,49 @@ function play_tone(sound_type, pitchname, soundLength, source=null){
 //   // buf.stop(ctx.currentTime+3)
 //   console.log("--------------------playnow-----------------------")
 
-//     return 0;
-// };
+
+    return 0;
+};
+
+// 録音
+// 参考 https://python5.com/q/yivdsdor
+// Safari 未対応
+// マイクへのアクセス許可を得る
+navigator.mediaDevices.getUserMedia({
+    audio : true,
+    video: false
+}).then( stream => {
+    let recorder = new MediaRecorder(stream);
+    let audioBuffer;
+
+    document.record_start = function(){
+        console.log("start recording");
+        recorder.start();
+        // stop()後，データを処理する
+        recorder.addEventListener("dataavailable", (e)=>{
+            // 録音したデータを配列として取り出す
+            e.data.arrayBuffer().then(arrayBuffer=>{
+                // audioBufferに変換
+                ctx.decodeAudioData(arrayBuffer, (buf)=>{
+                    audioBuffer = buf;
+                });
+            });
+            
+        });
+    }
+    
+
+    document.record_stop = function(){
+        console.log("stop recording");
+        recorder.stop();
+    };
+    
+    document.record_play = function(){
+        console.log("play recorded sound");
+        bufsrc = ctx.createBufferSource();
+        bufsrc.buffer = audioBuffer;
+        bufsrc.connect(ctx.destination);
+        bufsrc.start();
+    };
+});
+
