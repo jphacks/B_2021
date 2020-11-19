@@ -1,7 +1,7 @@
 //状態管理
 const store = new Vuex.Store({
     state: {
-        notes:{"sawtooth":[],"sine":[]},
+        notes:{"sawtooth":[],"sine":[], "drum":[]},
         nowplaying:"sine",
 
         bpm: 120,   // bpm
@@ -18,12 +18,17 @@ const store = new Vuex.Store({
         roomID: "",
         who_make_set:new Set(),
         who_make_num:{},
-        note_color:["#00ff7f","#00ffff","#ffa500","#8a2be2","#ff00ff"]
+        note_color:["#00ff7f","#00ffff","#ffa500","#8a2be2","#ff00ff"],
+        not_file:["sawtooth","sine"],
+
+        lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"drum":["dummy"]},
+        file_length:{},
+        file_data:{},
     },
     
     mutations: {
         shokika(state){
-            state.notes = {"sawtooth":[],"sine":[]};
+            state.notes = {"sawtooth":[],"sine":[], "drum":[]};
             state.nowplaying = "sine";
             state.bpm = 120;
             state.n_bars = 8;
@@ -37,6 +42,9 @@ const store = new Vuex.Store({
             state.roomID = "";
             state.who_make_set = new Set();
             state.who_make_num = {};
+            state.file_length = {};
+            state.file_data = {};
+            state.lanes = {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"drum":["dummy"]};
 
         },
         note_add(state, param) {
@@ -46,6 +54,7 @@ const store = new Vuex.Store({
                 state.who_make_num[who] = state.who_make_set.size -1;
             }
             state.notes[param["sound_type"]].push(param["note"]);
+            //console.log(state.notes);
         },
         all_delete(state){
             //サーバーから情報消す
@@ -90,7 +99,11 @@ const store = new Vuex.Store({
                         var pitch_name = note["pitch"];
                         var note_length_sec = 60/state.bpm * note["nagasa"]/480;
                         if(prev_position<=start_time && start_time<=new_position){
-                            play_tone(key,pitch_name,note_length_sec);
+                            if(pitch_name!="dummy"){
+                                play_tone(key,pitch_name,note_length_sec);
+                            }else{
+                                play_tone(key,pitch_name,note_length_sec, state.file_data[key])
+                            }
                         }
                     }
                 }
@@ -111,6 +124,22 @@ const store = new Vuex.Store({
         },
         set_bpm(state, value){
             state.bpm = parseInt(value);
+        },
+        set_filemusic(state, param){
+            //state.file_length[param['name']] = param['file'].length / param['file'].sampleRate;
+            Vue.set(state.file_length, param['name'], param['file'].length / param['file'].sampleRate);
+            console.log("----------store log-------")
+            console.log(state.file_length[param['name']])
+            // state.file_data[param['name']] = param['file'];
+            Vue.set(state.file_data,param['name'],param['file']);
+
+        },
+        lane_add(state, param){
+            // state.lanes[param['name']] = ["dummy"];
+            Vue.set(state.lanes, param['name'],["dummy"]);
+            // state.notes[param['name']] = [];
+            Vue.set(state.notes, param['name'], []);
+            state.nowplaying = param["name"]
         }
     }
 })

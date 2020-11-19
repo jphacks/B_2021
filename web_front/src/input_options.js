@@ -23,6 +23,28 @@ var input_options = new Vue({
                 console.log(res);
             })
             this.$store.commit('set_bpm',parseInt(document.getElementById('bpm').value));
+        },
+        file_input:function(e){
+            console.log("--------fuke--------")
+            console.log(e.target);
+            let file_list = e.target.files;
+            for(let i=0;i<file_list.length;i++){
+                let reader = new FileReader();
+                reader.readAsArrayBuffer(file_list[i]);
+                let now = this;
+                reader.onload = function(){
+                    console.log("data入れる--------")
+                    console.log(reader.result)
+                    ctx.decodeAudioData(reader.result, function (buf) {
+                        let music_source = buf;
+                        let file_param = {};
+                        file_param['name'] = file_list[i].name;
+                        file_param['file'] = music_source;
+                        now.$store.commit('set_filemusic', file_param);
+                        now.$store.commit('lane_add',{'name':file_param['name']})
+                    });
+                }
+            }
         }
     }
 });
@@ -35,6 +57,22 @@ var input_id = new Vue({
     },
     methods:{
         enter(state, value){
+            //---音声読み込み用処理---
+            let music_request = new XMLHttpRequest();
+            music_request.open("GET", "./audio/loop1.wav", true);
+            music_request.responseType = "arraybuffer";
+            let now = this;
+            music_request.onload = ()=>{
+                ctx.decodeAudioData(music_request.response, function (buf) {
+                    let music_source = buf;
+                    let file_param = {};
+                    file_param['name'] = 'drum';
+                    file_param['file'] = music_source;
+                    now.$store.commit('set_filemusic', file_param);
+                });
+            }
+            music_request.send();
+            //---音声読み込み用処理---
             let who_make = document.getElementById("who_make").value;
             let roomID = document.getElementById("roomID").value;
 
@@ -60,6 +98,8 @@ var input_id = new Vue({
             document.getElementById("roomID").setAttribute("disabled","disabled");
             this.intervalId = setInterval(this.postRequest, 1000);
 
+            
+
         },
         quit(state, value){
             clearInterval(this.intervalId);
@@ -81,65 +121,65 @@ var input_id = new Vue({
                 'Content-Type': 'application/json'
             };
             let ctrl = this;
-            const response = axios.post(url,params,{ headers: headers }).then(res=>{
-                //ノーツの差分見て追加する処理
-                let return_notes = res.data.sounds;
-                let add_index_list = [];
-                for(let i = 0;i < return_notes.length; i++){
-                    let continue_flag = -1;
-                    for(let index = 0;index<parseInt(Object.keys(ctrl.$store.state.notes).length);index++){
-                        let key = index;
-                        key = Object.keys(ctrl.$store.state.notes)[key];
-                        if(return_notes[i]['sound_type']!=key){
-                            continue
-                        }
+            // const response = axios.post(url,params,{ headers: headers }).then(res=>{
+            //     //ノーツの差分見て追加する処理
+            //     let return_notes = res.data.sounds;
+            //     let add_index_list = [];
+            //     for(let i = 0;i < return_notes.length; i++){
+            //         let continue_flag = -1;
+            //         for(let index = 0;index<parseInt(Object.keys(ctrl.$store.state.notes).length);index++){
+            //             let key = index;
+            //             key = Object.keys(ctrl.$store.state.notes)[key];
+            //             if(return_notes[i]['sound_type']!=key){
+            //                 continue
+            //             }
                         
-                        for(let j = 0; j < ctrl.$store.state.notes[key].length; j++){
-                            if((return_notes[i]['start']==ctrl.$store.state.notes[key][j]['start_time'])&&
-                            (return_notes[i]['pitch_name']==ctrl.$store.state.notes[key][j]['pitch'])&&
-                            (return_notes[i]['sound_type']==ctrl.$store.state.notes[key][j]['sound_type'])
-                            ){
-                                continue_flag = 1;
-                                break;
-                            }
+            //             for(let j = 0; j < ctrl.$store.state.notes[key].length; j++){
+            //                 if((return_notes[i]['start']==ctrl.$store.state.notes[key][j]['start_time'])&&
+            //                 (return_notes[i]['pitch_name']==ctrl.$store.state.notes[key][j]['pitch'])&&
+            //                 (return_notes[i]['sound_type']==ctrl.$store.state.notes[key][j]['sound_type'])
+            //                 ){
+            //                     continue_flag = 1;
+            //                     break;
+            //                 }
                             
-                        }
-                        if(continue_flag == 1){
-                            console.log("continue_flag")
-                            console.log(return_notes[i])
-                            break;
-                        }
-                        let new_note = new Note(return_notes[i]['pitch_name'], return_notes[i]['start'], return_notes[i]['length'], return_notes[i]['room'], return_notes[i]['made_by'], return_notes[i]['sound_type'])
-                        new_note.object_id = return_notes[i]['id'];
-                        ctrl.$store.commit('note_add',{"sound_type":new_note['sound_type'], "note":new_note});
-                    }
-                }
-                //ノーツの差分見て削除する処理
-                for(let index = 0;index<Object.keys(ctrl.$store.state.notes).length;index++){
-                    let key = index;
-                    key = Object.keys(ctrl.$store.state.notes)[key];
-                    for(let i = 0;i < ctrl.$store.state.notes[key].length; i++){
-                        let break_flag = -1;
-                        for(let j = 0; j < return_notes.length; j++){
-                            if((return_notes[j]['start']==ctrl.$store.state.notes[key][i]['start_time'])&&
-                            (return_notes[j]['pitch_name']==ctrl.$store.state.notes[key][i]['pitch'])&&
-                            (return_notes[j]['sound_type']==ctrl.$store.state.notes[key][i]['sound_type'])
-                            ){
-                                break_flag = 1;
-                                break;
-                            }
+            //             }
+            //             if(continue_flag == 1){
+            //                 console.log("continue_flag")
+            //                 console.log(return_notes[i])
+            //                 break;
+            //             }
+            //             let new_note = new Note(return_notes[i]['pitch_name'], return_notes[i]['start'], return_notes[i]['length'], return_notes[i]['room'], return_notes[i]['made_by'], return_notes[i]['sound_type'])
+            //             new_note.object_id = return_notes[i]['id'];
+            //             ctrl.$store.commit('note_add',{"sound_type":new_note['sound_type'], "note":new_note});
+            //         }
+            //     }
+            //     //ノーツの差分見て削除する処理
+            //     for(let index = 0;index<Object.keys(ctrl.$store.state.notes).length;index++){
+            //         let key = index;
+            //         key = Object.keys(ctrl.$store.state.notes)[key];
+            //         for(let i = 0;i < ctrl.$store.state.notes[key].length; i++){
+            //             let break_flag = -1;
+            //             for(let j = 0; j < return_notes.length; j++){
+            //                 if((return_notes[j]['start']==ctrl.$store.state.notes[key][i]['start_time'])&&
+            //                 (return_notes[j]['pitch_name']==ctrl.$store.state.notes[key][i]['pitch'])&&
+            //                 (return_notes[j]['sound_type']==ctrl.$store.state.notes[key][i]['sound_type'])
+            //                 ){
+            //                     break_flag = 1;
+            //                     break;
+            //                 }
                             
-                        }
-                        if(break_flag == 1){
-                            continue;
-                        }
-                        ctrl.$store.commit('delete_note',{click_note_pitch:ctrl.$store.state.notes[key][i]['pitch'],click_note_start_time:ctrl.$store.state.notes[key][i]['start_time']});
-                    }
-                }
+            //             }
+            //             if(break_flag == 1){
+            //                 continue;
+            //             }
+            //             ctrl.$store.commit('delete_note',{click_note_pitch:ctrl.$store.state.notes[key][i]['pitch'],click_note_start_time:ctrl.$store.state.notes[key][i]['start_time']});
+            //         }
+            //     }
 
 
 
-            })
+            // })
             let url_for_bpm_n_bars = "https://kou.hongo.wide.ad.jp:3341/status_room";
             let params_for_status_room = {};
             params_for_status_room["name"] = this.$store.state.roomID;

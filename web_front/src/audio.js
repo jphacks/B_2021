@@ -4,7 +4,6 @@
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 const ctx = new AudioContext();
-
 // オシレーターやってみる
 const pitchname2freq = {
     "C3": 130.813,
@@ -17,40 +16,80 @@ const pitchname2freq = {
     "C4": 261.626
 }
 
-function play_tone(sound_type, pitchname, soundLength){
-    // ゲイン
-    var gainNode = ctx.createGain();
-    gainNode.gain.value = 0.3;
-    // オシレーター
-    var oscillator = ctx.createOscillator();
-    // オシレーター→ゲイン→出力
-    oscillator.connect(gainNode);
-    gainNode.connect(ctx.destination);
+function play_tone(sound_type, pitchname, soundLength, source=null){
+    if(source==null){
+        // ゲイン
+        var gainNode = ctx.createGain();
+        gainNode.gain.value = 0.3;
+        // オシレーター
+        var oscillator = ctx.createOscillator();
+        // オシレーター→ゲイン→出力
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
 
-    oscillator.type = sound_type;
-    oscillator.frequency.value = pitchname2freq[pitchname];
+        oscillator.type = sound_type;
+        oscillator.frequency.value = pitchname2freq[pitchname];
 
-    oscillator.start(ctx.currentTime);
-    oscillator.stop(ctx.currentTime + soundLength);
-}
-
-
-var drumElement = new Audio("./audio/drum1.wav");
-var drum = ctx.createMediaElementSource(drumElement);
-
-// wavファイルの読み込み
-function playdrum(){
-    if(ctx.state === "suspended"){
-        ctx.resume();
+        oscillator.start(ctx.currentTime);
+        oscillator.stop(ctx.currentTime + soundLength);
+    }else{
+        let buf = ctx.createBufferSource();
+        buf.buffer = source;
+        buf.connect(ctx.destination);
+        buf.start(0,0,soundLength);
     }
+}
+//var music_request, music_source;
 
-    drumElement.currentTime = 11000;
-    // 出力につなげる
-    drum.connect(ctx.destination);
-    drumElement.play();
+// window.onload = function () {
+//     music_request = new XMLHttpRequest();
+//     music_request.open("GET", "./audio/megaton.m4a", true);
+//     music_request.responseType = "arraybuffer";
+//     music_request.onload = completeOnLoad;
+//     music_request.send();
+// };
 
-    drumElement = new Audio("./audio/drum1.wav");
-    drum = ctx.createMediaElementSource(drumElement);
+// function completeOnLoad() {
+//   //window.AudioContext = window.AudioContext || window.webkitAudioContext;
+//   // オーディオをデコード
+//   console.log("------response_data---------")
+//   console.log(JSON.parse(JSON.stringify(music_request.response)));
+//   ctx.decodeAudioData(music_request.response, function (buf) {
+//     music_source = buf;
+
+//   });
+
+
+// }
+
+
+
+// // wavファイルの読み込み
+// function playdrum(){
+//   // var drumElement = new Audio();
+//   // drumElement.src="./audio/drum1.wav"
+//   //   if(ctx.state === "suspended"){
+//   //       ctx.resume();
+//   //   }
+    
+//   //   let drum = ctx.createMediaElementSource(drumElement);
+
+//   //   //drumElement.currentTime = 11000;
+//   //   // 出力につなげる
+//   //   drum.connect(ctx.destination);
+//   //   drumElement.play();
+//   console.log("sourceの秒数")
+//   console.log(source.length/source.sampleRate)
+//   let buf = ctx.createBufferSource();
+//   buf.buffer = music_source;
+//   buf.connect(ctx.destination);
+//   console.log(buf)
+//   console.log(typeof(buf))
+//   //3~6秒を再生するよん
+//   buf.start(0,30,40);
+//   // buf.stop(ctx.currentTime+3)
+//   console.log("--------------------playnow-----------------------")
+
 
     return 0;
 };
