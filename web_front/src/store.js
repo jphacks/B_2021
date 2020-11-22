@@ -1,7 +1,7 @@
 //状態管理
 const store = new Vuex.Store({
     state: {
-        notes:{"sawtooth":[],"sine":[], "drum":[]},
+        notes:{"sawtooth":[],"sine":[], "audiofile":[], "recorded":[]},
         nowplaying:"sine",
 
         bpm: 120,   // bpm
@@ -28,7 +28,7 @@ const store = new Vuex.Store({
             "recorded":[]
         },//キーデータ(ファイルとかはdummyで1レーン分になるようになってる)
 
-        lanes_for_html:{"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "voice":[]},//svgをv-forで回したいので
+        //lanes_for_html:{"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "voice":[]},//svgをv-forで回したいので
         file_length:{},//ファイルの曲の長さ(秒単位)
         file_data:{},//ファイルデータ
         
@@ -39,7 +39,7 @@ const store = new Vuex.Store({
     
     mutations: {
         shokika(state){
-            state.notes = {"sawtooth":[],"sine":[], "drum":[]};
+            state.notes = {"sawtooth":[],"sine":[], "audiofile":[], "recorded":[]};
             state.nowplaying = "sine";
             state.bpm = 120;
             state.n_bars = 8;
@@ -151,11 +151,13 @@ const store = new Vuex.Store({
             Vue.set(state.file_data,param['name'],param['file']);
         },
         lane_add(state, param){
-            // state.lanes[param['name']] = ["dummy"];
-            Vue.set(state.lanes, param['name'],["dummy"]);
-            // state.notes[param['name']] = [];
-            Vue.set(state.notes, param['name'], []);
-            state.nowplaying = param["name"]
+            let type = param["type"];
+            let lane_name = param["name"];
+            console.log(type);
+            state.lanes[type].push(lane_name);
+            //Vue.set(state.lanes, param['name'],["dummy"]);
+            //Vue.set(state.notes, param['name'], []);
+            state.nowplaying = type;
         }
     }
 })

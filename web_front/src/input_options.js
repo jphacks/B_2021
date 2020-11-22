@@ -41,7 +41,7 @@ var input_options = new Vue({
                         file_param['name'] = file_list[i].name;
                         file_param['file'] = music_source;
                         now.$store.commit('set_filemusic', file_param);
-                        now.$store.commit('lane_add',{'name':file_param['name']})
+                        now.$store.commit('lane_add',{'type': 'audiofile', 'name':file_param['name']})
                     });
                 }
             }
@@ -57,13 +57,10 @@ var input_options = new Vue({
         },
         record_add_btn: function(e){
             let recorded_buf = document.return_buf();
-            let param = {
-                // とりあえず．かぶらないように名前に現在時刻を持たせています
+            this.$store.commit('lane_add', {
                 'name': String(performance.now()),
-                'type_value': 'voice',
-            };
-
-
+                'type': 'recorded',
+            });
         }
     }
 });
