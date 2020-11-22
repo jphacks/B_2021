@@ -60,8 +60,8 @@
     </select>
 
   <!-- 種類 -->
-  <label v-for="key,value in $store.state.lanes">
-    <input type="radio" name="nowplaying" v-model="$store.state.nowplaying" :value="key"><img src="img/sine.png" width="15" height="15">{{value}}
+  <label v-for="value, key in $store.state.lanes">
+    <input type="radio" name="nowplaying" v-model="$store.state.nowplaying" :value="key"><img src="img/sine.png" width="15" height="15">{{key}}
   </label>
 
   <br>
