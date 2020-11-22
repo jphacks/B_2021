@@ -54,7 +54,7 @@ var editor = new Vue({
             }
             
             // 配列に追加
-            let note = new Note(pitch_name,start_time,nagasa,document.getElementById("roomID").value,document.getElementById("who_make").value,type_value);
+            let note = new Note(pitch_name,start_time,nagasa,document.getElementById("roomID").value,document.getElementById("who_make").value,type_value, this.$store.state.nowfilter);
 
             //サーバーに情報送り付ける
             let params = {};
