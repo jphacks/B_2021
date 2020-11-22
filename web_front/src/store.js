@@ -32,6 +32,8 @@ const store = new Vuex.Store({
         file_length:{},//ファイルの曲の長さ(秒単位)
         file_data:{},//ファイルデータ
         
+        recorded_buf: {},
+
         //for filter
         nowfilter:"allpass",
         filter_list:["allpass","highpass","lowpass"],
@@ -109,17 +111,21 @@ const store = new Vuex.Store({
             // 再生中なら音を鳴らす
             // とりあえずnotes[]全探索で実装しました
             if(state.isPlaying){
-                for(let key in state.notes){
-                    for(var i in state.notes[key]){
-                        var note = state.notes[key][i];
+                for(let type in state.notes){
+                    for(var i in state.notes[type]){
+                        var note = state.notes[type][i];
                         var start_time = note["start_time"];
                         var pitch_name = note["pitch"];
                         var note_length_sec = 60/state.bpm * note["nagasa"]/480;
                         if(prev_position<=start_time && start_time<=new_position){
-                            if(pitch_name!="dummy"){
-                                play_tone(key,pitch_name,note_length_sec);
+                            if(type=="recorded"){
+                                play_tone(type, pitch_name, note_length_sec, state.recorded_buf[pitch_name]);
+                            }
+
+                            else if(pitch_name!="dummy"){
+                                play_tone(type,pitch_name,note_length_sec);
                             }else{
-                                play_tone(key,pitch_name,note_length_sec, state.file_data[key])
+                                play_tone(type,pitch_name,note_length_sec, state.file_data[type])
                             }
                         }
                     }
@@ -158,6 +164,14 @@ const store = new Vuex.Store({
             //Vue.set(state.lanes, param['name'],["dummy"]);
             //Vue.set(state.notes, param['name'], []);
             state.nowplaying = type;
+        },
+        recorded_buf_add(state, param){
+            let buf = param["buf"];
+            let name = param["name"];
+            state.recorded_buf[name] = buf;
+            console.log(buf);
+            console.log(state.recorded_buf[name]);
+            
         }
     }
 })

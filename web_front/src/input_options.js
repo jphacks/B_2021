@@ -57,9 +57,14 @@ var input_options = new Vue({
         },
         record_add_btn: function(e){
             let recorded_buf = document.return_buf();
+            let lane_name = String(performance.now());
             this.$store.commit('lane_add', {
-                'name': String(performance.now()),
                 'type': 'recorded',
+                'name': lane_name,
+            });
+            this.$store.commit('recorded_buf_add', {
+                'name': lane_name,
+                'buf' : recorded_buf
             });
         }
     }
