@@ -36,6 +36,12 @@ class Sound(db.Model):
 
         return sound
     
+    def room_sound_all_remove(sound):
+        db.session.query(Sound).filter(Sound.room==sound['room']).delete()
+        db.session.commit()
+
+        return sound
+    
     def __repr__(self):
         return '<Sound id={id} sound_type={sound_type} pitch_name={pitch_name} start={start} length={length} room={room} made_by={made_by}>'.format(id=self.id, sound_type=self.sound_type, pitch_name=self.pitch_name, start=self.start, length=self.length, room=self.room, made_by=self.made_by)
 
@@ -68,6 +74,15 @@ class Room(db.Model):
         db.session.commit()
 
         return room
+    
+    def changeBpm(room):
+        found_entry = db.session.query(Room).filter(Room.name==room['name']).first()
+        found_entry.bpm = room['bpm']
+        db.session.commit()
+    def changeNumofbar(room):
+        found_entry = db.session.query(Room).filter(Room.name==room['name']).first()
+        found_entry.num_of_bar = room['num_of_bar']
+        db.session.commit()
     
     def __repr__(self):
         return '<Room name={name} bpm={bpm} num_of_bar={num_of_bar}>'.format(name=self.name, bpm=self.bpm, num_of_bar=self.num_of_bar)
