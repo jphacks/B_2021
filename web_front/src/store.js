@@ -21,9 +21,11 @@ const store = new Vuex.Store({
         note_color:["#00ff7f","#00ffff","#ffa500","#8a2be2","#ff00ff"],
         not_file:["sawtooth","sine"],
 
-        lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"drum":["dummy"]},
-        file_length:{},
-        file_data:{},
+        lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"drum":["dummy"]},//キーデータ(ファイルとかはdummyで1レーン分になるようになってる)
+        lanes_for_html:{"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "voice":[]},//svgをv-forで回したいので
+        file_length:{},//ファイルの曲の長さ(秒単位)
+        file_data:{},//ファイルデータ
+        
     },
     
     mutations: {
@@ -71,14 +73,14 @@ const store = new Vuex.Store({
             }
         },
         delete_note(state, param){
-            for(let i in state.notes[state.nowplaying]){
-                let note = state.notes[state.nowplaying][i];
+            for(let i in state.notes[param["nowplaying"]]){
+                let note = state.notes[param["nowplaying"]][i];
                 if((note.pitch == param["click_note_pitch"]) && (note.start_time == param["click_note_start_time"])){
                     console.log(i);
                     console.log(note.pitch);
                     console.log(param["click_note_pitch"]);
                     //ノーツの削除
-                    state.notes[state.nowplaying].splice(i, 1);
+                    state.notes[param["nowplaying"]].splice(i, 1);
                     break;
                 }
             }
@@ -139,7 +141,9 @@ const store = new Vuex.Store({
             Vue.set(state.lanes, param['name'],["dummy"]);
             // state.notes[param['name']] = [];
             Vue.set(state.notes, param['name'], []);
-            state.nowplaying = param["name"]
-        }
+            //state.nowplaying = param["name"]
+            state.lanes_for_html[param['type_value']].push(param['name']);
+        },
+        
     }
 })
