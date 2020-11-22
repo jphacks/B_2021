@@ -26,6 +26,9 @@ const store = new Vuex.Store({
         file_length:{},//ファイルの曲の長さ(秒単位)
         file_data:{},//ファイルデータ
         
+        //for filter
+        nowfilter:"allpass",
+        filter_list:["allpass","highpass","lowpass"],
     },
     
     mutations: {
@@ -100,11 +103,12 @@ const store = new Vuex.Store({
                         var start_time = note["start_time"];
                         var pitch_name = note["pitch"];
                         var note_length_sec = 60/state.bpm * note["nagasa"]/480;
+                        let filter_by = note["filter_by"];
                         if(prev_position<=start_time && start_time<=new_position){
                             if(pitch_name!="dummy"){
-                                play_tone(key,pitch_name,note_length_sec);
+                                play_tone(key,pitch_name,note_length_sec, filter_by);
                             }else{
-                                play_tone(key,pitch_name,note_length_sec, state.file_data[key])
+                                play_tone(key,pitch_name,note_length_sec, filter_by, state.file_data[key])
                             }
                         }
                     }

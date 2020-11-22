@@ -57,6 +57,7 @@
 <div id="input_options" v-if="$store.state.isInRoom">
   小節数: <input id="shosetu" type="number" :value="$store.state.n_bars" @input="shosetu_henshu">
   BPM: <input id="bpm" type="number" :value="$store.state.bpm" @input="bpm_henshu">
+  FILTER: <select id="audio_filter" v-model="$store.state.nowfilter"><option v-for="filter in $store.state.filter_list">{{filter}}</option></select>
   <br>
   音符の長さ: <select id="edit_note_length" type="number" v-model.number="$store.state.edit_note_length">
       <option value="1920">全音符</option>
