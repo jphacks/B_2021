@@ -29,12 +29,6 @@
   </div>
 </div>
 
-<div>
-  録音テスト
-  <button onclick="record_start()">録音開始</button>
-  <button onclick="record_stop()">録音停止</button>
-  <button onclick="record_play()">再生</button>
-</div>
 
 <!-- コントローラ -->
 <div id="controller" v-if="$store.state.isInRoom">
@@ -65,12 +59,25 @@
       <option value="240">8分音符</option>
     </select>
 
-  <label v-for="key,value in $store.state.notes"><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" :value="value"><img src="img/sine.png" width="15" height="15">{{value}}</label>
+  <!-- 種類 -->
+  <label v-for="key,value in $store.state.lanes">
+    <input type="radio" name="nowplaying" v-model="$store.state.nowplaying" :value="key"><img src="img/sine.png" width="15" height="15">{{value}}
+  </label>
 
   <br>
   <button id="all_delete" @click="$store.commit('all_delete')">all delete</button>
   <input type="file" id="inputfiles" @change="file_input" multiple/>
+
+  <div id="recording">
+    録音
+    <button @click="record_start_btn">録音開始</button>
+    <button @click="record_stop_btn">録音停止</button>
+    <button @click="record_play_btn">再生</button>
+    <button @click="record_add_btn">追加</button>
+  </div>
 </div>
+
+
 
 <!-- エディタ -->
 <div id="editor" v-if="$store.state.isInRoom">

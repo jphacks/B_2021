@@ -21,9 +21,20 @@ const store = new Vuex.Store({
         note_color:["#00ff7f","#00ffff","#ffa500","#8a2be2","#ff00ff"],
         not_file:["sawtooth","sine"],
 
-        lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"drum":["dummy"]},
-        file_length:{},
-        file_data:{},
+        lanes : {
+            "sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
+            "sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
+            "audiofile":["dummy"],
+            "recorded":[]
+        },//キーデータ(ファイルとかはdummyで1レーン分になるようになってる)
+
+        lanes_for_html:{"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "voice":[]},//svgをv-forで回したいので
+        file_length:{},//ファイルの曲の長さ(秒単位)
+        file_data:{},//ファイルデータ
+        
+        //for filter
+        nowfilter:"allpass",
+        filter_list:["allpass","highpass","lowpass"],
     },
     
     mutations: {
@@ -44,7 +55,13 @@ const store = new Vuex.Store({
             state.who_make_num = {};
             state.file_length = {};
             state.file_data = {};
-            state.lanes = {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"drum":["dummy"]};
+            state.lanes = {
+                "sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
+                "sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
+                //"drum":["dummy"],
+                "audiofile": [],
+                "recorded":[],
+            };
 
         },
         note_add(state, param) {
@@ -132,7 +149,6 @@ const store = new Vuex.Store({
             console.log(state.file_length[param['name']])
             // state.file_data[param['name']] = param['file'];
             Vue.set(state.file_data,param['name'],param['file']);
-
         },
         lane_add(state, param){
             // state.lanes[param['name']] = ["dummy"];

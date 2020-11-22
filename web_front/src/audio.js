@@ -91,8 +91,8 @@ function play_tone(sound_type, pitchname, soundLength, source=null){
 //   console.log("--------------------playnow-----------------------")
 
 
-    return 0;
-};
+//    return 0;
+//};
 
 // 録音
 // 参考 https://python5.com/q/yivdsdor
@@ -121,7 +121,6 @@ navigator.mediaDevices.getUserMedia({
         });
     }
     
-
     document.record_stop = function(){
         console.log("stop recording");
         recorder.stop();
@@ -134,5 +133,9 @@ navigator.mediaDevices.getUserMedia({
         bufsrc.connect(ctx.destination);
         bufsrc.start();
     };
+
+    document.return_buf = function(){
+        return audioBuffer;
+    }
 });
 

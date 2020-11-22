@@ -45,6 +45,25 @@ var input_options = new Vue({
                     });
                 }
             }
+        },
+        record_start_btn: function(e){
+            document.record_start();
+        },
+        record_stop_btn: function(e){
+            document.record_stop();
+        },
+        record_play_btn: function(e){
+            document.record_play();
+        },
+        record_add_btn: function(e){
+            let recorded_buf = document.return_buf();
+            let param = {
+                // とりあえず．かぶらないように名前に現在時刻を持たせています
+                'name': String(performance.now()),
+                'type_value': 'voice',
+            };
+
+
         }
     }
 });
