@@ -77,3 +77,17 @@ input[type="text"][disabled]{
 input[type="number"]{
     width: 50px;
 }
+.originalFileBtn {
+    border: 3px solid;
+    display: inline-block;
+    padding: 2px 1em;
+    position: relative;
+}
+.originalFileBtn input[type="file"] {
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}

@@ -51,6 +51,8 @@
 <div id="input_options" v-if="$store.state.isInRoom">
   小節数: <input id="shosetu" type="number" :value="$store.state.n_bars" @input="shosetu_henshu">
   BPM: <input id="bpm" type="number" :value="$store.state.bpm" @input="bpm_henshu">
+  QUANTIZE: <input id="quantize" type="number" v-model="$store.state.quantize">
+  FILTER: <select id="audio_filter" v-model="$store.state.nowfilter"><option v-for="filter in $store.state.filter_list">{{filter}}</option></select>
   <br>
   音符の長さ: <select id="edit_note_length" type="number" v-model.number="$store.state.edit_note_length">
       <option value="1920">全音符</option>
@@ -59,13 +61,14 @@
       <option value="240">8分音符</option>
     </select>
 
-  <!-- 種類 -->
-  <label v-for="value, key in $store.state.lanes">
-    <input type="radio" name="nowplaying" v-model="$store.state.nowplaying" :value="key"><img src="img/sine.png" width="15" height="15">{{key}}
-  </label>
+
+  <label v-for="key,value in $store.state.lanes_for_html"><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" :value="value"><img src="img/sine.png" width="15" height="15">{{value}}</label>
+
 
   <br>
   <button id="all_delete" @click="$store.commit('all_delete')">all delete</button>
+  <div class="originalFileBtn">
+    FILE ADD
   <input type="file" id="inputfiles" @change="file_input" multiple/>
 
   <div id="recording">
@@ -74,6 +77,7 @@
     <button @click="record_stop_btn">録音停止</button>
     <button @click="record_play_btn">再生</button>
     <button @click="record_add_btn">追加</button>
+
   </div>
 </div>
 
@@ -81,23 +85,24 @@
 
 <!-- エディタ -->
 <div id="editor" v-if="$store.state.isInRoom">
-  <svg :viewbox="'0 0 1500 ' + note_height*$store.state.lanes[$store.state.nowplaying].length" :width="$store.state.n_bars*note_width*4" :height="note_height*$store.state.lanes[$store.state.nowplaying].length"  @mousemove="mouse"
+  <svg v-for="key,value in $store.state.lanes_for_html[$store.state.nowplaying]" :viewbox="'0 0 1500 ' + note_height*$store.state.lanes[key].length" :width="$store.state.n_bars*note_width*4" :height="note_height*$store.state.lanes[key].length"  @mousemove="mouse"
   :style=" 'background-color: #aaaaaa; margin-left: ' +  (- margin_position+100) +'px;'">
     
   <!-- 背景 -->
-    <rect id="editor_bg" x="0" y="0" width="100%" height="100%" fill="#708090" style="fill-opacity:100%" @mousedown="mouse_down" @mouseup="mouse_up" @click="test"></rect>
+    <rect id="editor_bg" x="0" y="0" width="100%" height="100%" fill="#708090" style="fill-opacity:100%" @mousedown="mouse_down($event, key)" @mouseup="mouse_up" @click="test"></rect>
 
     <!-- 縦の線（クオンタイズ，小節線） -->
-    <line v-for="n in $store.state.n_bars *4*480/$store.state.quantize" stroke-width="1" stroke="#ffffff" :x1="n* note_width * $store.state.quantize / 480" :x2="n* note_width * $store.state.quantize / 480" y1="0" :y2="note_height*$store.state.lanes[$store.state.nowplaying].length" style="stroke-opacity:20%"></line> 
-    <line v-for="n in $store.state.n_bars+1" stroke-width="2" stroke="#000000" :x1="(n-1)*note_width*4" :x2="(n-1)*note_width*4" y1="0" :y2="note_height*$store.state.lanes[$store.state.nowplaying].length" style="stroke-opacity:40%"></line> 
+    <line v-for="n in parseInt($store.state.n_bars *4*480/$store.state.quantize)" stroke-width="1" stroke="#ffffff" :x1="parseInt(n* note_width * $store.state.quantize / 480)" :x2="parseInt(n* note_width * $store.state.quantize / 480)" y1="0" :y2="note_height*$store.state.lanes[key].length" style="stroke-opacity:20%"></line> 
+    <line v-for="n in $store.state.n_bars+1" stroke-width="2" stroke="#000000" :x1="(n-1)*note_width*4" :x2="(n-1)*note_width*4" y1="0" :y2="note_height*$store.state.lanes[key].length" style="stroke-opacity:40%"></line> 
     <!-- ノーツを描画 -->
-    <rect v-for="note in $store.state.notes[$store.state.nowplaying]" :id="'note'+note.object_id" :x="note.start_time / 480 * note_width +3" :y="$store.state.lanes[$store.state.nowplaying].indexOf(note.pitch)*note_height +3" :width="note.nagasa/480 * note_width -6" :height="note_height -6" :fill="$store.state.note_color[$store.state.who_make_num[note.who_make]%$store.state.note_color.length]" stroke-width="3" stroke="#ffffff" @click="note_click"></rect>
+    <rect v-for="note in $store.state.notes[key]" :id="'note'+note.object_id" :x="note.start_time / 480 * note_width +3" :y="$store.state.lanes[key].indexOf(note.pitch)*note_height +3" :width="note.nagasa/480 * note_width -6" :height="note_height -6" :fill="$store.state.note_color[$store.state.who_make_num[note.who_make]%$store.state.note_color.length]" stroke-width="3" stroke="#ffffff" @click="note_click($event, key)"></rect>
     <!-- 横の線 -->
-    <line v-for="n in $store.state.lanes[$store.state.nowplaying].length" stroke="#000000" x1="0"  stroke-width="1" :x2="$store.state.n_bars*note_width*4" :y1="n*note_height" :y2="n*note_height" style="stroke-opacity: 50%;"></line>
+    <line v-for="n in $store.state.lanes[key].length" stroke="#000000" x1="0"  stroke-width="1" :x2="$store.state.n_bars*note_width*4" :y1="n*note_height" :y2="n*note_height" style="stroke-opacity: 50%;"></line>
     
     <!-- 再生位置の線 -->
-    <line stroke-width="2" stroke="#ff0000" :x1="margin_position" :x2="margin_position" y1="0" :y2="note_height*$store.state.lanes[$store.state.nowplaying].length" style="stroke-opacity: 40%;"></line> 
+    <line stroke-width="2" stroke="#ff0000" :x1="margin_position" :x2="margin_position" y1="0" :y2="note_height*$store.state.lanes[key].length" style="stroke-opacity: 40%;"></line> 
   </svg>
+  
 
   <!-- アイコン -->
   <img :src="'img/' + $store.state.nowplaying + '.png'" id="edit_icon">
@@ -105,6 +110,8 @@
   <br>
   <span v-for="value, name in $store.state.who_make_num" :style="'background-color:'+($store.state.note_color[value%$store.state.note_color.length])">{{name}}　</span>
 </div>
+
+
 
 
 

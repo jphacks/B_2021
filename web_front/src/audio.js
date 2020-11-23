@@ -16,7 +16,10 @@ const pitchname2freq = {
     "C4": 261.626
 }
 
-function play_tone(sound_type, pitchname, soundLength, source=null){
+function play_tone(sound_type, pitchname, soundLength, filter_by,source=null){
+    let filter = ctx.createBiquadFilter();
+    filter.type = filter_by; 
+    filter.frequency.value = 440;
     if(source==null){
         // ゲイン
         var gainNode = ctx.createGain();
@@ -25,7 +28,8 @@ function play_tone(sound_type, pitchname, soundLength, source=null){
         var oscillator = ctx.createOscillator();
         // オシレーター→ゲイン→出力
         oscillator.connect(gainNode);
-        gainNode.connect(ctx.destination);
+        gainNode.connect(filter);
+        filter.connect(ctx.destination);
 
         oscillator.type = sound_type;
         oscillator.frequency.value = pitchname2freq[pitchname];
@@ -35,7 +39,8 @@ function play_tone(sound_type, pitchname, soundLength, source=null){
     }else{
         let buf = ctx.createBufferSource();
         buf.buffer = source;
-        buf.connect(ctx.destination);
+        buf.connect(filter);
+        filter.connect(ctx.destination);
         buf.start(0,0,soundLength);
     }
 }

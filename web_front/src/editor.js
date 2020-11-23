@@ -29,8 +29,9 @@ var editor = new Vue({
             //document.getElementById("yellowbox").setAttribute("y",this.screeny-15)
 
         },
-        mouse_down:function(event){
+        mouse_down:function(event, type_value){
             // クリックでノーツを追加
+            console.log(type_value);
             this.click_x = event.offsetX;
             this.click_y = event.offsetY;
 
@@ -39,13 +40,13 @@ var editor = new Vue({
             //playdrum();
             // 時間は4分音符を480として規格化
             var start_time = parseInt((this.click_x/this.note_width)*480 /store.state.quantize)*store.state.quantize;
-            var pitch_name = this.$store.state.lanes[this.$store.state.nowplaying][parseInt(this.click_y/this.note_height)];
+            var pitch_name = this.$store.state.lanes[type_value][parseInt(this.click_y/this.note_height)];
             var nagasa = store.state.edit_note_length;
             
 
             // ノーツが重なってはよくないからチェック
-            for(let i in store.state.notes[this.$store.state.nowplaying]){
-                let note = store.state.notes[this.$store.state.nowplaying][i];
+            for(let i in store.state.notes[type_value]){
+                let note = store.state.notes[type_value][i];
                 if(note["pitch"]==pitch_name && start_time<note["start_time"] && note["start_time"]<start_time+nagasa){
                     nagasa = note["start_time"]-start_time;
                     console.log("重なっている");
@@ -53,7 +54,7 @@ var editor = new Vue({
             }
             
             // 配列に追加
-            let note = new Note(pitch_name,start_time,nagasa,document.getElementById("roomID").value,document.getElementById("who_make").value,this.$store.state.nowplaying);
+            let note = new Note(pitch_name,start_time,nagasa,document.getElementById("roomID").value,document.getElementById("who_make").value,type_value, this.$store.state.nowfilter);
 
             //サーバーに情報送り付ける
             let params = {};
@@ -63,7 +64,7 @@ var editor = new Vue({
             params['length'] = nagasa;
             params['room'] = document.getElementById("roomID").value;
             params['made_by'] = document.getElementById("who_make").value;
-            params['sound_type'] = this.$store.state.nowplaying;
+            params['sound_type'] = type_value;
             const headers = {
                 'Content-Type': 'application/json'
             };
@@ -76,7 +77,7 @@ var editor = new Vue({
 
             // });
             console.log("----note------")
-            ctrl.$store.commit('note_add',{"note":note,"sound_type":ctrl.$store.state.nowplaying});
+            ctrl.$store.commit('note_add',{"note":note,"sound_type":type_value});
             console.log(ctrl.$store.state.notes)
 
             
@@ -95,10 +96,10 @@ var editor = new Vue({
             // this.chohokei.push(dict);
         },
 
-        note_click: function(event){
+        note_click: function(event,type_value){
             let click_x = parseInt(event.target.getAttribute("x"))
             let click_y = parseInt(event.target.getAttribute("y"))
-            if(this.$store.state.not_file.includes(this.$store.state.nowplaying)){            
+            if(this.$store.state.not_file.includes(type_value)){            
                 var click_note_pitch = this.$store.state.lanes["sawtooth"][parseInt(click_y/this.note_height)];
                 var click_note_start_time = parseInt(480*(click_x-3)/this.note_width);  // rectのstrokeの幅のせいで -3 している　どうにかならないか？
             }else{
@@ -107,7 +108,7 @@ var editor = new Vue({
             }
             console.log(click_note_start_time);
             //クリックしたノーツの削除
-            this.$store.commit('delete_note',{click_note_pitch:click_note_pitch,click_note_start_time:click_note_start_time});
+            this.$store.commit('delete_note',{click_note_pitch:click_note_pitch,click_note_start_time:click_note_start_time,nowplaying:type_value});
             //サーバーから情報消す
             const params = {}
             let url = "https://kou.hongo.wide.ad.jp:3341/remove";

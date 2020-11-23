@@ -41,7 +41,8 @@ var input_options = new Vue({
                         file_param['name'] = file_list[i].name;
                         file_param['file'] = music_source;
                         now.$store.commit('set_filemusic', file_param);
-                        now.$store.commit('lane_add',{'type': 'audiofile', 'name':file_param['name']})
+                        now.$store.commit('lane_add',{'type': 'audio', 'name':file_param['name']})
+
                     });
                 }
             }
