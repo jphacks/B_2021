@@ -41,10 +41,32 @@ var input_options = new Vue({
                         file_param['name'] = file_list[i].name;
                         file_param['file'] = music_source;
                         now.$store.commit('set_filemusic', file_param);
-                        now.$store.commit('lane_add',{'name':file_param['name'],'type_value':'audio'})
+                        now.$store.commit('lane_add',{'type': 'audio', 'name':file_param['name']})
+
                     });
                 }
             }
+        },
+        record_start_btn: function(e){
+            document.record_start();
+        },
+        record_stop_btn: function(e){
+            document.record_stop();
+        },
+        record_play_btn: function(e){
+            document.record_play();
+        },
+        record_add_btn: function(e){
+            let recorded_buf = document.return_buf();
+            let lane_name = String(performance.now());
+            this.$store.commit('lane_add', {
+                'type': 'recorded',
+                'name': lane_name,
+            });
+            this.$store.commit('recorded_buf_add', {
+                'name': lane_name,
+                'buf' : recorded_buf
+            });
         }
     }
 });
