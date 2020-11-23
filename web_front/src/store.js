@@ -23,7 +23,7 @@ const store = new Vuex.Store({
 
 
         lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"]},//キーデータ(ファイルとかはdummyで1レーン分になるようになってる)
-        lanes_for_html:{"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "voice":[]},//svgをv-forで回したいので
+        lanes_for_html:{"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "recorded":[]},//svgをv-forで回したいので
         file_length:{},//ファイルの曲の長さ(秒単位)
         file_data:{},//ファイルデータ
         
@@ -56,9 +56,11 @@ const store = new Vuex.Store({
                 "sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
                 "sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
                 //"drum":["dummy"],
-                "audiofile": [],
-                "recorded":[],
             };
+            state.lanes_for_html = {"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "recorded":[]};
+            state.recorded_buf = {};
+            state.nowfilter = "allpass";
+
 
         },
         note_add(state, param) {
@@ -115,14 +117,14 @@ const store = new Vuex.Store({
                         let filter_by = note["filter_by"];
                         if(prev_position<=start_time && start_time<=new_position){
 
-                            if(type=="recorded"){
-                                play_tone(type, pitch_name, note_length_sec, state.recorded_buf[pitch_name]);
+                            if(pitch_name=="recorded"){
+                                play_tone(type, pitch_name, note_length_sec, state.nowfilter, state.recorded_buf[type]);
                             }
 
-                            else if(pitch_name!="dummy"){
-                                play_tone(type,pitch_name,note_length_sec);
+                            else if(pitch_name=="audio"){
+                                play_tone(type,pitch_name,note_length_sec, state.nowfilter, state.file_data[type]);
                             }else{
-                                play_tone(type,pitch_name,note_length_sec, state.file_data[type])
+                                play_tone(type,pitch_name,note_length_sec, state.nowfilter)
 
                             }
                         }
@@ -157,12 +159,12 @@ const store = new Vuex.Store({
         lane_add(state, param){
 
             // state.lanes[param['name']] = ["dummy"];
-            Vue.set(state.lanes, param['name'],["dummy"]);
+            Vue.set(state.lanes, param['name'],[param['type']]);
             // state.notes[param['name']] = [];
             Vue.set(state.notes, param['name'], []);
             //state.nowplaying = param["name"]
             state.lanes_for_html[param['type']].push(param['name']);
-            state.nowplaying = type;
+            state.nowplaying = param['type'];
         },
         recorded_buf_add(state, param){
             let buf = param["buf"];
