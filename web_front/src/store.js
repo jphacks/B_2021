@@ -50,6 +50,11 @@ const store = new Vuex.Store({
             state.file_length = {};
             state.file_data = {};
             state.lanes = {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"drum":["dummy"]};
+            state.lanes_for_html = {"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "voice":[]};
+            state.file_length = {};
+            state.file_data = {};
+            state.nowfilter = "allpass";
+            state.filter_list = ["allpass","highpass","lowpass"];
 
         },
         note_add(state, param) {
@@ -148,6 +153,14 @@ const store = new Vuex.Store({
             //state.nowplaying = param["name"]
             state.lanes_for_html[param['type_value']].push(param['name']);
         },
+        delete_file(state,param){
+            let file_name = param["file_name"];
+            delete state.lanes.param["file_name"];
+            delete state.file_data.param["file_name"];
+            delete state.file_length.param["file_name"];
+            state.lanes_for_html["audio"] = state.lanes_for_html["audio"].filter(file=>file!==file_name);
+            
+        }
         
     }
 })

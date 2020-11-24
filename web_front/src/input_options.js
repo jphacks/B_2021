@@ -34,7 +34,12 @@ var input_options = new Vue({
                 let now = this;
                 reader.onload = function(){
                     console.log("data入れる--------")
-                    console.log(reader.result)
+                    console.log(reader.result);
+                    //ファイル送り付ける
+                    let put_url = "https://kou.hongo.wide.ad.jp:3341/upload/" + document.getElementById("roomID").value + "/" + "audio" + "/" + file_list[i].name;
+                    const encodedFile = btoa(String.fromCharCode(...new Uint8Array(reader.result)));
+                    let put_param = {"base64Data":encodedFile};
+                    axios.put(put_url, put_param).then(res=>{console.log(res)});
                     ctx.decodeAudioData(reader.result, function (buf) {
                         let music_source = buf;
                         let file_param = {};
@@ -42,6 +47,7 @@ var input_options = new Vue({
                         file_param['file'] = music_source;
                         now.$store.commit('set_filemusic', file_param);
                         now.$store.commit('lane_add',{'name':file_param['name'],'type_value':'audio'})
+                        
                     });
                 }
             }
@@ -57,22 +63,22 @@ var input_id = new Vue({
     },
     methods:{
         enter(state, value){
-            //---音声読み込み用処理---
-            let music_request = new XMLHttpRequest();
-            music_request.open("GET", "./audio/loop1.wav", true);
-            music_request.responseType = "arraybuffer";
-            let now = this;
-            music_request.onload = ()=>{
-                ctx.decodeAudioData(music_request.response, function (buf) {
-                    let music_source = buf;
-                    let file_param = {};
-                    file_param['name'] = 'drum';
-                    file_param['file'] = music_source;
-                    now.$store.commit('set_filemusic', file_param);
-                });
-            }
-            music_request.send();
-            //---音声読み込み用処理---
+            // //---音声読み込み用処理---
+            // let music_request = new XMLHttpRequest();
+            // music_request.open("GET", "./audio/loop1.wav", true);
+            // music_request.responseType = "arraybuffer";
+            // let now = this;
+            // music_request.onload = ()=>{
+            //     ctx.decodeAudioData(music_request.response, function (buf) {
+            //         let music_source = buf;
+            //         let file_param = {};
+            //         file_param['name'] = 'drum';
+            //         file_param['file'] = music_source;
+            //         now.$store.commit('set_filemusic', file_param);
+            //     });
+            // }
+            // music_request.send();
+            // //---音声読み込み用処理---
             let who_make = document.getElementById("who_make").value;
             let roomID = document.getElementById("roomID").value;
 
@@ -196,6 +202,55 @@ var input_id = new Vue({
                 }
 
             })
+
+            //音源の差分確認
+            let dif_get_url = "https://kou.hongo.wide.ad.jp:3341/difference_listoftitle";
+            let params_for_dif_get = {};
+            params_for_dif_get["roomName"] = this.$store.state.roomID;
+            params_for_dif_get["soundType"] = "audio";
+            params_for_dif_get["current_list"] = this.$store.state.lanes_for_html["audio"];
+            axios.post(dif_get_url, params_for_dif_get).then(res=>{
+                console.log("----音声差分-------")
+                console.log(res.data);
+                let add_list = res.data["add_list"];
+                let remove_list = res.data["remove_list"];
+                //remove処理
+                //remove用のstore関数核
+                //remove用commit
+                for(let file_name in remove_list){
+                    ctrl.$store.commit('delete_file',{"file_name":file_name});
+                }
+
+                //音源取得
+                for(let file_name in add_list){
+                    let get_url = "https://kou.hongo.wide.ad.jp:3341/upload/"+ this.$store.state.roomID + "/" + "audio/" + add_list[file_name];
+                    axios.get(get_url).then(res=>{
+                        let file_data = res.data["base64Data"];
+                        //lane_addは先にやっておく(重複回避のため)
+                        ctrl.$store.commit('lane_add',{'name':add_list[file_name],'type_value':'audio'});
+                        //base64から復元
+                        let binary = window.atob(file_data);
+                        let len = binary.length;
+                        let bytes = new Uint8Array(len);
+                        for (let i = 0; i < len; i++)        {
+                            bytes[i] = binary.charCodeAt(i);
+                        }
+                        bytes = bytes.buffer;
+                        ctx.decodeAudioData(bytes, function (buf) {
+                            let music_source = buf;
+                            let file_param = {};
+                            file_param['name'] = add_list[file_name];
+                            file_param['file'] = music_source;
+                            ctrl.$store.commit('set_filemusic', file_param);
+                            console.log("--------------追加完了--------------------")
+                            
+                        });
+                    })
+                     
+                }
+                
+            })
+
 
         },
     }
