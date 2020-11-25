@@ -87,7 +87,7 @@
 <!-- エディタ -->
 <div id="editor" v-if="$store.state.isInRoom">
   <div v-for="key,value in $store.state.lanes_for_html[$store.state.nowplaying]">
-    <div @mousedown="neiro_click($event, key)">{{key}}</div>
+    <div @dblclick="neiro_click($event, key)">{{key}}</div>
   <svg :viewbox="'0 0 1500 ' + note_height*$store.state.lanes[key].length" :width="$store.state.n_bars*note_width*4" :height="note_height*$store.state.lanes[key].length"  @mousemove="mouse"
   :style=" 'background-color: #aaaaaa; margin-left: ' +  (- margin_position+100) +'px;'">
   <!-- 背景 -->
