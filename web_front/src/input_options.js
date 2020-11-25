@@ -63,9 +63,31 @@ var input_options = new Vue({
                     // });
                     
                     
+
                 }
 
             }
+        },
+        record_start_btn: function(e){
+            document.record_start();
+        },
+        record_stop_btn: function(e){
+            document.record_stop();
+        },
+        record_play_btn: function(e){
+            document.record_play();
+        },
+        record_add_btn: function(e){
+            let recorded_buf = document.return_buf();
+            let lane_name = String(performance.now());
+            this.$store.commit('lane_add', {
+                'type': 'recorded',
+                'name': lane_name,
+            });
+            this.$store.commit('recorded_buf_add', {
+                'name': lane_name,
+                'buf' : recorded_buf
+            });
         }
     }
 });

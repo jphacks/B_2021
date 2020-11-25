@@ -1,7 +1,7 @@
 //状態管理
 const store = new Vuex.Store({
     state: {
-        notes:{"sawtooth":[],"sine":[], "drum":[]},
+        notes:{"sawtooth":[],"sine":[]},
         nowplaying:"sine",
 
         bpm: 120,   // bpm
@@ -21,11 +21,14 @@ const store = new Vuex.Store({
         note_color:["#00ff7f","#00ffff","#ffa500","#8a2be2","#ff00ff"],
         not_file:["sawtooth","sine"],
 
-        lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"drum":["dummy"]},//キーデータ(ファイルとかはdummyで1レーン分になるようになってる)
-        lanes_for_html:{"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "voice":[]},//svgをv-forで回したいので
+
+        lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"]},//キーデータ(ファイルとかはdummyで1レーン分になるようになってる)
+        lanes_for_html:{"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "recorded":[]},//svgをv-forで回したいので
         file_length:{},//ファイルの曲の長さ(秒単位)
         file_data:{},//ファイルデータ
         
+        recorded_buf: {},
+
         //for filter
         nowfilter:"allpass",
         filter_list:["allpass","highpass","lowpass"],
@@ -33,7 +36,7 @@ const store = new Vuex.Store({
     
     mutations: {
         shokika(state){
-            state.notes = {"sawtooth":[],"sine":[], "drum":[]};
+            state.notes = {"sawtooth":[],"sine":[], "audiofile":[], "recorded":[]};
             state.nowplaying = "sine";
             state.bpm = 120;
             state.n_bars = 8;
@@ -55,6 +58,8 @@ const store = new Vuex.Store({
             state.file_data = {};
             state.nowfilter = "allpass";
             state.filter_list = ["allpass","highpass","lowpass"];
+            state.recorded_buf = {};
+
 
         },
         note_add(state, param) {
@@ -102,18 +107,24 @@ const store = new Vuex.Store({
             // 再生中なら音を鳴らす
             // とりあえずnotes[]全探索で実装しました
             if(state.isPlaying){
-                for(let key in state.notes){
-                    for(var i in state.notes[key]){
-                        var note = state.notes[key][i];
+                for(let type in state.notes){
+                    for(var i in state.notes[type]){
+                        var note = state.notes[type][i];
                         var start_time = note["start_time"];
                         var pitch_name = note["pitch"];
                         var note_length_sec = 60/state.bpm * note["nagasa"]/480;
                         let filter_by = note["filter_by"];
                         if(prev_position<=start_time && start_time<=new_position){
-                            if(pitch_name!="dummy"){
-                                play_tone(key,pitch_name,note_length_sec, filter_by);
+
+                            if(pitch_name=="recorded"){
+                                play_tone(type, pitch_name, note_length_sec, state.nowfilter, state.recorded_buf[type]);
+                            }
+
+                            else if(pitch_name=="audio"){
+                                play_tone(type,pitch_name,note_length_sec, state.nowfilter, state.file_data[type]);
                             }else{
-                                play_tone(key,pitch_name,note_length_sec, filter_by, state.file_data[key])
+                                play_tone(type,pitch_name,note_length_sec, state.nowfilter)
+
                             }
                         }
                     }
@@ -143,15 +154,24 @@ const store = new Vuex.Store({
             console.log(state.file_length[param['name']])
             // state.file_data[param['name']] = param['file'];
             Vue.set(state.file_data,param['name'],param['file']);
-
         },
         lane_add(state, param){
+
             // state.lanes[param['name']] = ["dummy"];
-            Vue.set(state.lanes, param['name'],["dummy"]);
+            Vue.set(state.lanes, param['name'],[param['type']]);
             // state.notes[param['name']] = [];
             Vue.set(state.notes, param['name'], []);
             //state.nowplaying = param["name"]
-            state.lanes_for_html[param['type_value']].push(param['name']);
+            state.lanes_for_html[param['type']].push(param['name']);
+            state.nowplaying = param['type'];
+        },
+        recorded_buf_add(state, param){
+            let buf = param["buf"];
+            let name = param["name"];
+            state.recorded_buf[name] = buf;
+            console.log(buf);
+            console.log(state.recorded_buf[name]);
+ 
         },
         delete_file(state,param){
             console.log(param["file_name"])
@@ -163,5 +183,6 @@ const store = new Vuex.Store({
             
         }
         
+
     }
 })

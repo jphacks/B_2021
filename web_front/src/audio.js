@@ -126,7 +126,6 @@ navigator.mediaDevices.getUserMedia({
         });
     }
     
-
     document.record_stop = function(){
         console.log("stop recording");
         recorder.stop();
@@ -139,5 +138,9 @@ navigator.mediaDevices.getUserMedia({
         bufsrc.connect(ctx.destination);
         bufsrc.start();
     };
+
+    document.return_buf = function(){
+        return audioBuffer;
+    }
 });
 

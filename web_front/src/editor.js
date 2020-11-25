@@ -82,9 +82,6 @@ var editor = new Vue({
 
             
         },
-        mouse_down_for_file:function(event){
-
-        },
         mouse_up:function(event){
             this.clickup_x=event.clientX;
             this.clickup_y=event.clientY;
@@ -103,7 +100,7 @@ var editor = new Vue({
                 var click_note_pitch = this.$store.state.lanes["sawtooth"][parseInt(click_y/this.note_height)];
                 var click_note_start_time = parseInt(480*(click_x-3)/this.note_width);  // rectのstrokeの幅のせいで -3 している　どうにかならないか？
             }else{
-                var click_note_pitch = "dummy";
+                var click_note_pitch = this.$store.state.nowplaying;
                 var click_note_start_time = parseInt(480*(click_x-3)/this.note_width);  // rectのstrokeの幅のせいで -3 している　どうにかならないか？
             }
             console.log(click_note_start_time);
