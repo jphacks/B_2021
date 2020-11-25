@@ -158,12 +158,12 @@ const store = new Vuex.Store({
         lane_add(state, param){
 
             // state.lanes[param['name']] = ["dummy"];
-            Vue.set(state.lanes, param['name'],[param['type']]);
+            Vue.set(state.lanes, param['name'],[param['type_value']]);
             // state.notes[param['name']] = [];
             Vue.set(state.notes, param['name'], []);
             //state.nowplaying = param["name"]
-            state.lanes_for_html[param['type']].push(param['name']);
-            state.nowplaying = param['type'];
+            state.lanes_for_html[param['type_value']].push(param['name']);
+            state.nowplaying = param['type_value'];
         },
         recorded_buf_add(state, param){
             let buf = param["buf"];
