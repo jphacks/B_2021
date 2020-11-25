@@ -120,5 +120,13 @@ var editor = new Vue({
             
 
         },
+        neiro_click:function(event,type_value){
+            if(!this.$store.state.not_file.includes(type_value)){
+                let delete_url = "https://kou.hongo.wide.ad.jp:3341/upload/"+document.getElementById("roomID").value+"/"+this.$store.state.nowplaying+"/"+type_value;
+                axios.delete(delete_url).then(res=>{
+                    console.log(res)
+                })
+            }
+        }
     }
 });

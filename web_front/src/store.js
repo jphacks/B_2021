@@ -52,14 +52,13 @@ const store = new Vuex.Store({
             state.who_make_num = {};
             state.file_length = {};
             state.file_data = {};
-            state.lanes = {
-                "sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
-                "sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
-                //"drum":["dummy"],
-            };
-            state.lanes_for_html = {"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "recorded":[]};
-            state.recorded_buf = {};
+            state.lanes = {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"drum":["dummy"]};
+            state.lanes_for_html = {"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "voice":[]};
+            state.file_length = {};
+            state.file_data = {};
             state.nowfilter = "allpass";
+            state.filter_list = ["allpass","highpass","lowpass"];
+            state.recorded_buf = {};
 
 
         },
@@ -174,6 +173,15 @@ const store = new Vuex.Store({
             console.log(state.recorded_buf[name]);
  
         },
+        delete_file(state,param){
+            console.log(param["file_name"])
+            let file_name = param["file_name"];
+            delete state.lanes[param["file_name"]];
+            delete state.file_data[param["file_name"]];
+            delete state.file_length[param["file_name"]];
+            state.lanes_for_html["audio"] = state.lanes_for_html["audio"].filter(file=>file!==file_name);
+            
+        }
         
 
     }
