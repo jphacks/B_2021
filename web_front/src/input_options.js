@@ -30,26 +30,41 @@ var input_options = new Vue({
             let file_list = e.target.files;
             for(let i=0;i<file_list.length;i++){
                 let reader = new FileReader();
-                reader.readAsArrayBuffer(file_list[i]);
+                reader.readAsDataURL(file_list[i]);
                 let now = this;
                 reader.onload = function(){
                     console.log("data入れる--------")
                     console.log(reader.result);
                     //ファイル送り付ける
-                    let put_url = "https://kou.hongo.wide.ad.jp:3341/upload/" + document.getElementById("roomID").value + "/" + "audio" + "/" + file_list[i].name;
-                    const encodedFile = btoa(String.fromCharCode(...new Uint8Array(reader.result)));
-                    let put_param = {"base64Data":encodedFile};
-                    axios.put(put_url, put_param).then(res=>{console.log(res)});
-                    ctx.decodeAudioData(reader.result, function (buf) {
-                        let music_source = buf;
-                        let file_param = {};
-                        file_param['name'] = file_list[i].name;
-                        file_param['file'] = music_source;
-                        now.$store.commit('set_filemusic', file_param);
-                        now.$store.commit('lane_add',{'name':file_param['name'],'type_value':'audio'})
+                    // let put_url = "https://kou.hongo.wide.ad.jp:3341/upload/" + document.getElementById("roomID").value + "/" + "audio" + "/" + file_list[i].name;
+                    let put_url = "https://kou.hongo.wide.ad.jp:3341/upload"
+                    //base64に切り出し
+                    const base64EncodedFile = reader.result.split("base64,")[1];
+                    let put_param = {"fileName":file_list[i].name,"roomName":document.getElementById("roomID").value,"soundType":"audio","base64Data":base64EncodedFile};
+                    console.log(put_url)
+                    console.log(put_param)
+                    axios.post(put_url, put_param).then(res=>{console.log(res);console.log("hellooooo")});
+                    //base64decode
+                    // let binary = atob(base64EncodedFile);
+                    // let len = binary.length;
+                    // let bytes = new Uint8Array(len);
+                    // for (let i = 0; i < len; i++)        {
+                    //     bytes[i] = binary.charCodeAt(i);
+                    // }
+                    // bytes = bytes.buffer;
+                    // ctx.decodeAudioData(bytes, function (buf) {
+                    //     let music_source = buf;
+                    //     let file_param = {};
+                    //     file_param['name'] = file_list[i].name;
+                    //     file_param['file'] = music_source;
+                    //     now.$store.commit('set_filemusic', file_param);
+                    //     now.$store.commit('lane_add',{'name':file_param['name'],'type_value':'audio'})
                         
-                    });
+                    // });
+                    
+                    
                 }
+
             }
         }
     }
@@ -217,8 +232,8 @@ var input_id = new Vue({
                 //remove処理
                 //remove用のstore関数核
                 //remove用commit
-                for(let file_name in remove_list){
-                    ctrl.$store.commit('delete_file',{"file_name":file_name});
+                for(let index in remove_list){
+                    ctrl.$store.commit('delete_file',{"file_name":remove_list[index]});
                 }
 
                 //音源取得
@@ -226,6 +241,8 @@ var input_id = new Vue({
                     let get_url = "https://kou.hongo.wide.ad.jp:3341/upload/"+ this.$store.state.roomID + "/" + "audio/" + add_list[file_name];
                     axios.get(get_url).then(res=>{
                         let file_data = res.data["base64Data"];
+                        console.log("-----get data------")
+                        console.log(res.data)
                         //lane_addは先にやっておく(重複回避のため)
                         ctrl.$store.commit('lane_add',{'name':add_list[file_name],'type_value':'audio'});
                         //base64から復元

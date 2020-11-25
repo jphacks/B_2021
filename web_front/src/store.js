@@ -154,10 +154,11 @@ const store = new Vuex.Store({
             state.lanes_for_html[param['type_value']].push(param['name']);
         },
         delete_file(state,param){
+            console.log(param["file_name"])
             let file_name = param["file_name"];
-            delete state.lanes.param["file_name"];
-            delete state.file_data.param["file_name"];
-            delete state.file_length.param["file_name"];
+            delete state.lanes[param["file_name"]];
+            delete state.file_data[param["file_name"]];
+            delete state.file_length[param["file_name"]];
             state.lanes_for_html["audio"] = state.lanes_for_html["audio"].filter(file=>file!==file_name);
             
         }
