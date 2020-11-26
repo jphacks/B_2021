@@ -108,7 +108,9 @@ navigator.mediaDevices.getUserMedia({
     video: false
 }).then( stream => {
     let recorder = new MediaRecorder(stream);
+    //console.log("---------------------audio初期化----------------------------------")
     let audioBuffer;
+    let audio_array_buffer;
 
     document.record_start = function(){
         console.log("start recording");
@@ -117,10 +119,16 @@ navigator.mediaDevices.getUserMedia({
         recorder.addEventListener("dataavailable", (e)=>{
             // 録音したデータを配列として取り出す
             e.data.arrayBuffer().then(arrayBuffer=>{
-                // audioBufferに変換
-                ctx.decodeAudioData(arrayBuffer, (buf)=>{
-                    audioBuffer = buf;
-                });
+                audio_array_buffer = arrayBuffer;
+                // var output = new ArrayBuffer(audio_array_buffer.byteLength);
+                // var outputBytes = new Uint8Array(output);
+                // for (var i = 0; i < audio_array_buffer.length; i++){
+                //     outputBytes[i] = audio_array_buffer[i];
+                // }
+                // // audioBufferに変換
+                // ctx.decodeAudioData(output, (buf)=>{
+                //     audioBuffer = buf;
+                // });
             });
             
         });
@@ -140,7 +148,15 @@ navigator.mediaDevices.getUserMedia({
     };
 
     document.return_buf = function(){
+        console.log("------in return buf------")
+        console.log(audioBuffer)
         return audioBuffer;
+    }
+
+    document.return_arraybuf = function(){
+        console.log("------in arraybuf-------")
+        console.log(audio_array_buffer)
+        return audio_array_buffer;
     }
 });
 

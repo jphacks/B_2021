@@ -65,19 +65,20 @@ var editor = new Vue({
             params['room'] = document.getElementById("roomID").value;
             params['made_by'] = document.getElementById("who_make").value;
             params['sound_type'] = type_value;
+            params['filtered_by'] = this.$store.state.nowfilter;
             const headers = {
                 'Content-Type': 'application/json'
             };
             let ctrl = this;
-            // axios.post(url, params).then(res=>{
-            //     console.log(res.data.id);
-            //     note.object_id = res.data.id;
-            //     console.log(note);
-            //     ctrl.$store.commit('note_add',{"note":note,"sound_type":ctrl.$store.state.nowplaying});
+            axios.post(url, params).then(res=>{
+                console.log(res.data.id);
+                note.object_id = res.data.id;
+                console.log(note);
+                ctrl.$store.commit('note_add',{"note":note,"sound_type":ctrl.$store.state.nowplaying});
 
-            // });
+            });
             console.log("----note------")
-            ctrl.$store.commit('note_add',{"note":note,"sound_type":type_value});
+            // ctrl.$store.commit('note_add',{"note":note,"sound_type":type_value});
             console.log(ctrl.$store.state.notes)
 
             
@@ -122,7 +123,11 @@ var editor = new Vue({
         },
         neiro_click:function(event,type_value){
             if(!this.$store.state.not_file.includes(type_value)){
-                let delete_url = "https://kou.hongo.wide.ad.jp:3341/upload/"+document.getElementById("roomID").value+"/"+this.$store.state.nowplaying+"/"+type_value;
+                let type = this.$store.state.nowplaying;
+                if(type=="recorded"){
+                    type = "voice";
+                }
+                let delete_url = "https://kou.hongo.wide.ad.jp:3341/upload/"+document.getElementById("roomID").value+"/"+type+"/"+type_value;
                 axios.delete(delete_url).then(res=>{
                     console.log(res)
                 })
