@@ -168,7 +168,7 @@ const store = new Vuex.Store({
             Vue.set(state.notes, param['name'], []);
             //state.nowplaying = param["name"]
             state.lanes_for_html[param['type_value']].push(param['name']);
-            state.nowplaying = param['type_value'];
+            //state.nowplaying = param['type_value'];
         },
         recorded_buf_add(state, param){
             let buf = param["buf"];
