@@ -53,7 +53,7 @@ const store = new Vuex.Store({
             state.file_length = {};
             state.file_data = {};
             state.lanes = {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"drum":["dummy"]};
-            state.lanes_for_html = {"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "voice":[]};
+            state.lanes_for_html = {"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "recorded":[]};
             state.file_length = {};
             state.file_data = {};
             state.nowfilter = "allpass";
@@ -117,6 +117,10 @@ const store = new Vuex.Store({
                         if(prev_position<=start_time && start_time<=new_position){
 
                             if(pitch_name=="recorded"){
+                                console.log("-------in setposition--------------------")
+                                console.log(type)
+                                console.log(state.recorded_buf)
+                                console.log(note);
                                 play_tone(type, pitch_name, note_length_sec, state.nowfilter, state.recorded_buf[type]);
                             }
 
@@ -154,6 +158,7 @@ const store = new Vuex.Store({
             console.log(state.file_length[param['name']])
             // state.file_data[param['name']] = param['file'];
             Vue.set(state.file_data,param['name'],param['file']);
+
         },
         lane_add(state, param){
 
@@ -169,8 +174,6 @@ const store = new Vuex.Store({
             let buf = param["buf"];
             let name = param["name"];
             state.recorded_buf[name] = buf;
-            console.log(buf);
-            console.log(state.recorded_buf[name]);
  
         },
         delete_file(state,param){
@@ -181,6 +184,12 @@ const store = new Vuex.Store({
             delete state.file_length[param["file_name"]];
             state.lanes_for_html["audio"] = state.lanes_for_html["audio"].filter(file=>file!==file_name);
             
+        },
+        delete_recorded(state,param){
+            let file_name = param['file_name'];
+            delete state.lanes[param["file_name"]];
+            delete state.file_data[param["file_name"]];
+            state.lanes_for_html["recorded"] = state.lanes_for_html["recorded"].filter(file=>file!==file_name);
         }
         
 

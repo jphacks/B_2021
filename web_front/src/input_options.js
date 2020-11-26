@@ -79,15 +79,30 @@ var input_options = new Vue({
         },
         record_add_btn: function(e){
             let recorded_buf = document.return_buf();
+            let array_buf = document.return_arraybuf();
             let lane_name = String(performance.now());
-            this.$store.commit('lane_add', {
-                'type': 'recorded',
-                'name': lane_name,
+            //音源投げつける
+            console.log("-----録音arraybuf-------")
+            console.log(array_buf)
+            let base64String = btoa(String.fromCharCode(...new Uint8Array(array_buf)));
+            let put_url = "https://kou.hongo.wide.ad.jp:3341/upload";
+            let put_param = {"fileName":lane_name,"roomName":document.getElementById("roomID").value,"soundType":"voice","base64Data":base64String};
+            axios.post(put_url, put_param).then(res=>{
+                console.log(res);
+                ctx.decodeAudioData(array_buf,(buf)=>{
+                    this.$store.commit('lane_add', {
+                        'type_value': 'recorded',
+                        'name': lane_name,
+                    });
+                    this.$store.commit('recorded_buf_add', {
+                        'name': lane_name,
+                        'buf' : buf
+                    });
+                })
+                
             });
-            this.$store.commit('recorded_buf_add', {
-                'name': lane_name,
-                'buf' : recorded_buf
-            });
+
+
         }
     }
 });
@@ -246,6 +261,7 @@ var input_id = new Vue({
             params_for_dif_get["roomName"] = this.$store.state.roomID;
             params_for_dif_get["soundType"] = "audio";
             params_for_dif_get["current_list"] = this.$store.state.lanes_for_html["audio"];
+            console.log(params_for_dif_get)
             axios.post(dif_get_url, params_for_dif_get).then(res=>{
                 console.log("----音声差分-------")
                 console.log(res.data);
@@ -281,6 +297,58 @@ var input_id = new Vue({
                             file_param['name'] = add_list[file_name];
                             file_param['file'] = music_source;
                             ctrl.$store.commit('set_filemusic', file_param);
+                            console.log("--------------追加完了--------------------")
+                            
+                        });
+                    })
+                     
+                }
+                
+            })
+
+            //録音の差分確認
+            dif_get_url = "https://kou.hongo.wide.ad.jp:3341/difference_listoftitle";
+            params_for_dif_get = {};
+            params_for_dif_get["roomName"] = this.$store.state.roomID;
+            params_for_dif_get["soundType"] = "voice";
+            params_for_dif_get["current_list"] = this.$store.state.lanes_for_html["recorded"];
+            console.log(params_for_dif_get)
+            axios.post(dif_get_url, params_for_dif_get).then(res=>{
+                console.log("----音声差分-------")
+                console.log(res.data);
+                let add_list = res.data["add_list"];
+                let remove_list = res.data["remove_list"];
+                //remove処理
+                //remove用のstore関数核
+                //remove用commit
+                for(let index in remove_list){
+                    ctrl.$store.commit('delete_recorded',{"file_name":remove_list[index]});
+                }
+
+                //音源取得
+                for(let file_name in add_list){
+                    let get_url = "https://kou.hongo.wide.ad.jp:3341/upload/"+ this.$store.state.roomID + "/" + "voice/" + add_list[file_name];
+                    axios.get(get_url).then(res=>{
+                        let file_data = res.data["base64Data"];
+                        console.log("-----get data------")
+                        console.log(res.data)
+                        //lane_addは先にやっておく(重複回避のため)
+                        ctrl.$store.commit('lane_add',{'name':add_list[file_name],'type_value':'recorded'});
+                        //base64から復元
+                        let binary = window.atob(file_data);
+                        let len = binary.length;
+                        let bytes = new Uint8Array(len);
+                        for (let i = 0; i < len; i++)        {
+                            bytes[i] = binary.charCodeAt(i);
+                        }
+                        bytes = bytes.buffer;
+                        console.log(bytes);
+                        ctx.decodeAudioData(bytes, function (buf) {
+                            let music_source = buf;
+                            let file_param = {};
+                            file_param['name'] = add_list[file_name];
+                            file_param['buf'] = music_source;
+                            ctrl.$store.commit('recorded_buf_add', file_param);
                             console.log("--------------追加完了--------------------")
                             
                         });
