@@ -112,9 +112,15 @@ navigator.mediaDevices.getUserMedia({
         recorder.addEventListener("dataavailable", (e)=>{
             // 録音したデータを配列として取り出す
             e.data.arrayBuffer().then(arrayBuffer=>{
+                audio_array_buffer = arrayBuffer;
+                // var output = new ArrayBuffer(audio_array_buffer.byteLength);
+                // var outputBytes = new Uint8Array(output);
+                // for (var i = 0; i < audio_array_buffer.length; i++){
+                //     outputBytes[i] = audio_array_buffer[i];
+                // }
                 // audioBufferに変換
-                ctx.decodeAudioData(arrayBuffer, (buf)=>{
-                    audioBuffer = buf;
+                ctx.decodeAudioData(arrayBuffer.slice(0), (buf)=>{
+                     audioBuffer = buf;
                 });
             });
             
