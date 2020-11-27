@@ -109,7 +109,7 @@ var input_options = new Vue({
 
 var input_id = new Vue({
     store: store,
-    el: "#input_id",
+    el: "#head_div",
     data:{
         intervalId:null,
     },
@@ -156,8 +156,14 @@ var input_id = new Vue({
             document.getElementById("roomID").setAttribute("disabled","disabled");
             this.intervalId = setInterval(this.postRequest, 1000);
 
-            
-
+            //twitter用url作成
+            // 現在のurlをエンコード
+            let url = encodeURIComponent(location.href);
+            // ページ文言(タイトルとかdescription) ここではdescriptionを使用
+            let txt = encodeURIComponent("JointSoundで気軽に音を奏でよう♪roomIDはこちら→【"+roomID+"】");
+            // Twitter用のurl作成 ハッシュタグもtxtを使用
+            let twUrl = 'https://twitter.com/intent/tweet?text='+ txt + '&hashtags=' + "JointSound" + '&url=' + url;
+            this.$store.commit("edit_twiurl",{"url":twUrl});
         },
         quit(state, value){
             clearInterval(this.intervalId);

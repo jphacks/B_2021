@@ -32,6 +32,7 @@ const store = new Vuex.Store({
         //for filter
         nowfilter:"allpass",
         filter_list:["allpass","highpass","lowpass"],
+        twi_url : "",
     },
     
     mutations: {
@@ -59,8 +60,12 @@ const store = new Vuex.Store({
             state.nowfilter = "allpass";
             state.filter_list = ["allpass","highpass","lowpass"];
             state.recorded_buf = {};
+            state.twi_url = "";
 
 
+        },
+        edit_twiurl(state,param){
+            state.twi_url = param["url"]
         },
         note_add(state, param) {
             let who = param["note"]["who_make"];

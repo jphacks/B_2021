@@ -32,6 +32,7 @@ body{
     text-align: center;
     background-color: rgba(0,0,0,0.2);
     color: #ffffff;
+    float:left;
 }
 #input_id dt{
     float: left;
@@ -42,6 +43,16 @@ body{
 }
 input[type="text"][disabled]{
     background: #b1b1b1;
+}
+#twitter{
+    padding-top: 30px;
+    padding-left: 20px;
+    float:left;
+}
+#twitter_img{
+    float:left;
+    width:75px;
+    height:75px;
 }
 
 #controller{

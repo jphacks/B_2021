@@ -27,11 +27,16 @@
     <button id="enter_room" @click="enter" v-if="!$store.state.isInRoom">入室</button>
     <button id="quit_room" @click="quit" v-if="$store.state.isInRoom">退室</button>
   </div>
+  <div id="twitter">
+    <a :href="$store.state.twi_url" target="_blank"><img src="img/Twitter.png" id="twitter_img"></a>
+  </div>
+  
 </div>
 
 
 <!-- コントローラ -->
 <div id="controller" v-if="$store.state.isInRoom">
+  
   <img src="img/jump_left.png" height="50px" width="50px" @click="jump_left">
   <img src="img/play.png" height="70px" width="70px" @click="play" v-if="!$store.state.isPlaying">
   <img src="img/pause.png" height="70px" width="70px" @click="pause" v-if="$store.state.isPlaying">
