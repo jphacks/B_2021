@@ -128,13 +128,13 @@ const store = new Vuex.Store({
                                 console.log(type)
                                 console.log(state.recorded_buf)
                                 console.log(note);
-                                play_tone(type, pitch_name, note_length_sec, state.nowfilter, state.recorded_buf[type]);
+                                play_tone(type, pitch_name, note_length_sec, filter_by, state.recorded_buf[type]);
                             }
 
                             else if(pitch_name=="audio"){
-                                play_tone(type,pitch_name,note_length_sec, state.nowfilter, state.file_data[type]);
+                                play_tone(type,pitch_name,note_length_sec, filter_by, state.file_data[type]);
                             }else{
-                                play_tone(type,pitch_name,note_length_sec, state.nowfilter)
+                                play_tone(type,pitch_name,note_length_sec, filter_by);
 
                             }
                         }
