@@ -92,7 +92,8 @@ var input_options = new Vue({
             let recorded_buf = document.return_buf();
             let array_buf = document.return_arraybuf();
             let DD = new Date();
-            let lane_name = String(DD.getHours())+":"+String(DD.getMinutes())+":"+String(DD.getSeconds()) +" by "+String(document.getElementById("roomID").value);
+            let name = String(document.getElementById("who_make").value);
+            let lane_name = String(DD.getHours())+":"+String(DD.getMinutes())+":"+String(DD.getSeconds()) +" by "+name;
             //音源投げつける
             console.log("-----録音arraybuf-------")
             console.log(array_buf)

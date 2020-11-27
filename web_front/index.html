@@ -21,7 +21,7 @@
   <img src="img/logo.png" id="logo">
   <div id="input_id">
     <dl>
-      <dt>Name:</dt><dd><input id="who_make" type="text" value="名無し"></dd>
+      <dt>Name:</dt><dd><input id="who_make" type="text"></dd>
       <dt>RoomID:</dt><dd><input id="roomID" type="text"></dd>
     </dl>
     <button id="enter_room" @click="enter" v-if="!$store.state.isInRoom">入室</button>

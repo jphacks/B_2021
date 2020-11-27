@@ -185,6 +185,7 @@ const store = new Vuex.Store({
         delete_file(state,param){
             console.log(param["file_name"])
             let file_name = param["file_name"];
+            delete state.notes[param["file_name"]]
             delete state.lanes[param["file_name"]];
             delete state.file_data[param["file_name"]];
             delete state.file_length[param["file_name"]];
@@ -192,6 +193,7 @@ const store = new Vuex.Store({
         },
         delete_recorded(state,param){
             let file_name = param['file_name'];
+            delete state.notes[param["file_name"]]
             delete state.lanes[param["file_name"]];
             delete state.file_data[param["file_name"]];
             state.lanes_for_html["recorded"] = state.lanes_for_html["recorded"].filter(file=>file!==file_name);
