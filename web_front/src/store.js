@@ -1,7 +1,7 @@
 //状態管理
 const store = new Vuex.Store({
     state: {
-        notes:{"sawtooth":[],"sine":[], "audiofile":[], "recorded":[]},
+        notes:{"sawtooth":[],"sine":[]},
         nowplaying:"sine",
 
         bpm: 120,   // bpm
@@ -21,14 +21,9 @@ const store = new Vuex.Store({
         note_color:["#00ff7f","#00ffff","#ffa500","#8a2be2","#ff00ff"],
         not_file:["sawtooth","sine"],
 
-        lanes : {
-            "sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
-            "sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
-            "audiofile":["dummy"],
-            "recorded":[]
-        },//キーデータ(ファイルとかはdummyで1レーン分になるようになってる)
 
-        //lanes_for_html:{"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "voice":[]},//svgをv-forで回したいので
+        lanes : {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"]},//キーデータ(ファイルとかはdummyで1レーン分になるようになってる)
+        lanes_for_html:{"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "recorded":[]},//svgをv-forで回したいので
         file_length:{},//ファイルの曲の長さ(秒単位)
         file_data:{},//ファイルデータ
         
@@ -57,13 +52,14 @@ const store = new Vuex.Store({
             state.who_make_num = {};
             state.file_length = {};
             state.file_data = {};
-            state.lanes = {
-                "sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
-                "sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],
-                //"drum":["dummy"],
-                "audiofile": [],
-                "recorded":[],
-            };
+            state.lanes = {"sawtooth":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"sine":["C4", "B3", "A3", "G3", "F3", "E3", "D3", "C3"],"drum":["dummy"]};
+            state.lanes_for_html = {"sawtooth":["sawtooth"], "sine":["sine"], "audio":[], "recorded":[]};
+            state.file_length = {};
+            state.file_data = {};
+            state.nowfilter = "allpass";
+            state.filter_list = ["allpass","highpass","lowpass"];
+            state.recorded_buf = {};
+
 
         },
         note_add(state, param) {
@@ -90,14 +86,14 @@ const store = new Vuex.Store({
             }
         },
         delete_note(state, param){
-            for(let i in state.notes[state.nowplaying]){
-                let note = state.notes[state.nowplaying][i];
+            for(let i in state.notes[param["nowplaying"]]){
+                let note = state.notes[param["nowplaying"]][i];
                 if((note.pitch == param["click_note_pitch"]) && (note.start_time == param["click_note_start_time"])){
                     console.log(i);
                     console.log(note.pitch);
                     console.log(param["click_note_pitch"]);
                     //ノーツの削除
-                    state.notes[state.nowplaying].splice(i, 1);
+                    state.notes[param["nowplaying"]].splice(i, 1);
                     break;
                 }
             }
@@ -117,15 +113,22 @@ const store = new Vuex.Store({
                         var start_time = note["start_time"];
                         var pitch_name = note["pitch"];
                         var note_length_sec = 60/state.bpm * note["nagasa"]/480;
+                        let filter_by = note["filter_by"];
                         if(prev_position<=start_time && start_time<=new_position){
-                            if(type=="recorded"){
-                                play_tone(type, pitch_name, note_length_sec, state.recorded_buf[pitch_name]);
+
+                            if(pitch_name=="recorded"){
+                                console.log("-------in setposition--------------------")
+                                console.log(type)
+                                console.log(state.recorded_buf)
+                                console.log(note);
+                                play_tone(type, pitch_name, note_length_sec, state.nowfilter, state.recorded_buf[type]);
                             }
 
-                            else if(pitch_name!="dummy"){
-                                play_tone(type,pitch_name,note_length_sec);
+                            else if(pitch_name=="audio"){
+                                play_tone(type,pitch_name,note_length_sec, state.nowfilter, state.file_data[type]);
                             }else{
-                                play_tone(type,pitch_name,note_length_sec, state.file_data[type])
+                                play_tone(type,pitch_name,note_length_sec, state.nowfilter)
+
                             }
                         }
                     }
@@ -155,23 +158,40 @@ const store = new Vuex.Store({
             console.log(state.file_length[param['name']])
             // state.file_data[param['name']] = param['file'];
             Vue.set(state.file_data,param['name'],param['file']);
+
         },
         lane_add(state, param){
-            let type = param["type"];
-            let lane_name = param["name"];
-            console.log(type);
-            state.lanes[type].push(lane_name);
-            //Vue.set(state.lanes, param['name'],["dummy"]);
-            //Vue.set(state.notes, param['name'], []);
-            state.nowplaying = type;
+
+            // state.lanes[param['name']] = ["dummy"];
+            Vue.set(state.lanes, param['name'],[param['type_value']]);
+            // state.notes[param['name']] = [];
+            Vue.set(state.notes, param['name'], []);
+            //state.nowplaying = param["name"]
+            state.lanes_for_html[param['type_value']].push(param['name']);
+            //state.nowplaying = param['type_value'];
         },
         recorded_buf_add(state, param){
             let buf = param["buf"];
             let name = param["name"];
             state.recorded_buf[name] = buf;
-            console.log(buf);
-            console.log(state.recorded_buf[name]);
+ 
+        },
+        delete_file(state,param){
+            console.log(param["file_name"])
+            let file_name = param["file_name"];
+            delete state.lanes[param["file_name"]];
+            delete state.file_data[param["file_name"]];
+            delete state.file_length[param["file_name"]];
+            state.lanes_for_html["audio"] = state.lanes_for_html["audio"].filter(file=>file!==file_name);
             
+        },
+        delete_recorded(state,param){
+            let file_name = param['file_name'];
+            delete state.lanes[param["file_name"]];
+            delete state.file_data[param["file_name"]];
+            state.lanes_for_html["recorded"] = state.lanes_for_html["recorded"].filter(file=>file!==file_name);
         }
+        
+
     }
 })
