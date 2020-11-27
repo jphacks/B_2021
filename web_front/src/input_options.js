@@ -2,6 +2,7 @@ var input_options = new Vue({
     store: store,
     el: "#input_options",
     data:{
+        recording_state: false
     },
     methods:{
         shosetu_henshu: function(event){
@@ -70,9 +71,11 @@ var input_options = new Vue({
         },
         record_start_btn: function(e){
             document.record_start();
+            this.recording_state=true;
         },
         record_stop_btn: function(e){
             document.record_stop();
+            this.recording_state=false;
         },
         record_play_btn: function(e){
             document.record_play();

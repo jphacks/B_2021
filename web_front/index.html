@@ -76,11 +76,11 @@
     </div>
     <div id="recording">
       録音して追加：
-      <button @click="record_start_btn">録音開始</button>
-      <button @click="record_stop_btn">録音停止</button>
-      <button @click="record_play_btn">再生</button>
+      <button @click="record_start_btn" v-if="!recording_state">録音開始</button>
+      <button @click="record_stop_btn" v-if="recording_state">録音停止</button>
+      <button @click="record_play_btn">試聴</button>
       <button @click="record_add_btn">追加</button>
-    </div>  
+    </div>
   </div>
 
   <div id="sound_type_select">
