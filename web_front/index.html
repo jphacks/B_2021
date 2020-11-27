@@ -83,8 +83,8 @@
       録音して追加：
       <button @click="record_start_btn" v-if="!recording_state">録音開始</button>
       <button @click="record_stop_btn" v-if="recording_state">録音停止</button>
-      <button @click="record_play_btn">試聴</button>
-      <button @click="record_add_btn">追加</button>
+      <button @click="record_play_btn" id="record_play_btn" disabled>試聴</button>
+      <button @click="record_add_btn" id="record_add_btn" disabled>追加</button>
     </div>
   </div>
 

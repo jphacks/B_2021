@@ -165,7 +165,6 @@ const store = new Vuex.Store({
 
         },
         lane_add(state, param){
-
             // state.lanes[param['name']] = ["dummy"];
             Vue.set(state.lanes, param['name'],[param['type_value']]);
             // state.notes[param['name']] = [];
