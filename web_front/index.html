@@ -50,9 +50,7 @@
 
 <div id="input_options" v-if="$store.state.isInRoom">
   小節数: <input id="shosetu" type="number" :value="$store.state.n_bars" @input="shosetu_henshu">
-  BPM: <input id="bpm" type="number" :value="$store.state.bpm" @input="bpm_henshu">
-  FILTER: <select id="audio_filter" v-model="$store.state.nowfilter"><option v-for="filter in $store.state.filter_list">{{filter}}</option></select>
-  <br>
+  BPM: <input id="bpm" type="number" :value="$store.state.bpm" @input="bpm_henshu"><br>
   音符の長さ: <select id="edit_note_length" type="number" v-model.number="$store.state.edit_note_length">
       <option value="1920">全音符</option>
       <option value="960">2分音符</option>
@@ -65,24 +63,30 @@
       <option value="240">8分音符</option>
       <option value="120">16分音符</option>
     </select>
-
-  <label v-for="key,value in $store.state.lanes_for_html"><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" :value="value"><img src="img/sine.png" width="15" height="15">{{value}}</label>
-
+    FILTER: <select id="audio_filter" v-model="$store.state.nowfilter"><option v-for="filter in $store.state.filter_list">{{filter}}</option></select>
 
   <br>
   <button id="all_delete" @click="$store.commit('all_delete')">all delete</button>
-  <div class="originalFileBtn">
-    FILE ADD
-  <input type="file" id="inputfiles" @change="file_input" multiple/>
-</div>
-  <div id="recording">
-    録音
-    <button @click="record_start_btn">録音開始</button>
-    <button @click="record_stop_btn">録音停止</button>
-    <button @click="record_play_btn">再生</button>
-    <button @click="record_add_btn">追加</button>
 
+  <div id="add_sound"><!-- サウンドを追加するオプション -->
+    ファイルから追加：
+    <div class="originalFileBtn">
+      FILE ADD
+      <input type="file" accept="audio/*" id="inputfiles" @change="file_input" multiple/>
+    </div>
+    <div id="recording">
+      録音して追加：
+      <button @click="record_start_btn">録音開始</button>
+      <button @click="record_stop_btn">録音停止</button>
+      <button @click="record_play_btn">再生</button>
+      <button @click="record_add_btn">追加</button>
+    </div>  
   </div>
+
+  <div id="sound_type_select">
+    <label v-for="key,value in $store.state.lanes_for_html"><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" :value="value"><img src="img/sine.png" width="15" height="15">{{value}}</label>
+ </div>
+
 </div>
 
 

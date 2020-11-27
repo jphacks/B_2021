@@ -57,7 +57,6 @@ const store = new Vuex.Store({
             state.file_length = {};
             state.file_data = {};
             state.nowfilter = "allpass";
-            state.filter_list = ["allpass","highpass","lowpass"];
             state.recorded_buf = {};
 
 

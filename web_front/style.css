@@ -91,3 +91,14 @@ input[type="number"]{
     top: 0;
     width: 100%;
 }
+
+#recording{
+    height: 50px;
+    width: 400px;
+    background-color: rgba(0,0,0,0.2);
+}
+#sound_type_select{
+    height: 50px;
+    width: 600px;
+    background-color: rgba(0,0,0,0.2);
+}
