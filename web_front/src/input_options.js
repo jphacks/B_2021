@@ -2,7 +2,7 @@ var input_options = new Vue({
     store: store,
     el: "#input_options",
     data:{
-        recording_state: false
+        recording_state: false,
     },
     methods:{
         shosetu_henshu: function(event){
@@ -72,15 +72,22 @@ var input_options = new Vue({
         record_start_btn: function(e){
             document.record_start();
             this.recording_state=true;
+            document.getElementById("record_add_btn").setAttribute("disabled","");
+            document.getElementById("record_play_btn").setAttribute("disabled","");    
         },
         record_stop_btn: function(e){
             document.record_stop();
             this.recording_state=false;
+            document.getElementById("record_add_btn").removeAttribute("disabled");
+            document.getElementById("record_play_btn").removeAttribute("disabled");
         },
         record_play_btn: function(e){
             document.record_play();
         },
         record_add_btn: function(e){
+            document.getElementById("record_add_btn").setAttribute("disabled","");
+            document.getElementById("record_play_btn").setAttribute("disabled","");    
+            
             let recorded_buf = document.return_buf();
             let array_buf = document.return_arraybuf();
             let lane_name = String(performance.now());
