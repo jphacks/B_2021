@@ -41,7 +41,7 @@ var input_options = new Vue({
                     let put_url = "https://kou.hongo.wide.ad.jp:3341/upload"
                     //base64に切り出し
                     const base64EncodedFile = reader.result.split("base64,")[1];
-                    let put_param = {"fileName":file_list[i].name,"roomName":document.getElementById("roomID").value,"soundType":"audio","base64Data":base64EncodedFile};
+                    let put_param = {"fileName":String(file_list[i].name),"roomName":document.getElementById("roomID").value,"soundType":"audio","base64Data":base64EncodedFile};
                     console.log(put_url)
                     console.log(put_param)
                     axios.post(put_url, put_param).then(res=>{console.log(res);console.log("hellooooo")});
@@ -83,7 +83,8 @@ var input_options = new Vue({
         record_add_btn: function(e){
             let recorded_buf = document.return_buf();
             let array_buf = document.return_arraybuf();
-            let lane_name = String(performance.now());
+            let DD = new Date();
+            let lane_name = String(DD.getHours())+":"+String(DD.getMinutes())+":"+String(DD.getSeconds()) +" by "+String(document.getElementById("roomID").value);
             //音源投げつける
             console.log("-----録音arraybuf-------")
             console.log(array_buf)
