@@ -98,7 +98,7 @@
 <!-- エディタ -->
 <div id="editor" v-if="$store.state.isInRoom">
   <div v-for="key,value in $store.state.lanes_for_html[$store.state.nowplaying]">
-    {{key}}    <img src="img/dustbox.png" height="30px" @click="neiro_click($event,key)" v-if="key!='sine' && key!='sawtooth'">
+    <div id="lane_name">{{key}}    <img src="img/dustbox.png" height="30px" @click="neiro_click($event,key)" v-if="key!='sine' && key!='sawtooth'"></div>
   <svg :viewbox="'0 0 1500 ' + note_height*$store.state.lanes[key].length" :width="$store.state.n_bars*note_width*4" :height="note_height*$store.state.lanes[key].length"  @mousemove="mouse"
   :style=" 'background-color: #aaaaaa; margin-left: ' +  (- margin_position+100) +'px;'">
   <!-- 背景 -->
