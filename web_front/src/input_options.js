@@ -251,7 +251,7 @@ var input_id = new Vue({
                         if(break_flag == 1){
                             continue;
                         }
-                        ctrl.$store.commit('delete_note',{click_note_pitch:ctrl.$store.state.notes[key][i]['pitch'],click_note_start_time:ctrl.$store.state.notes[key][i]['start_time']});
+                        ctrl.$store.commit('delete_note',{click_note_pitch:ctrl.$store.state.notes[key][i]['pitch'],click_note_start_time:ctrl.$store.state.notes[key][i]['start_time'],"nowplaying":key});
                     }
                 }
 
