@@ -89,7 +89,7 @@
   </div>
 
   <div id="sound_type_select">
-    <label v-for="key,value in $store.state.lanes_for_html"><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" :value="value"><img src="img/sine.png" width="15" height="15">{{value}}</label>
+    <label v-for="key,value in $store.state.lanes_for_html" :class="($store.state.nowplaying==value)?'selected':'notselected'"><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" :value="value"><img src="img/sine.png" width="15" height="15">{{value}}</label>
  </div>
 
 </div>
