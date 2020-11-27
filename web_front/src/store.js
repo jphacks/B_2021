@@ -63,6 +63,9 @@ const store = new Vuex.Store({
 
 
         },
+        edit_nowplaying(state,param){
+            state.nowplaying = param["nowplaying"];
+        },
         edit_twiurl(state,param){
             state.twi_url = param["url"]
         },
