@@ -125,10 +125,11 @@ navigator.mediaDevices.getUserMedia({
                 // for (var i = 0; i < audio_array_buffer.length; i++){
                 //     outputBytes[i] = audio_array_buffer[i];
                 // }
-                // // audioBufferに変換
-                // ctx.decodeAudioData(output, (buf)=>{
-                //     audioBuffer = buf;
-                // });
+                // audioBufferに変換
+                ctx.decodeAudioData(arrayBuffer.slice(0), (buf)=>{
+                     audioBuffer = buf;
+                });
+
             });
             
         });
