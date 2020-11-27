@@ -28,7 +28,7 @@
     <button id="quit_room" @click="quit" v-if="$store.state.isInRoom">退室</button>
   </div>
   <div id="twitter">
-    <a :href="$store.state.twi_url" target="_blank"><img src="img/Twitter.png" id="twitter_img"></a>
+    <a v-if="$store.state.isInRoom" :href="$store.state.twi_url" target="_blank"><img src="img/Twitter.png" id="twitter_img"></a>
   </div>
   
 </div>
@@ -89,7 +89,7 @@
   </div>
 
   <div id="sound_type_select">
-    <label v-for="key,value in $store.state.lanes_for_html"><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" :value="value"><img src="img/sine.png" width="15" height="15">{{value}}</label>
+    <label v-for="key,value in $store.state.lanes_for_html"><input type="radio" name="nowplaying" v-model="$store.state.nowplaying" :value="value"><img :src="'img/'+value+'.png'" width="15" height="15">{{value}}</label>
  </div>
 
 </div>
