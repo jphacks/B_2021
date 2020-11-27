@@ -44,6 +44,7 @@ var input_options = new Vue({
                     let put_param = {"fileName":String(file_list[i].name),"roomName":document.getElementById("roomID").value,"soundType":"audio","base64Data":base64EncodedFile};
                     console.log(put_url)
                     console.log(put_param)
+                    now.$store.commit("edit_nowplaying",{"nowplaying":"audio"});
                     axios.post(put_url, put_param).then(res=>{console.log(res);console.log("hellooooo")});
                     //base64decode
                     // let binary = atob(base64EncodedFile);
@@ -109,6 +110,7 @@ var input_options = new Vue({
                         'name': lane_name,
                         'buf' : buf
                     });
+                    this.$store.commit("edit_nowplaying",{"nowplaying":"recorded"});
                 })
                 
             });
