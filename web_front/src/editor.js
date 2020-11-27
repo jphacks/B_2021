@@ -74,7 +74,7 @@ var editor = new Vue({
                 console.log(res.data.id);
                 note.object_id = res.data.id;
                 console.log(note);
-                ctrl.$store.commit('note_add',{"note":note,"sound_type":ctrl.$store.state.nowplaying});
+                ctrl.$store.commit('note_add',{"note":note,"sound_type":type_value});
 
             });
             console.log("----note------")

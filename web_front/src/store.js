@@ -36,7 +36,7 @@ const store = new Vuex.Store({
     
     mutations: {
         shokika(state){
-            state.notes = {"sawtooth":[],"sine":[], "audiofile":[], "recorded":[]};
+            state.notes = {"sawtooth":[],"sine":[]};
             state.nowplaying = "sine";
             state.bpm = 120;
             state.n_bars = 8;
