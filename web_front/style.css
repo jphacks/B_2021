@@ -32,6 +32,7 @@ body{
     text-align: center;
     background-color: rgba(0,0,0,0.2);
     color: #ffffff;
+    float:left;
 }
 #input_id dt{
     float: left;
@@ -42,6 +43,16 @@ body{
 }
 input[type="text"][disabled]{
     background: #b1b1b1;
+}
+#twitter{
+    padding-top: 30px;
+    padding-left: 20px;
+    float:left;
+}
+#twitter_img{
+    float:left;
+    width:75px;
+    height:75px;
 }
 
 #controller{
@@ -76,4 +87,47 @@ input[type="text"][disabled]{
 }
 input[type="number"]{
     width: 50px;
+}
+.originalFileBtn {
+    border: 2px solid;
+    border-radius: 5px;
+    display: inline-block;
+    padding: 2px 1em;
+    position: relative;
+    background-color: #eeeeee;
+}
+.originalFileBtn input[type="file"] {
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+#add_sound{
+    padding-top: 10px;
+    padding-left: 20px;
+    height: 100px;
+    width: 400px;
+    background-color: rgba(0,0,0,0.2);
+}
+
+
+#sound_type_select{
+    margin-top: 10px;
+    padding-top: 0px;
+    padding-left: 0px;
+    height: 50px;
+    width: 600px;
+    background-color: rgba(0,0,0,0.2);
+}
+#sound_type_select label{
+    display: block;
+    float: left;
+    height: 100%;
+    width:25%;
+}
+#sound_type_select label.selected{
+    background-color: rgba(255,255,255,0.2);
 }
