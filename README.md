@@ -20,7 +20,7 @@
 * ファイル構成
     * server_code/334jst_server/ : サーバサイドのコードです．別のサーバにて運用されています．
     * web-front: フロントエンドのコードです．本体は index.html です．
-* [Heroku上で稼働しています．](https://jointsound.herokuapp.com)
+* [Netlify上で稼働しています．](https://jointsound.netlify.app/)
 
 ### 特長
 * 同時に音楽を創ることができるオンラインDAW  
@@ -62,7 +62,7 @@
     * Vue.js  
     * Vuex  
 * デプロイ等
-    * Heroku  
+    * Netlify  
 
 
 
